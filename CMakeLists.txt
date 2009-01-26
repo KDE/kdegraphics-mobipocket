@@ -18,23 +18,23 @@ find_package(SharedMimeInfo REQUIRED)
 
 
 set(okularGenerator_mobi_PART_SRCS
-  converter.cpp
-  mobipocket.cpp
-  decompressor.cpp
-  mobidocument.cpp
-  generator_mobi.cpp
+  lib/mobipocket.cpp
+  lib/decompressor.cpp
+  okular/mobidocument.cpp
+  okular/generator_mobi.cpp
+  okular/converter.cpp
 )
 
 set(mobithumbnail_SRCS
-  mobipocket.cpp
-  decompressor.cpp
-  mobithumbnail.cpp
+  lib/mobipocket.cpp
+  lib/decompressor.cpp
+  strigi/mobithumbnail.cpp
 )
 
 set(mobianalyzer_SRCS
-  mobipocket.cpp
-  decompressor.cpp
-  mobiendanalyzer.cpp
+  lib/mobipocket.cpp
+  lib/decompressor.cpp
+  strigi/mobiendanalyzer.cpp
 )
 
 kde4_add_plugin(okularGenerator_mobi ${okularGenerator_mobi_PART_SRCS})
@@ -55,12 +55,12 @@ set_target_properties(mobi PROPERTIES PREFIX ${STRIGI_LINE_ANALYZER_PREFIX})
 
 ########### install files ###############
 
-install( FILES mobithumbnail.desktop libokularGenerator_mobi.desktop okularMobi.desktop  DESTINATION  ${SERVICES_INSTALL_DIR} )
-install( FILES okularApplication_mobi.desktop  DESTINATION  ${XDG_APPS_INSTALL_DIR} )
+install( FILES strigi/mobithumbnail.desktop okular/libokularGenerator_mobi.desktop okular/okularMobi.desktop  DESTINATION  ${SERVICES_INSTALL_DIR} )
+install( FILES okular/okularApplication_mobi.desktop  DESTINATION  ${XDG_APPS_INSTALL_DIR} )
 install(TARGETS mobi LIBRARY DESTINATION ${LIB_INSTALL_DIR}/strigi)
 
 install(
-  FILES x-mobipocket-ebook.xml
+  FILES lib/x-mobipocket-ebook.xml
   DESTINATION ${XDG_MIME_INSTALL_DIR}
 )
 update_xdg_mimetypes(${XDG_MIME_INSTALL_DIR})
