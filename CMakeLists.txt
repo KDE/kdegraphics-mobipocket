@@ -1,15 +1,10 @@
-CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
-
-
-project(okular-mobi-generator)
-
-ENABLE_TESTING()
-
 find_package(KDE4 REQUIRED)
 find_package(Strigi REQUIRED)
+find_package(Okular REQUIRED)
 include_directories(${KDE4_INCLUDES} ${QT_INCLUDES}
                     ${CMAKE_CURRENT_SOURCE_DIR}
                     ${STRIGI_INCLUDE_DIR}
+                    ${OKULAR_INCLUDE_DIR}
                    )
 
 ########### next target ###############
@@ -44,7 +39,7 @@ kde4_add_library(mobi MODULE ${mobianalyzer_SRCS})
 # FIXME: remove QtGui dependency on analyzer
 
 target_link_libraries(mobi ${STRIGI_STREAMS_LIBRARY} ${STRIGI_STREAMANALYZER_LIBRARY} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY})
-target_link_libraries(okularGenerator_mobi okularcore ${mobi_LIBRARIES} ${KDE4_KDECORE_LIBS} ${QT_QTGUI_LIBRARY})
+target_link_libraries(okularGenerator_mobi ${OKULAR_LIBRARIES} ${mobi_LIBRARIES} ${KDE4_KDECORE_LIBS} ${QT_QTGUI_LIBRARY})
 target_link_libraries(mobithumbnail  ${KDE4_KDECORE_LIBS} ${KDE4_KIO_LIBS} ${QT_QTGUI_LIBRARY} )
 
 install(TARGETS mobithumbnail okularGenerator_mobi DESTINATION ${PLUGIN_INSTALL_DIR})
