@@ -2,6 +2,9 @@
 Type=Service
 Name=Mobipocket thumbnailer
 Name[nl]=Mobipocket-miniatuurmaker
+Name[sv]=Mobipocket miniatyrbilder
+Name[tr]=Mobipocket küçük resim oluşturucu
+Name[uk]=Інструмент створення мініатюр Mobipocket
 X-KDE-ServiceTypes=ThumbCreator
 MimeType=application/x-mobipocket-ebook;
 X-KDE-Library=mobithumbnail
