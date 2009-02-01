@@ -2,6 +2,8 @@
 Type=Service
 Name=Mobipocket thumbnailer
 Name[nl]=Mobipocket-miniatuurmaker
+Name[pt]=Miniatura do Mobipocket
+Name[pt_BR]=Miniatura do Mobipocket
 Name[sv]=Mobipocket miniatyrbilder
 Name[tr]=Mobipocket küçük resim oluşturucu
 Name[uk]=Інструмент створення мініатюр Mobipocket
