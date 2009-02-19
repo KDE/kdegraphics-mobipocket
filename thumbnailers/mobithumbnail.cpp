@@ -7,9 +7,9 @@
  *   (at your option) any later version.                                   *
  ***************************************************************************/
 
-#include "strigi/mobithumbnail.h"
-#include "lib/mobipocket.h"
-#include "lib/qfilestream.h"
+#include "mobithumbnail.h"
+#include "mobipocket.h"
+#include "qfilestream.h"
 
 #include <QtCore/QFile>
 

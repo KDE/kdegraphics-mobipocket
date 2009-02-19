@@ -18,7 +18,7 @@
 #include <strigi/analyzerplugin.h>
 #include <list>
 
-#include "lib/mobipocket.h"
+#include "mobipocket.h"
 
 using namespace Strigi;
 

@@ -6,9 +6,9 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  ***************************************************************************/
-#include "okular/mobidocument.h"
-#include "lib/mobipocket.h"
-#include "lib/qfilestream.h"
+#include "mobidocument.h"
+#include "mobipocket.h"
+#include "qfilestream.h"
 #include <QtCore/QFile>
 #include <QtCore/QRegExp>
 #include <kdebug.h>

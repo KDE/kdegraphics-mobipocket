@@ -7,7 +7,7 @@
  *   (at your option) any later version.                                   *
  ***************************************************************************/
 
-#include "okular/converter.h"
+#include "converter.h"
 
 #include <QtGui/QAbstractTextDocumentLayout>
 #include <QtGui/QTextDocument>
@@ -16,7 +16,7 @@
 #include <QtGui/QTextDocumentFragment>
 #include <QtCore/QDebug>
 #include <QtCore/QFile>
-#include <lib/mobipocket.h>
+#include "mobipocket.h"
 
 #include <klocale.h>
 #include <okular/core/action.h>
