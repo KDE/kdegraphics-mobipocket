@@ -37,6 +37,7 @@ struct PDBPrivate;
 class PDB {
 public:
     PDB(Stream* s);
+    ~PDB();
     QString fileType() const;
     int recordCount() const;
     QByteArray getRecord(int i) const;
@@ -49,6 +50,7 @@ struct DocumentPrivate;
 class Document {
 public:
     enum MetaKey { Title, Author, Copyright, Description, Subject };
+    ~Document();
     Document(Stream* s);
     QMap<MetaKey,QString> metadata() const;
     QString text(int size=-1) const;

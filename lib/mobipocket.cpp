@@ -75,6 +75,11 @@ PDB::PDB(Stream* dev) : d(new PDBPrivate)
     d->init();
 }
 
+PDB::~PDB()
+{
+    delete d;
+}
+
 QByteArray PDB::getRecord(int i) const
 {
     if (i>=d->nrecords) return QByteArray();
@@ -243,6 +248,12 @@ Document::Document(Stream* dev) : d(new DocumentPrivate(dev))
 {
     d->init();
 }
+
+Document::~Document()
+{
+    delete d;
+}
+
 
 QString Document::text(int size) const 
 {
