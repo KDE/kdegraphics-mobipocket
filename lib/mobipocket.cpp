@@ -163,7 +163,7 @@ void DocumentPrivate::init()
     valid=pdb.isValid();
     if (!valid) return;
     QByteArray mhead=pdb.getRecord(0);
-    if (mhead.isNull()) goto fail;
+    if (mhead.isNull() || mhead.size() <14 ) goto fail;
     dec = Decompressor::create(mhead[1], pdb);
     if ((int)mhead[12]!=0 || (int)mhead[13]!=0) drm=true;
     if (!dec) goto fail;
@@ -171,8 +171,10 @@ void DocumentPrivate::init()
     ntextrecords=(unsigned char)mhead[8];
     ntextrecords<<=8;
     ntextrecords+=(unsigned char)mhead[9];
-    encoding=readBELong(mhead, 28);
-    if (encoding==65001) isUtf=true;
+    if (mhead.size() > 31 ) {
+        encoding=readBELong(mhead, 28);
+        if (encoding==65001) isUtf=true;
+    }
     if (mhead.size()>176) parseEXTH(mhead);
     
     // try getting metadata from HTML if nothing or only title was recovered from MOBI and EXTH records
