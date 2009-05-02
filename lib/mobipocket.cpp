@@ -13,6 +13,7 @@
 #include <QtCore/QIODevice>
 #include <QtCore/QtEndian>
 #include <QtCore/QBuffer>
+#include <QtCore/QTextCodec>
 #include <QtGui/QImageReader>
 #include <kdebug.h>
 
@@ -103,7 +104,7 @@ int PDB::recordCount() const
 ////////////////////////////////////////////
 struct DocumentPrivate 
 {
-    DocumentPrivate(Stream* d) : pdb(d), valid(true), firstImageRecord(0), isUtf(false), 
+    DocumentPrivate(Stream* d) : pdb(d), valid(true), firstImageRecord(0), 
         drm(false), thumbnailIndex(0) {}
     PDB pdb;
     Decompressor* dec;
@@ -113,7 +114,7 @@ struct DocumentPrivate
     // number of first record holding image. Usually it is directly after end of text, but not always
     quint16 firstImageRecord;
     QMap<Document::MetaKey, QString> metadata;
-    bool isUtf;
+    QTextCodec* codec;
     bool drm;
     
     // index of thumbnail in image list. May be specified in EXTH. 
@@ -125,14 +126,9 @@ struct DocumentPrivate
     void parseEXTH(const QByteArray& data);
     void parseHtmlHead(const QString& data);
     QString readEXTHRecord(const QByteArray& data, quint32& offset);
-    QString decodeString(const QByteArray& data) const;
     QImage getImageFromRecord(int recnum);
 }; 
 
-QString DocumentPrivate::decodeString(const QByteArray& data) const
-{
-    return isUtf ? QString::fromUtf8(data) : QString::fromLatin1(data);
-}
 
 void DocumentPrivate::parseHtmlHead(const QString& data)
 {
@@ -158,7 +154,7 @@ void DocumentPrivate::parseHtmlHead(const QString& data)
 
 void DocumentPrivate::init()
 {
-    quint32 encoding;
+    quint32 encoding=0;
 
     valid=pdb.isValid();
     if (!valid) return;
@@ -171,14 +167,13 @@ void DocumentPrivate::init()
     ntextrecords=(unsigned char)mhead[8];
     ntextrecords<<=8;
     ntextrecords+=(unsigned char)mhead[9];
-    if (mhead.size() > 31 ) {
-        encoding=readBELong(mhead, 28);
-        if (encoding==65001) isUtf=true;
-    }
+    if (mhead.size() > 31 ) encoding=readBELong(mhead, 28);
+    if (encoding==65001) codec=QTextCodec::codecForName("UTF-8");
+    else codec=QTextCodec::codecForName("CP1252");
     if (mhead.size()>176) parseEXTH(mhead);
     
     // try getting metadata from HTML if nothing or only title was recovered from MOBI and EXTH records
-    if (metadata.size()<2 && !drm) parseHtmlHead(decodeString(dec->decompress(pdb.getRecord(1))));
+    if (metadata.size()<2 && !drm) parseHtmlHead(codec->toUnicode(dec->decompress(pdb.getRecord(1))));
     return;
 fail:
     valid=false;
@@ -202,7 +197,7 @@ QString DocumentPrivate::readEXTHRecord(const QByteArray& data, quint32& offset)
     quint32 len=readBELong(data,offset);
     offset+=4;
     len-=8;
-    QString ret=decodeString(data.mid(offset,len));
+    QString ret=codec->toUnicode(data.mid(offset,len));
     offset+=len;
     return ret;
 }
@@ -221,7 +216,7 @@ void DocumentPrivate::parseEXTH(const QByteArray& data)
         qint32 nameoffset=readBELong(data,84);
         qint32 namelen=readBELong(data,88);
         if ( (nameoffset + namelen) < data.size() ) {
-            metadata[Document::Title]=decodeString(data.mid(nameoffset, namelen));
+            metadata[Document::Title]=codec->toUnicode(data.mid(nameoffset, namelen));
         }
     }
 
@@ -268,7 +263,7 @@ QString Document::text(int size) const
         }
         if (size!=-1 && whole.size()>size) break;
     }
-    return d->decodeString(whole);
+    return d->codec->toUnicode(whole);
 }
 
 int Document::imageCount() const 
