@@ -29,7 +29,7 @@ public:
     int read(char* buf, int len) {
          const char* b2;
          int l=d->read(b2, len,len);
-         memcpy(buf,b2,len);
+         if (l>0) memcpy(buf,b2,l);
          return l;
     }
     bool seek(int pos) { d->reset(pos); return (pos==d->position()); }
