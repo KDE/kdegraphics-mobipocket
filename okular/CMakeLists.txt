@@ -1,12 +1,13 @@
 include_directories(
-                    ${PROJECT_SOURCE_DIR}/../libs/mobipocket
+                    ${OKULAR_INCLUDE_DIR}
+                    ${PROJECT_SOURCE_DIR}/lib
                    )
 
 ########### next target ###############
 
 set(okularGenerator_mobi_PART_SRCS
-  ${PROJECT_SOURCE_DIR}/../libs/mobipocket/mobipocket.cpp
-  ${PROJECT_SOURCE_DIR}/../libs/mobipocket/decompressor.cpp
+  ${PROJECT_SOURCE_DIR}/lib/mobipocket.cpp
+  ${PROJECT_SOURCE_DIR}/lib/decompressor.cpp
   mobidocument.cpp
   generator_mobi.cpp
   converter.cpp
