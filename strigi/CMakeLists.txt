@@ -1,18 +1,13 @@
-find_package(Strigi REQUIRED)
-
-include_directories(${KDE4_INCLUDES} ${QT_INCLUDES}
-                    ${CMAKE_CURRENT_SOURCE_DIR}
+include_directories(
                     ${STRIGI_INCLUDE_DIR}
-                    ${PROJECT_SOURCE_DIR}/libs/mobipocket
+                    ${PROJECT_SOURCE_DIR}/lib
                    )
 
 ########### next target ###############
 
-find_package(SharedMimeInfo REQUIRED)
-
 set(mobianalyzer_SRCS
-  ${PROJECT_SOURCE_DIR}/libs/mobipocket/mobipocket.cpp
-  ${PROJECT_SOURCE_DIR}/libs/mobipocket/decompressor.cpp
+  ${PROJECT_SOURCE_DIR}/lib/mobipocket.cpp
+  ${PROJECT_SOURCE_DIR}/lib/decompressor.cpp
   mobiendanalyzer.cpp
 )
 

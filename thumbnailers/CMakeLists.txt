@@ -1,13 +1,13 @@
-include_directories(${KDE4_INCLUDES} ${QT_INCLUDES}
+include_directories(
                     ${CMAKE_CURRENT_SOURCE_DIR}
-                    ${PROJECT_SOURCE_DIR}/libs/mobipocket
+                    ${PROJECT_SOURCE_DIR}/lib
                    )
 
 ########### next target ###############
 
 set(mobithumbnail_SRCS
-  ${PROJECT_SOURCE_DIR}/libs/mobipocket/mobipocket.cpp
-  ${PROJECT_SOURCE_DIR}/libs/mobipocket/decompressor.cpp
+  ${PROJECT_SOURCE_DIR}/lib/mobipocket.cpp
+  ${PROJECT_SOURCE_DIR}/lib/decompressor.cpp
   mobithumbnail.cpp
 )
 
