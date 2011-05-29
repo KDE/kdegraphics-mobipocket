@@ -95,13 +95,5 @@ QString MobiDocument::fixMobiMarkup(const QString& data)
     ret.replace(imgs,"<img src=\"pdbrec:/\\1\">");
     ret.replace("<mbp:pagebreak/>","<p style=\"page-break-after:always\"></p>");
     
-    static QRegExp rgb(" color=\"rgb\\((\\d+),(\\d+),(\\d+)\\)\"", Qt::CaseSensitive);
-    pos = 0;
-    while ((pos = rgb.indexIn(ret, pos)) != -1) {
-      const QString qtColor = QColor(rgb.cap(1).toInt(), rgb.cap(2).toInt(), rgb.cap(3).toInt()).name();
-      const QString newColorString = QString(" color=\"%1\"").arg(qtColor);
-      ret.replace(pos, rgb.matchedLength(), newColorString);
-      pos += newColorString.length() - rgb.matchedLength();
-    }
     return ret;
 }
