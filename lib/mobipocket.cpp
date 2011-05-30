@@ -109,6 +109,7 @@ struct DocumentPrivate
     PDB pdb;
     Decompressor* dec;
     quint16 ntextrecords;
+    quint16 maxRecordSize;
     bool valid;
     
     // number of first record holding image. Usually it is directly after end of text, but not always
@@ -167,6 +168,9 @@ void DocumentPrivate::init()
     ntextrecords=(unsigned char)mhead[8];
     ntextrecords<<=8;
     ntextrecords+=(unsigned char)mhead[9];
+    maxRecordSize=(unsigned char)mhead[10];
+    maxRecordSize<<=8;
+    maxRecordSize+=(unsigned char)mhead[11];
     if (mhead.size() > 31 ) encoding=readBELong(mhead, 28);
     if (encoding==65001) codec=QTextCodec::codecForName("UTF-8");
     else codec=QTextCodec::codecForName("CP1252");
@@ -257,7 +261,10 @@ QString Document::text(int size) const
 {
     QByteArray whole;
     for (int i=1;i<d->ntextrecords+1;i++) { 
-        whole+=d->dec->decompress(d->pdb.getRecord(i));
+        QByteArray decompressedRecord = d->dec->decompress(d->pdb.getRecord(i));
+        if (decompressedRecord.size() > d->maxRecordSize)
+            decompressedRecord.resize(d->maxRecordSize);
+        whole+=decompressedRecord;
         if (!d->dec->isValid()) {
             d->valid=false;
             return QString();
