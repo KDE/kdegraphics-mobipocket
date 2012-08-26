@@ -15,7 +15,7 @@ set(okularGenerator_mobi_PART_SRCS
 
 kde4_add_plugin(okularGenerator_mobi ${okularGenerator_mobi_PART_SRCS})
 
-target_link_libraries(okularGenerator_mobi okularcore ${KDE4_KDECORE_LIBS} ${QT_QTGUI_LIBRARY})
+target_link_libraries(okularGenerator_mobi ${OKULAR_CORE_LIBRARY} ${KDE4_KDECORE_LIBS} ${QT_QTGUI_LIBRARY})
 
 install(TARGETS okularGenerator_mobi DESTINATION ${PLUGIN_INSTALL_DIR})
 
