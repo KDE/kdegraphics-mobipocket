@@ -15,6 +15,9 @@ class MobiGenerator : public Okular::TextDocumentGenerator
  public:
   MobiGenerator( QObject *parent, const QVariantList &args );
   ~MobiGenerator() {}
+  
+  // [INHERITED] reparse configuration
+  void addPages( KConfigDialog* dlg );
 };
 
 #endif

@@ -11,6 +11,7 @@
 #include "converter.h"
 
 #include <kaboutdata.h>
+#include <kconfigdialog.h>
 
 static KAboutData createAboutData()
 {
@@ -32,6 +33,14 @@ static KAboutData createAboutData()
 OKULAR_EXPORT_PLUGIN( MobiGenerator, createAboutData() )
 
 MobiGenerator::MobiGenerator( QObject *parent, const QVariantList &args )
-: Okular::TextDocumentGenerator( new Mobi::Converter, parent, args )
+: Okular::TextDocumentGenerator( new Mobi::Converter, "okular_mobi_generator_settings", parent, args )
 {
+}
+
+void MobiGenerator::addPages( KConfigDialog* dlg )
+{
+    Okular::TextDocumentSettingsWidget *widget = generalSettingsWidget();
+    widget->setParent( dlg );
+
+    dlg->addPage( widget, generalSettings(), i18n("Mobipocket"), "application-x-mobipocket-ebook", i18n("Mobipocket Backend Configuration") );
 }
