@@ -39,8 +39,7 @@ MobiGenerator::MobiGenerator( QObject *parent, const QVariantList &args )
 
 void MobiGenerator::addPages( KConfigDialog* dlg )
 {
-    Okular::TextDocumentSettingsWidget *widget = generalSettingsWidget();
-    widget->setParent( dlg );
+    Okular::TextDocumentSettingsWidget *widget = new Okular::TextDocumentSettingsWidget();
 
     dlg->addPage( widget, generalSettings(), i18n("Mobipocket"), "application-x-mobipocket-ebook", i18n("Mobipocket Backend Configuration") );
 }
