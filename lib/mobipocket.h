@@ -15,6 +15,8 @@
 #include <QtCore/QMap>
 #include <QtGui/QImage>
 
+#include "qmobipocket_export.h"
+
 class QIODevice;
 
 namespace Mobipocket {
@@ -23,7 +25,7 @@ namespace Mobipocket {
 Minimalistic stream abstraction. It is supposed to allow mobipocket document classes to be
 used with both QIODevice (for Okular generator) and InputStream for Strigi analyzer.
 */
-class Stream {
+class QMOBIPOCKET_EXPORT Stream {
 public:
     virtual int read(char* buf, int size)=0;
     virtual bool seek(int pos)=0;
@@ -47,7 +49,7 @@ private:
 };
 
 struct DocumentPrivate;
-class Document {
+class QMOBIPOCKET_EXPORT Document {
 public:
     enum MetaKey { Title, Author, Copyright, Description, Subject };
     ~Document();

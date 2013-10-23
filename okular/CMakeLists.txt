@@ -6,8 +6,6 @@ include_directories(
 ########### next target ###############
 
 set(okularGenerator_mobi_PART_SRCS
-  ${PROJECT_SOURCE_DIR}/lib/mobipocket.cpp
-  ${PROJECT_SOURCE_DIR}/lib/decompressor.cpp
   mobidocument.cpp
   generator_mobi.cpp
   converter.cpp
@@ -15,7 +13,7 @@ set(okularGenerator_mobi_PART_SRCS
 
 kde4_add_plugin(okularGenerator_mobi ${okularGenerator_mobi_PART_SRCS})
 
-target_link_libraries(okularGenerator_mobi ${OKULAR_CORE_LIBRARY} ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${QT_QTGUI_LIBRARY})
+target_link_libraries(okularGenerator_mobi ${OKULAR_CORE_LIBRARY} ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${QT_QTGUI_LIBRARY} qmobipocket)
 
 install(TARGETS okularGenerator_mobi DESTINATION ${PLUGIN_INSTALL_DIR})
 

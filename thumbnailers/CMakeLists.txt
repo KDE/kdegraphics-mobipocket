@@ -6,13 +6,11 @@ include_directories(
 ########### next target ###############
 
 set(mobithumbnail_SRCS
-  ${PROJECT_SOURCE_DIR}/lib/mobipocket.cpp
-  ${PROJECT_SOURCE_DIR}/lib/decompressor.cpp
   mobithumbnail.cpp
 )
 
 kde4_add_plugin(mobithumbnail ${mobithumbnail_SRCS})
-target_link_libraries(mobithumbnail  ${KDE4_KDECORE_LIBS} ${KDE4_KIO_LIBS} ${QT_QTGUI_LIBRARY} )
+target_link_libraries(mobithumbnail  ${KDE4_KDECORE_LIBS} ${KDE4_KIO_LIBS} ${QT_QTGUI_LIBRARY} qmobipocket)
 install(TARGETS mobithumbnail DESTINATION ${PLUGIN_INSTALL_DIR})
 
 ########### install files ###############
