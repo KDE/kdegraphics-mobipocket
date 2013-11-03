@@ -18,3 +18,4 @@ install(FILES
 )
 
 install(TARGETS qmobipocket ${INSTALL_TARGETS_DEFAULT_ARGS})
+set_target_properties(qmobipocket PROPERTIES VERSION 1.0.0 SOVERSION 1 )
