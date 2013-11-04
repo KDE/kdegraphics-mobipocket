@@ -2,6 +2,7 @@
 set (QMOBIPOCKET_SRCS
     decompressor.cpp
     mobipocket.cpp
+    qfilestream.cpp
 )
 
 kde4_add_library(qmobipocket SHARED ${QMOBIPOCKET_SRCS})
@@ -14,6 +15,7 @@ target_link_libraries (qmobipocket
 install(FILES
     mobipocket.h
     qmobipocket_export.h
+    qfilestream.h
     DESTINATION ${INCLUDE_INSTALL_DIR}/qmobipocket/ COMPONENT Devel
 )
 

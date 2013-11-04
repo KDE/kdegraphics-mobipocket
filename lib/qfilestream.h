@@ -15,14 +15,15 @@
 
 namespace Mobipocket {
 
-class QFileStream : public Stream
+class QMOBIPOCKET_EXPORT QFileStream : public Stream
 {
 public:
-    QFileStream(const QString& name) : d(name) { d.open(QIODevice::ReadOnly); } 
-    int read(char* buf, int size) { return d.read(buf,size); }
-    bool seek(int pos) { return d.seek(pos); }
+    QFileStream(const QString& name);
+    ~QFileStream();
+    int read(char* buf, int size);
+    bool seek(int pos);
 private:
-    QFile d;
+    QFile *d;
 };
 
 }
