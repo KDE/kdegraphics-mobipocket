@@ -5,9 +5,6 @@ include(KDE4Defaults)
 include(MacroLibrary)
 include(MacroOptionalAddSubdirectory)
 
-find_package(Okular)
-macro_log_feature(OKULAR_FOUND "okular" "Provides an Okular backend for Mobipocket documents" "http://okular.kde.org/" FALSE "" "")
-
 find_package(Strigi)
 macro_log_feature(STRIGI_FOUND "strigi libraries" "Provide a strigi analyzer for Mobipocket documents" "" FALSE "" "")
 
@@ -17,9 +14,6 @@ include_directories(${KDE4_INCLUDES})
 add_subdirectory(lib)
 
 macro_optional_add_subdirectory(thumbnailers)
-if(OKULAR_FOUND)
-  macro_optional_add_subdirectory(okular)
-endif()
 if(STRIGI_FOUND)
   macro_optional_add_subdirectory(strigi)
 endif()
