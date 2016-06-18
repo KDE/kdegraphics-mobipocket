@@ -1,26 +1,26 @@
-cmake_minimum_required(VERSION 2.8.9)
+cmake_minimum_required (VERSION 2.8.12 FATAL_ERROR)
+
 project(mobipocket)
 
-find_package(KDE4 4.6.0 REQUIRED)
-include(KDE4Defaults)
-include(MacroLibrary)
-include(MacroOptionalAddSubdirectory)
+find_package(ECM 1.3.0 REQUIRED NO_MODULE)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
 
-find_package(Strigi)
-macro_log_feature(STRIGI_FOUND "strigi libraries" "Provide a strigi analyzer for Mobipocket documents" "" FALSE "" "")
+include(FeatureSummary)
+include(ECMOptionalAddSubdirectory)
+include(KDEInstallDirs)
+include(KDECMakeSettings)
+include(KDECompilerSettings NO_POLICY_SCOPE)
 
-add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
-include_directories(${KDE4_INCLUDES})
+find_package(Qt5 5.4 CONFIG REQUIRED Core Gui)
 
 add_subdirectory(lib)
 
-macro_optional_add_subdirectory(thumbnailers)
-if(STRIGI_FOUND)
-  macro_optional_add_subdirectory(strigi)
-endif()
+ecm_optional_add_subdirectory(thumbnailers)
+
+#ecm_optional_add_subdirectory(strigi)
 
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/QMobipocketConfig.cmake
         DESTINATION ${LIB_INSTALL_DIR}/cmake/QMobipocket )
 
-macro_display_feature_log()
+feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
 

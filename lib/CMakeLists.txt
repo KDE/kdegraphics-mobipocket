@@ -5,11 +5,11 @@ set (QMOBIPOCKET_SRCS
     qfilestream.cpp
 )
 
-kde4_add_library(qmobipocket SHARED ${QMOBIPOCKET_SRCS})
+add_library(qmobipocket SHARED ${QMOBIPOCKET_SRCS})
 
 target_link_libraries (qmobipocket
-    ${QT_QTCORE_LIBRARY}
-    ${QT_QTGUI_LIBRARY}
+    Qt5::Core
+    Qt5::Gui
 )
 
 install(FILES

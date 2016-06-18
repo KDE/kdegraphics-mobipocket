@@ -9,9 +9,9 @@ set(mobianalyzer_SRCS
   mobiendanalyzer.cpp
 )
 
-kde4_add_library(mobi MODULE ${mobianalyzer_SRCS})
+add_library(mobi MODULE ${mobianalyzer_SRCS})
 
-target_link_libraries(mobi ${STRIGI_STREAMS_LIBRARY} ${STRIGI_STREAMANALYZER_LIBRARY} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} qmobipocket)
+target_link_libraries(mobi ${STRIGI_STREAMS_LIBRARY} ${STRIGI_STREAMANALYZER_LIBRARY} Qt5::Core Qt5::Gui qmobipocket)
 
 # install the module in the right directory so it is picked up
 set_target_properties(mobi PROPERTIES PREFIX ${STRIGI_LINE_ANALYZER_PREFIX})
