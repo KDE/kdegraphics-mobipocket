@@ -11,11 +11,10 @@ set(mobithumbnail_SRCS
 
 find_package(KF5 REQUIRED
     KIO
-    KDELibs4Support
     )
 
 add_library(mobithumbnail MODULE ${mobithumbnail_SRCS})
-target_link_libraries(mobithumbnail  KF5::KDELibs4Support KF5::KIOCore Qt5::Gui qmobipocket)
+target_link_libraries(mobithumbnail KF5::KIOCore KF5::KIOWidgets Qt5::Gui qmobipocket)
 install(TARGETS mobithumbnail DESTINATION ${PLUGIN_INSTALL_DIR})
 
 ########### install files ###############
