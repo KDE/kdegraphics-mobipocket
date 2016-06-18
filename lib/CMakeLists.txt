@@ -6,6 +6,7 @@ set (QMOBIPOCKET_SRCS
 )
 
 add_library(qmobipocket SHARED ${QMOBIPOCKET_SRCS})
+generate_export_header(qmobipocket)
 
 target_link_libraries (qmobipocket
     Qt5::Core
