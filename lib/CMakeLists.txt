@@ -15,8 +15,8 @@ target_link_libraries (qmobipocket
 
 install(FILES
     mobipocket.h
-    qmobipocket_export.h
     qfilestream.h
+    ${CMAKE_CURRENT_BINARY_DIR}/qmobipocket_export.h
     DESTINATION ${INCLUDE_INSTALL_DIR}/qmobipocket/ COMPONENT Devel
 )
 
