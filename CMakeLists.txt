@@ -8,11 +8,18 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_D
 include(FeatureSummary)
 include(GenerateExportHeader)
 include(ECMOptionalAddSubdirectory)
+include(ECMSetupVersion)
 include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(KDECompilerSettings NO_POLICY_SCOPE)
 
 find_package(Qt5 5.4 CONFIG REQUIRED Core Gui)
+
+ecm_setup_version("2.0.0"
+    VARIABLE_PREFIX QMOBIPOCKET
+    PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/QMobipocketConfigVersion.cmake"
+    SOVERSION "2"
+)
 
 add_subdirectory(lib)
 
@@ -27,8 +34,11 @@ if(STRIGI_STREAMS_LIBRARY)
     ecm_optional_add_subdirectory(strigi)
 endif()
 
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/QMobipocketConfig.cmake
-        DESTINATION ${LIB_INSTALL_DIR}/cmake/QMobipocket )
+install(FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/QMobipocketConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/QMobipocketConfigVersion.cmake
+    DESTINATION ${LIB_INSTALL_DIR}/cmake/QMobipocket
+)
 
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
