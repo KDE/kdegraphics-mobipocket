@@ -27,15 +27,6 @@ add_subdirectory(lib)
 
 ecm_optional_add_subdirectory(thumbnailers)
 
-find_package(Strigi)
-set_package_properties(Strigi PROPERTIES DESCRIPTION "Provide a strigi analyser for Mobipocket documents"
-    URL "http://strigi.sourceforge.net"
-    TYPE OPTIONAL
-)
-if(STRIGI_STREAMS_LIBRARY)
-    ecm_optional_add_subdirectory(strigi)
-endif()
-
 set(CMAKECONFIG_INSTALL_DIR "${LIB_INSTALL_DIR}/cmake/QMobipocket")
 
 ecm_configure_package_config_file(

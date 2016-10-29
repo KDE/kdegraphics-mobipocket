@@ -23,7 +23,8 @@ namespace Mobipocket {
 
 /** 
 Minimalistic stream abstraction. It is supposed to allow mobipocket document classes to be
-used with both QIODevice (for Okular generator) and InputStream for Strigi analyzer.
+used with QIODevice (for Okular generator), and previously also with InputStream for Strigi
+analyzer.
 */
 class QMOBIPOCKET_EXPORT Stream {
 public:
