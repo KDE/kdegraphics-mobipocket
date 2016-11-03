@@ -229,7 +229,7 @@ void DocumentPrivate::parseEXTH(const QByteArray& data)
     quint32 records=readBELong(data,exthoffs+8);
     quint32 offset=exthoffs+12;
     for (unsigned int i=0;i<records;i++) {
-        if (offset+4>data.size()) break;
+        if (offset+4 > quint32(data.size())) break;
         quint32 type=readBELong(data,offset);
         offset+=4;
         switch (type) {
