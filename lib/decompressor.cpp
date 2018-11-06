@@ -15,7 +15,7 @@
 #include "decompressor.h"
 #include "mobipocket.h"
 
-#include <QtCore/QList>
+#include <QList>
 
 static unsigned char TOKEN_CODE[256] = {
 	0, 1, 1, 1,		1, 1, 1, 1,		1, 0, 0, 0,		0, 0, 0, 0,

@@ -10,7 +10,7 @@
 #ifndef QFILESTREAM_H
 #define QFILESTREAM_H
 
-#include <QtCore/QFile>
+#include <QFile>
 #include "mobipocket.h"
 
 namespace Mobipocket {

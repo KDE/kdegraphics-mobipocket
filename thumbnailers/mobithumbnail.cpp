@@ -11,7 +11,7 @@
 #include "mobipocket.h"
 #include "qfilestream.h"
 
-#include <QtCore/QFile>
+#include <QFile>
 
 extern "C"
 {

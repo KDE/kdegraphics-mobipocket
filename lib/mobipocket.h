@@ -10,9 +10,9 @@
 #ifndef MOBIPOCKET_H
 #define MOBIPOCKET_H
 
-#include <QtCore/QString>
-#include <QtCore/QByteArray>
-#include <QtCore/QMap>
+#include <QString>
+#include <QByteArray>
+#include <QMap>
 #include <QtGui/QImage>
 
 #include "qmobipocket_export.h"

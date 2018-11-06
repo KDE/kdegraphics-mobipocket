@@ -10,10 +10,10 @@
 #include "mobipocket.h"
 #include "decompressor.h"
 
-#include <QtCore/QIODevice>
-#include <QtCore/QtEndian>
-#include <QtCore/QBuffer>
-#include <QtCore/QTextCodec>
+#include <QIODevice>
+#include <QtEndian>
+#include <QBuffer>
+#include <QTextCodec>
 #include <QtGui/QImageReader>
 
 namespace Mobipocket {

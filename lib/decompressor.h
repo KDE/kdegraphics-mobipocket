@@ -10,7 +10,7 @@
 #ifndef MOBI_DECOMPRESSOR_H
 #define MOBI_DECOMPRESSOR_H
 
-#include <QtCore/QByteArray>
+#include <QByteArray>
 namespace Mobipocket {
 
 class PDB;
