@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component type="addon">
+  <id>org.kde.kdegraphics-mobipocket</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-2.0+</project_license>
+  <extends>org.kde.dolphin.desktop</extends>
+  <extends>org.kde.konqueror.desktop</extends>
+  <extends>org.kde.krusader.desktop</extends>
+  <extends>org.kde.gwenview.desktop</extends>
+  <name>kdegraphics-mobipocket</name>
+  <summary>A plugin to show Mobi e-book files as thumbnails in KDE applications.</summary>
+  <description>
+    <p>This plugin shows thumbnails of Mobipocket e-books in Dolphin and other KDE apps.</p>
+  </description>
+  <url type="homepage">https://www.kde.org</url>
+  <url type="bugtracker">https://bugs.kde.org/</url>
+  <project_group>KDE</project_group>
+  <categories>
+    <category>Graphics</category>
+  </categories>
+  <icon type="stock">calibre-ebook-edit</icon>
+</component>
