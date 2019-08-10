@@ -8,9 +8,27 @@
   <extends>org.kde.krusader.desktop</extends>
   <extends>org.kde.gwenview.desktop</extends>
   <name>kdegraphics-mobipocket</name>
+  <name xml:lang="ca">kdegraphics-mobipocket</name>
+  <name xml:lang="de">kdegraphics-mobipocket</name>
+  <name xml:lang="pt">kdegraphics-mobipocket</name>
+  <name xml:lang="sv">KDE-grafik mobipocket</name>
+  <name xml:lang="uk">kdegraphics-mobipocket</name>
+  <name xml:lang="x-test">xxkdegraphics-mobipocketxx</name>
   <summary>A plugin to show Mobi e-book files as thumbnails in KDE applications</summary>
+  <summary xml:lang="ca">Un connector per a mostrar fitxers de llibre electrònic Mobi com a miniatures a les aplicacions KDE</summary>
+  <summary xml:lang="de">Ein Modul zur Anzeige von Mobipocket-E-Books als Vorschaubilder in KDE-Anwendungen</summary>
+  <summary xml:lang="pt">Um 'plugin' para mostrar os ficheiros e-book da Mobi como miniaturas nas aplicações do KDE</summary>
+  <summary xml:lang="sv">Ett insticksprogram för att visa Mobi e-böcker som miniatyrbilder i KDE-program</summary>
+  <summary xml:lang="uk">Додаток для показу мініатюр вмісту файлів електронних книг Mobi у програмах KDE</summary>
+  <summary xml:lang="x-test">xxA plugin to show Mobi e-book files as thumbnails in KDE applicationsxx</summary>
   <description>
     <p>This plugin shows thumbnails of Mobipocket e-books in Dolphin and other KDE apps.</p>
+    <p xml:lang="ca">Aquest connector mostra les miniatures dels llibres electrònics Mobipocket al Dolphin i altres aplicacions KDE.</p>
+    <p xml:lang="de">Dieses Modul zeigt Vorschaubilder von Mobipocket-E-Books in Dolphin und KDE-Anwendungen</p>
+    <p xml:lang="pt">Este 'plugin' mostra miniaturas dos e-books da Mobipocket no Dolphin e nas outras aplicações do KDE.</p>
+    <p xml:lang="sv">Insticksprogrammet visar miniatyrbilder av Mobipocket e-böcker i Dolphin och andra KDE-program.</p>
+    <p xml:lang="uk">За допомогою цього додатка можна користуватися мініатюрами вмісту електронних книг Mobipocket у Dolphin та інших програмах KDE.</p>
+    <p xml:lang="x-test">xxThis plugin shows thumbnails of Mobipocket e-books in Dolphin and other KDE apps.xx</p>
   </description>
   <url type="homepage">https://www.kde.org</url>
   <url type="bugtracker">https://bugs.kde.org/</url>
