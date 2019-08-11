@@ -36,6 +36,9 @@
     <screenshot type="default">
       <image>https://cdn.kde.org/screenshots/kdegraphics-mobipocket/kdegraphics-mobipocket.png</image>
       <caption>Dolphin with Mobi e-book thumbnail</caption>
+      <caption xml:lang="ca">Dolphin amb miniatures de llibre electrònic Mobi</caption>
+      <caption xml:lang="uk">Dolphin із мініатюрою електронної книги Mobi</caption>
+      <caption xml:lang="x-test">xxDolphin with Mobi e-book thumbnailxx</caption>
     </screenshot>
   </screenshots>
   <project_group>KDE</project_group>
