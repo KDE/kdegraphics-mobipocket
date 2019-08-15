@@ -19,6 +19,7 @@
   <name xml:lang="pl">kdegraphics-mobipocket</name>
   <name xml:lang="pt">kdegraphics-mobipocket</name>
   <name xml:lang="pt-BR">kdegraphics-mobipocket</name>
+  <name xml:lang="sk">kdegraphics-mobipocket</name>
   <name xml:lang="sv">KDE-grafik mobipocket</name>
   <name xml:lang="uk">kdegraphics-mobipocket</name>
   <name xml:lang="x-test">xxkdegraphics-mobipocketxx</name>
@@ -71,6 +72,7 @@
       <caption xml:lang="pl">Dolphin z miniaturami e-bookow Mobi</caption>
       <caption xml:lang="pt">O Dolphin com uma miniatura de e-book da Mobi</caption>
       <caption xml:lang="pt-BR">O Dolphin com uma miniatura de e-book Mobi</caption>
+      <caption xml:lang="sk">Dolphin s miniatúrou e-knihy Mobi</caption>
       <caption xml:lang="sv">Dolphin med miniatyrbild för Mobi e-bok</caption>
       <caption xml:lang="uk">Dolphin із мініатюрою електронної книги Mobi</caption>
       <caption xml:lang="x-test">xxDolphin with Mobi e-book thumbnailxx</caption>
