@@ -42,7 +42,7 @@ class NOOPDecompressor : public Decompressor
 {
 public:
     NOOPDecompressor(const PDB& p) : Decompressor(p) {}
-    QByteArray decompress(const QByteArray& data) { return data; }
+    QByteArray decompress(const QByteArray& data) override { return data; }
 };
 
 
@@ -50,7 +50,7 @@ class RLEDecompressor : public Decompressor
 {
 public:
     RLEDecompressor(const PDB& p) : Decompressor(p) {}
-    QByteArray decompress(const QByteArray& data);
+    QByteArray decompress(const QByteArray& data) override;
 };
 
 class BitReader
@@ -90,7 +90,7 @@ class HuffdicDecompressor : public Decompressor
 {
 public:
     HuffdicDecompressor(const PDB& p);
-    QByteArray decompress(const QByteArray& data);
+    QByteArray decompress(const QByteArray& data) override;
 private:
     void unpack(BitReader reader, int depth = 0);
     QList<QByteArray> dicts;

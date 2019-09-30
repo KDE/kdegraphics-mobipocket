@@ -20,8 +20,8 @@ class QMOBIPOCKET_EXPORT QFileStream : public Stream
 public:
     QFileStream(const QString& name);
     ~QFileStream();
-    int read(char* buf, int size);
-    bool seek(int pos);
+    int read(char* buf, int size) override;
+    bool seek(int pos) override;
 private:
     QFile *d;
 };
