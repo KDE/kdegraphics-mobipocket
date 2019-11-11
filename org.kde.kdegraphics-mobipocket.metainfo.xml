@@ -13,6 +13,7 @@
   <name xml:lang="el">kdegraphics-mobipocket</name>
   <name xml:lang="en-GB">kdegraphics-mobipocket</name>
   <name xml:lang="es">kdegraphics-mobipocket</name>
+  <name xml:lang="et">kdegraphics-mobipocket</name>
   <name xml:lang="eu">kdegraphics-mobipocket</name>
   <name xml:lang="fr">kdegraphics-mobipocket</name>
   <name xml:lang="it">kdegraphics-mobipocket</name>
@@ -33,6 +34,7 @@
   <summary xml:lang="el">Ένα πρόσθετο που εμφανίζει τα αρχεία ηλεκτρονικών βιβλίων Mobi ως εικόνες επισκόπησης στις εφαρμογές του KDE</summary>
   <summary xml:lang="en-GB">A plugin to show Mobi e-book files as thumbnails in KDE applications</summary>
   <summary xml:lang="es">Un complemento para mostrar archivos de libros electrónicos Mobi como miniaturas en aplicaciones de KDE</summary>
+  <summary xml:lang="et">Plugin Mobi e-raamatufailide näitamiseks pisipiltidena KDE rakendustes</summary>
   <summary xml:lang="eu">KDE aplikazioetan Mobi e-liburu fitxategiak koadro-txiki gisa erakusteko plugin bat</summary>
   <summary xml:lang="fr">Un module externe permettant d'afficher les livres électroniques Mobi en tant que vignettes dans les applications KDE</summary>
   <summary xml:lang="it">Un'estensione per visualizzare nelle applicazioni KDE le miniature dei file degli ebook Mobi</summary>
@@ -53,6 +55,7 @@
     <p xml:lang="el">Αυτό το πρόσθετο εμφανίζει εικόνες επισκόπησης των ηλεκτρονικών βιβλίων Mobipocket στο Dolphin και σε άλλες εφαρμογές του KDE.</p>
     <p xml:lang="en-GB">This plugin shows thumbnails of Mobipocket e-books in Dolphin and other KDE apps.</p>
     <p xml:lang="es">Este complemento muestra miniaturas de libros electrónicos Mobipocket en Dolphin y en otras aplicaciones de KDE.</p>
+    <p xml:lang="et">See plugin näitab Mobipocketi e-raamatuid pisipiltidena Dolphinis ja teistes KDE rakendustes.</p>
     <p xml:lang="eu">Plugin honek Mobipocket e-liburuen koadro-txikiak erakusten ditu Dolphinen eta beste KDE aplikazioetan.</p>
     <p xml:lang="fr">Ce module externe affiche les vignettes des livres électroniques Mobipocket dans Dolphin et d'autres applications KDE.</p>
     <p xml:lang="it">Questa estensione mostra le miniature degli ebook Mobipocket in Dolphin e in altre applicazioni di KDE.</p>
@@ -78,6 +81,7 @@
       <caption xml:lang="el">Το Dolphin με εικόνες επισκόπησης των ηλεκτρονικών βιβλίων Mobi</caption>
       <caption xml:lang="en-GB">Dolphin with Mobi e-book thumbnail</caption>
       <caption xml:lang="es">Dolphin con miniaturas de libros electrónicos Mobi</caption>
+      <caption xml:lang="et">Dolphin Mobi e-raamatu pisipildiga</caption>
       <caption xml:lang="eu">Dolphin Mobi e-liburuen koadro-txiki egilearekin</caption>
       <caption xml:lang="fr">Dolphin avec une vignette de livre électronique Mobi</caption>
       <caption xml:lang="it">Dolphin con le miniature degli ebook Mobi</caption>
