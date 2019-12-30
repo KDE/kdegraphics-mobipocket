@@ -18,6 +18,7 @@
   <name xml:lang="fr">kdegraphics-mobipocket</name>
   <name xml:lang="it">kdegraphics-mobipocket</name>
   <name xml:lang="ko">kdegraphics-mobipocket</name>
+  <name xml:lang="lt">kdegraphics-mobipocket</name>
   <name xml:lang="nl">kdegraphics-mobipocket</name>
   <name xml:lang="pl">kdegraphics-mobipocket</name>
   <name xml:lang="pt">kdegraphics-mobipocket</name>
@@ -39,6 +40,7 @@
   <summary xml:lang="fr">Un module externe permettant d'afficher les livres électroniques Mobi en tant que vignettes dans les applications KDE</summary>
   <summary xml:lang="it">Un'estensione per visualizzare nelle applicazioni KDE le miniature dei file degli ebook Mobi</summary>
   <summary xml:lang="ko">KDE 프로그램에서 Mobi 전자책 파일을 미리 보는 플러그인</summary>
+  <summary xml:lang="lt">Papildinys, skirtas rodyti Mobi elektroninės knygos failus KDE programose kaip miniatiūras</summary>
   <summary xml:lang="nl">Een plug-in om Mobi e-bookbestanden als miniaturen in KDE toepassingen te tonen</summary>
   <summary xml:lang="pl">Wtyczka do pokazywania plików e-booków Mobi jako miniatury w aplikacjach KDE</summary>
   <summary xml:lang="pt">Um 'plugin' para mostrar os ficheiros e-book da Mobi como miniaturas nas aplicações do KDE</summary>
@@ -60,6 +62,7 @@
     <p xml:lang="fr">Ce module externe affiche les vignettes des livres électroniques Mobipocket dans Dolphin et d'autres applications KDE.</p>
     <p xml:lang="it">Questa estensione mostra le miniature degli ebook Mobipocket in Dolphin e in altre applicazioni di KDE.</p>
     <p xml:lang="ko">이 플러그인은 Dolphin이나 다른 KDE 앱에 Mobipocket 전자책 미리 보기를 표시합니다.</p>
+    <p xml:lang="lt">Šis papildinys rodo Mobipocket elektroninių knygų miniatiūras Dolphin ir kitose KDE programose.</p>
     <p xml:lang="nl">Deze plug-in toont miniaturen van Mobipocket e-books in Dolphin en andere KDE toepassingen.</p>
     <p xml:lang="pl">Ta wtyczka pokazuje miniatury e-booków Mobipocket w Dolphinie i innych aplikacjach KDE.</p>
     <p xml:lang="pt">Este 'plugin' mostra miniaturas dos e-books da Mobipocket no Dolphin e nas outras aplicações do KDE.</p>
@@ -86,6 +89,7 @@
       <caption xml:lang="fr">Dolphin avec une vignette de livre électronique Mobi</caption>
       <caption xml:lang="it">Dolphin con le miniature degli ebook Mobi</caption>
       <caption xml:lang="ko">Mobi 전자책 미리 보기가 표시된 Dolphin</caption>
+      <caption xml:lang="lt">Dolphin su Mobi elektroninės knygos miniatiūra</caption>
       <caption xml:lang="nl">Dolphin met Mobi e-book-miniatuur</caption>
       <caption xml:lang="pl">Dolphin z miniaturami e-bookow Mobi</caption>
       <caption xml:lang="pt">O Dolphin com uma miniatura de e-book da Mobi</caption>
