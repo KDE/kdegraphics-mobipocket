@@ -45,6 +45,7 @@
   <summary xml:lang="pl">Wtyczka do pokazywania plików e-booków Mobi jako miniatury w aplikacjach KDE</summary>
   <summary xml:lang="pt">Um 'plugin' para mostrar os ficheiros e-book da Mobi como miniaturas nas aplicações do KDE</summary>
   <summary xml:lang="pt-BR">Um plugin para mostrar os arquivos de e-book Mobi como miniaturas nos aplicativos do KDE</summary>
+  <summary xml:lang="sk">Doplnok na zobrazenie súborov elektronických kníh Mobi ako miniatúry v aplikáciách KDE</summary>
   <summary xml:lang="sv">Ett insticksprogram för att visa Mobi e-böcker som miniatyrbilder i KDE-program</summary>
   <summary xml:lang="uk">Додаток для показу мініатюр вмісту файлів електронних книг Mobi у програмах KDE</summary>
   <summary xml:lang="x-test">xxA plugin to show Mobi e-book files as thumbnails in KDE applicationsxx</summary>
@@ -67,6 +68,7 @@
     <p xml:lang="pl">Ta wtyczka pokazuje miniatury e-booków Mobipocket w Dolphinie i innych aplikacjach KDE.</p>
     <p xml:lang="pt">Este 'plugin' mostra miniaturas dos e-books da Mobipocket no Dolphin e nas outras aplicações do KDE.</p>
     <p xml:lang="pt-BR">Este plugin mostra miniaturas dos e-books Mobipocket no Dolphin e nos outros aplicativos do KDE.</p>
+    <p xml:lang="sk">Tento doplnok zobrazuje miniatúry elektronických kníh Mobipocket v Dolphin a ďalších aplikáciách KDE.</p>
     <p xml:lang="sv">Insticksprogrammet visar miniatyrbilder av Mobipocket e-böcker i Dolphin och andra KDE-program.</p>
     <p xml:lang="uk">За допомогою цього додатка можна користуватися мініатюрами вмісту електронних книг Mobipocket у Dolphin та інших програмах KDE.</p>
     <p xml:lang="x-test">xxThis plugin shows thumbnails of Mobipocket e-books in Dolphin and other KDE apps.xx</p>
