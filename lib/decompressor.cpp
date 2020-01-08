@@ -17,7 +17,7 @@
 
 #include <QList>
 
-static unsigned char TOKEN_CODE[256] = {
+static const unsigned char TOKEN_CODE[256] = {
 	0, 1, 1, 1,		1, 1, 1, 1,		1, 0, 0, 0,		0, 0, 0, 0,
 	0, 0, 0, 0,		0, 0, 0, 0,		0, 0, 0, 0,		0, 0, 0, 0,
 	0, 0, 0, 0,		0, 0, 0, 0,		0, 0, 0, 0,		0, 0, 0, 0,
