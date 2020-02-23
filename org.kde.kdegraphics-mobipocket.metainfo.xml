@@ -25,6 +25,7 @@
   <name xml:lang="pl">kdegraphics-mobipocket</name>
   <name xml:lang="pt">kdegraphics-mobipocket</name>
   <name xml:lang="pt-BR">kdegraphics-mobipocket</name>
+  <name xml:lang="ru">kdegraphics-mobipocket</name>
   <name xml:lang="sk">kdegraphics-mobipocket</name>
   <name xml:lang="sv">KDE-grafik mobipocket</name>
   <name xml:lang="uk">kdegraphics-mobipocket</name>
@@ -49,6 +50,7 @@
   <summary xml:lang="pl">Wtyczka do pokazywania plików e-booków Mobi jako miniatury w aplikacjach KDE</summary>
   <summary xml:lang="pt">Um 'plugin' para mostrar os ficheiros e-book da Mobi como miniaturas nas aplicações do KDE</summary>
   <summary xml:lang="pt-BR">Um plugin para mostrar os arquivos de e-book Mobi como miniaturas nos aplicativos do KDE</summary>
+  <summary xml:lang="ru">Подключаемый модуль для формирования миниатюр электронных книг в формате Mobi</summary>
   <summary xml:lang="sk">Doplnok na zobrazenie súborov elektronických kníh Mobi ako miniatúry v aplikáciách KDE</summary>
   <summary xml:lang="sv">Ett insticksprogram för att visa Mobi e-böcker som miniatyrbilder i KDE-program</summary>
   <summary xml:lang="uk">Додаток для показу мініатюр вмісту файлів електронних книг Mobi у програмах KDE</summary>
@@ -74,6 +76,7 @@
     <p xml:lang="pl">Ta wtyczka pokazuje miniatury e-booków Mobipocket w Dolphinie i innych aplikacjach KDE.</p>
     <p xml:lang="pt">Este 'plugin' mostra miniaturas dos e-books da Mobipocket no Dolphin e nas outras aplicações do KDE.</p>
     <p xml:lang="pt-BR">Este plugin mostra miniaturas dos e-books Mobipocket no Dolphin e nos outros aplicativos do KDE.</p>
+    <p xml:lang="ru">Этот подключаемый модель формирует миниатюры электронных книг в формате Mobi для диспетчера файлов Dolphin и других приложений KDE.</p>
     <p xml:lang="sk">Tento doplnok zobrazuje miniatúry elektronických kníh Mobipocket v Dolphin a ďalších aplikáciách KDE.</p>
     <p xml:lang="sv">Insticksprogrammet visar miniatyrbilder av Mobipocket e-böcker i Dolphin och andra KDE-program.</p>
     <p xml:lang="uk">За допомогою цього додатка можна користуватися мініатюрами вмісту електронних книг Mobipocket у Dolphin та інших програмах KDE.</p>
@@ -104,6 +107,7 @@
       <caption xml:lang="pl">Dolphin z miniaturami e-bookow Mobi</caption>
       <caption xml:lang="pt">O Dolphin com uma miniatura de e-book da Mobi</caption>
       <caption xml:lang="pt-BR">O Dolphin com uma miniatura de e-book Mobi</caption>
+      <caption xml:lang="ru">Миниатюра электронной книги в формате Mobi в диспетчере файлов Dolphin</caption>
       <caption xml:lang="sk">Dolphin s miniatúrou e-knihy Mobi</caption>
       <caption xml:lang="sv">Dolphin med miniatyrbild för Mobi e-bok</caption>
       <caption xml:lang="uk">Dolphin із мініатюрою електронної книги Mobi</caption>
