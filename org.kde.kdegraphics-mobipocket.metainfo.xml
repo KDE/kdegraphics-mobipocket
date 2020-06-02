@@ -51,6 +51,7 @@
   <summary xml:lang="ko">KDE 프로그램에서 Mobi 전자책 파일을 미리 보는 플러그인</summary>
   <summary xml:lang="lt">Papildinys, skirtas rodyti Mobi elektroninės knygos failus KDE programose kaip miniatiūras</summary>
   <summary xml:lang="nl">Een plug-in om Mobi e-bookbestanden als miniaturen in KDE toepassingen te tonen</summary>
+  <summary xml:lang="nn">Programtillegg for å visa e-bøker i Mobi-format som miniatyrbilete i KDE-program.</summary>
   <summary xml:lang="pl">Wtyczka do pokazywania plików e-booków Mobi jako miniatury w aplikacjach KDE</summary>
   <summary xml:lang="pt">Um 'plugin' para mostrar os ficheiros e-book da Mobi como miniaturas nas aplicações do KDE</summary>
   <summary xml:lang="pt-BR">Um plugin para mostrar os arquivos de e-book Mobi como miniaturas nos aplicativos do KDE</summary>
@@ -79,6 +80,7 @@
     <p xml:lang="ko">이 플러그인은 Dolphin이나 다른 KDE 앱에 Mobipocket 전자책 미리 보기를 표시합니다.</p>
     <p xml:lang="lt">Šis papildinys rodo Mobipocket elektroninių knygų miniatiūras Dolphin ir kitose KDE programose.</p>
     <p xml:lang="nl">Deze plug-in toont miniaturen van Mobipocket e-books in Dolphin en andere KDE toepassingen.</p>
+    <p xml:lang="nn">Dette programtillegget viser miniatyrbilete av Mobipocket-bøker i Dolphin og andre program frå KDE.</p>
     <p xml:lang="pl">Ta wtyczka pokazuje miniatury e-booków Mobipocket w Dolphinie i innych aplikacjach KDE.</p>
     <p xml:lang="pt">Este 'plugin' mostra miniaturas dos e-books da Mobipocket no Dolphin e nas outras aplicações do KDE.</p>
     <p xml:lang="pt-BR">Este plugin mostra miniaturas dos e-books Mobipocket no Dolphin e nos outros aplicativos do KDE.</p>
@@ -112,6 +114,7 @@
       <caption xml:lang="ko">Mobi 전자책 미리 보기가 표시된 Dolphin</caption>
       <caption xml:lang="lt">Dolphin su Mobi elektroninės knygos miniatiūra</caption>
       <caption xml:lang="nl">Dolphin met Mobi e-book-miniatuur</caption>
+      <caption xml:lang="nn">Dolphin med miniatyrbilete av e-bok i Mobi-format</caption>
       <caption xml:lang="pl">Dolphin z miniaturami e-bookow Mobi</caption>
       <caption xml:lang="pt">O Dolphin com uma miniatura de e-book da Mobi</caption>
       <caption xml:lang="pt-BR">O Dolphin com uma miniatura de e-book Mobi</caption>
