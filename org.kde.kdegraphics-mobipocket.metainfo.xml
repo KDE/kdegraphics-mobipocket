@@ -32,7 +32,6 @@
   <name xml:lang="sl">kdegraphics-mobipocket</name>
   <name xml:lang="sv">KDE-grafik mobipocket</name>
   <name xml:lang="uk">kdegraphics-mobipocket</name>
-  <name xml:lang="x-test">xxkdegraphics-mobipocketxx</name>
   <name xml:lang="zh-CN">kgradichics-mobipocket</name>
   <name xml:lang="zh-TW">kdegraphics-mobipocket</name>
   <summary>A plugin to show Mobi e-book files as thumbnails in KDE applications</summary>
@@ -60,7 +59,6 @@
   <summary xml:lang="sl">Vtičnik, ki prikazuje datoteke e-knjig Mobi kot sličice v aplikacijah KDE</summary>
   <summary xml:lang="sv">Ett insticksprogram för att visa Mobi e-böcker som miniatyrbilder i KDE-program</summary>
   <summary xml:lang="uk">Додаток для показу мініатюр вмісту файлів електронних книг Mobi у програмах KDE</summary>
-  <summary xml:lang="x-test">xxA plugin to show Mobi e-book files as thumbnails in KDE applicationsxx</summary>
   <summary xml:lang="zh-CN">用于在 KDE 应用程序中以缩略图展示 Mobi 电子书文件的一个插件</summary>
   <summary xml:lang="zh-TW">可以在 KDE 應用程式將 Mobi e-book 檔案顯示成縮圖的外掛程式</summary>
   <description>
@@ -89,7 +87,6 @@
     <p xml:lang="sl">Ta vtičnik prikazuje sličice e-knjig Mobipocket v Dolphinu in drugih aplikacijah KDE.</p>
     <p xml:lang="sv">Insticksprogrammet visar miniatyrbilder av Mobipocket e-böcker i Dolphin och andra KDE-program.</p>
     <p xml:lang="uk">За допомогою цього додатка можна користуватися мініатюрами вмісту електронних книг Mobipocket у Dolphin та інших програмах KDE.</p>
-    <p xml:lang="x-test">xxThis plugin shows thumbnails of Mobipocket e-books in Dolphin and other KDE apps.xx</p>
     <p xml:lang="zh-CN">此插件在 Dolphin 和其他 KDE 应用程序中展示 Mobipocket 电子书的缩略图。</p>
     <p xml:lang="zh-TW">這個外掛程式會在 Dolphin 及其他 KDE 應用程式顯示 Mobipocket e-book 的縮圖。</p>
   </description>
@@ -123,7 +120,6 @@
       <caption xml:lang="sl">Dolphin s sličico e-knjige Mobi</caption>
       <caption xml:lang="sv">Dolphin med miniatyrbild för Mobi e-bok</caption>
       <caption xml:lang="uk">Dolphin із мініатюрою електронної книги Mobi</caption>
-      <caption xml:lang="x-test">xxDolphin with Mobi e-book thumbnailxx</caption>
       <caption xml:lang="zh-CN">使 Dolphin 支持 Mobi 电子书缩略图</caption>
       <caption xml:lang="zh-TW">Dolphin 和 Mobi e-book 縮圖</caption>
     </screenshot>
