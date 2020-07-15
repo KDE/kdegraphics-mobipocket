@@ -67,8 +67,8 @@
   <summary xml:lang="zh-TW">可以在 KDE 應用程式將 Mobi e-book 檔案顯示成縮圖的外掛程式</summary>
   <description>
     <p>This plugin shows thumbnails of Mobipocket e-books in Dolphin and other KDE apps.</p>
-    <p xml:lang="ca">Aquest connector mostra les miniatures dels llibres electrònics Mobipocket al Dolphin i altres aplicacions KDE.</p>
-    <p xml:lang="ca-valencia">Aquest connector mostra les miniatures dels llibres electrònics Mobipocket al Dolphin i altres aplicacions KDE.</p>
+    <p xml:lang="ca">Aquest connector mostra les miniatures dels llibres electrònics Mobipocket al Dolphin i a altres aplicacions KDE.</p>
+    <p xml:lang="ca-valencia">Aquest connector mostra les miniatures dels llibres electrònics Mobipocket al Dolphin i a altres aplicacions KDE.</p>
     <p xml:lang="de">Dieses Modul zeigt Vorschaubilder von Mobipocket-E-Books in Dolphin und KDE-Anwendungen</p>
     <p xml:lang="el">Αυτό το πρόσθετο εμφανίζει εικόνες επισκόπησης των ηλεκτρονικών βιβλίων Mobipocket στο Dolphin και σε άλλες εφαρμογές του KDE.</p>
     <p xml:lang="en-GB">This plugin shows thumbnails of Mobipocket e-books in Dolphin and other KDE apps.</p>
@@ -102,8 +102,8 @@
     <screenshot type="default">
       <image>https://cdn.kde.org/screenshots/kdegraphics-mobipocket/kdegraphics-mobipocket.png</image>
       <caption>Dolphin with Mobi e-book thumbnail</caption>
-      <caption xml:lang="ca">Dolphin amb miniatures de llibre electrònic Mobi</caption>
-      <caption xml:lang="ca-valencia">Dolphin amb miniatures de llibre electrònic Mobi</caption>
+      <caption xml:lang="ca">El Dolphin amb miniatures de llibre electrònic Mobi</caption>
+      <caption xml:lang="ca-valencia">El Dolphin amb miniatures de llibre electrònic Mobi</caption>
       <caption xml:lang="de">Dolphin mit der Vorschau einer Mobipocket-E-Book-Datei</caption>
       <caption xml:lang="el">Το Dolphin με εικόνες επισκόπησης των ηλεκτρονικών βιβλίων Mobi</caption>
       <caption xml:lang="en-GB">Dolphin with Mobi e-book thumbnail</caption>
