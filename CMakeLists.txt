@@ -3,7 +3,7 @@ cmake_minimum_required (VERSION 2.8.12 FATAL_ERROR)
 project(mobipocket)
 
 find_package(ECM 1.3.0 REQUIRED NO_MODULE)
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH} )
 
 include(FeatureSummary)
 include(GenerateExportHeader)
