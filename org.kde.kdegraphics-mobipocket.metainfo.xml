@@ -86,7 +86,7 @@
     <p xml:lang="hi">यह प्लगिन मोबिपोकेट इ-पुस्तकों की लघुछवियों को डोल्फिन और अन्य केडीई अनुप्रयोगों में दिखाता है।</p>
     <p xml:lang="ia">Iste plugin monstra miniaturas de ebooks Mobipockets in Dolphin e altre applicationes de KDE.</p>
     <p xml:lang="it">Questa estensione mostra le miniature degli ebook Mobipocket in Dolphin e in altre applicazioni di KDE.</p>
-    <p xml:lang="ko">이 플러그인은 Dolphin이나 다른 KDE 앱에 Mobipocket 전자책 미리 보기를 표시합니다.</p>
+    <p xml:lang="ko">이 플러그인은 Dolphin이나 다른 KDE 앱에 Mobipocket 전자책 축소판을 표시합니다.</p>
     <p xml:lang="lt">Šis papildinys rodo Mobipocket elektroninių knygų miniatiūras Dolphin ir kitose KDE programose.</p>
     <p xml:lang="nl">Deze plug-in toont miniaturen van Mobipocket e-books in Dolphin en andere KDE toepassingen.</p>
     <p xml:lang="nn">Dette programtillegget viser miniatyrbilete av Mobipocket-bøker i Dolphin og andre program frå KDE.</p>
@@ -123,7 +123,7 @@
       <caption xml:lang="hi">मोबि इ-पुस्तक लघुछवि के साथ डोल्फिन</caption>
       <caption xml:lang="ia">Dolphin con miniatura de Mobi e-book</caption>
       <caption xml:lang="it">Dolphin con le miniature degli ebook Mobi</caption>
-      <caption xml:lang="ko">Mobi 전자책 미리 보기가 표시된 Dolphin</caption>
+      <caption xml:lang="ko">Mobi 전자책 축소판이 표시된 Dolphin</caption>
       <caption xml:lang="lt">Dolphin su Mobi elektroninės knygos miniatiūra</caption>
       <caption xml:lang="nl">Dolphin met Mobi e-book-miniatuur</caption>
       <caption xml:lang="nn">Dolphin med miniatyrbilete av e-bok i Mobi-format</caption>
