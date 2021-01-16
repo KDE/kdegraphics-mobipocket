@@ -237,7 +237,7 @@ void DocumentPrivate::parseEXTH(const QByteArray& data)
             case 103: metadata[Document::Description]=readEXTHRecord(data,offset); break;
             case 105: metadata[Document::Subject]=readEXTHRecord(data,offset); break;
             case 109: metadata[Document::Copyright]=readEXTHRecord(data,offset); break;
-            case 202: thumbnailIndex = readBELong(data,offset); offset+=4; break;
+            case 202: offset += 4; thumbnailIndex = readBELong(data,offset); offset+=4; break;
             default: readEXTHRecord(data,offset);
         }
     }
