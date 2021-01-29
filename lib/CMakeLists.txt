@@ -20,5 +20,5 @@ install(FILES
     DESTINATION ${INCLUDE_INSTALL_DIR}/qmobipocket/ COMPONENT Devel
 )
 
-install(TARGETS qmobipocket EXPORT QMobipocketTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS qmobipocket EXPORT QMobipocketTargets ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 set_target_properties(qmobipocket PROPERTIES VERSION ${QMOBIPOCKET_VERSION} SOVERSION ${QMOBIPOCKET_SOVERSION})
