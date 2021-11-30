@@ -25,8 +25,6 @@ ecm_setup_version("2.0.0"
 
 add_subdirectory(lib)
 
-ecm_optional_add_subdirectory(thumbnailers)
-
 set(CMAKECONFIG_INSTALL_DIR "${LIB_INSTALL_DIR}/cmake/QMobipocket")
 
 ecm_configure_package_config_file(
@@ -45,9 +43,6 @@ install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/QMobipocketConfigVersion.cmake
     DESTINATION ${CMAKECONFIG_INSTALL_DIR}
 )
-
-install(FILES org.kde.kdegraphics-mobipocket.metainfo.xml
-        DESTINATION ${KDE_INSTALL_METAINFODIR})
 
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
