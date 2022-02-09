@@ -42,6 +42,7 @@
   <summary>A plugin to show Mobi e-book files as thumbnails in KDE applications</summary>
   <summary xml:lang="ca">Un connector per a mostrar fitxers de llibre electrònic Mobi com a miniatures a les aplicacions KDE</summary>
   <summary xml:lang="ca-valencia">Un connector per a mostrar fitxers de llibre electrònic Mobi com a miniatures a les aplicacions KDE</summary>
+  <summary xml:lang="da">Et plugin til at vise Mobi e-bogsfiler som miniaturer i KDE-programmer</summary>
   <summary xml:lang="de">Ein Modul zur Anzeige von Mobipocket-E-Books als Vorschaubilder in KDE-Anwendungen</summary>
   <summary xml:lang="el">Ένα πρόσθετο που εμφανίζει τα αρχεία ηλεκτρονικών βιβλίων Mobi ως εικόνες επισκόπησης στις εφαρμογές του KDE</summary>
   <summary xml:lang="en-GB">A plugin to show Mobi e-book files as thumbnails in KDE applications</summary>
@@ -74,6 +75,7 @@
     <p>This plugin shows thumbnails of Mobipocket e-books in Dolphin and other KDE apps.</p>
     <p xml:lang="ca">Aquest connector mostra les miniatures dels llibres electrònics Mobipocket al Dolphin i a altres aplicacions KDE.</p>
     <p xml:lang="ca-valencia">Aquest connector mostra les miniatures dels llibres electrònics Mobipocket al Dolphin i a altres aplicacions KDE.</p>
+    <p xml:lang="da">Dette plugin viser miniaturer af MobiPocket e-bøger i Dolphin og andre KDE-programmer</p>
     <p xml:lang="de">Dieses Modul zeigt Vorschaubilder von Mobipocket-E-Books in Dolphin und KDE-Anwendungen</p>
     <p xml:lang="el">Αυτό το πρόσθετο εμφανίζει εικόνες επισκόπησης των ηλεκτρονικών βιβλίων Mobipocket στο Dolphin και σε άλλες εφαρμογές του KDE.</p>
     <p xml:lang="en-GB">This plugin shows thumbnails of Mobipocket e-books in Dolphin and other KDE apps.</p>
@@ -111,6 +113,7 @@
       <caption>Dolphin with Mobi e-book thumbnail</caption>
       <caption xml:lang="ca">El Dolphin amb miniatures de llibre electrònic Mobi</caption>
       <caption xml:lang="ca-valencia">El Dolphin amb miniatures de llibre electrònic Mobi</caption>
+      <caption xml:lang="da">Dolphin med miniature af Mobi e-bog</caption>
       <caption xml:lang="de">Dolphin mit der Vorschau einer Mobipocket-E-Book-Datei</caption>
       <caption xml:lang="el">Το Dolphin με εικόνες επισκόπησης των ηλεκτρονικών βιβλίων Mobi</caption>
       <caption xml:lang="en-GB">Dolphin with Mobi e-book thumbnail</caption>
