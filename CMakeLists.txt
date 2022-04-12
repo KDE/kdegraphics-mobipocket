@@ -15,7 +15,11 @@ include(KDECMakeSettings)
 include(KDECompilerSettings NO_POLICY_SCOPE)
 
 set(REQUIRED_QT_VERSION 5.12.0)
-find_package(Qt5 ${REQUIRED_QT_VERSION} CONFIG REQUIRED Core Gui)
+find_package(Qt${QT_MAJOR_VERSION} ${REQUIRED_QT_VERSION} CONFIG REQUIRED Core Gui)
+
+if(TARGET Qt6::Core)
+    find_package(Qt6 REQUIRED COMPONENTS Core5Compat)
+endif()
 
 ecm_setup_version("2.0.0"
     VARIABLE_PREFIX QMOBIPOCKET

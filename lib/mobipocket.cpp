@@ -15,6 +15,7 @@
 #include <QBuffer>
 #include <QTextCodec>
 #include <QtGui/QImageReader>
+#include <QRegExp>
 
 namespace Mobipocket {
 

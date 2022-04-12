@@ -9,9 +9,13 @@ add_library(qmobipocket SHARED ${QMOBIPOCKET_SRCS})
 generate_export_header(qmobipocket)
 
 target_link_libraries (qmobipocket
-    Qt5::Core
-    Qt5::Gui
+    Qt${QT_MAJOR_VERSION}::Core
+    Qt${QT_MAJOR_VERSION}::Gui
 )
+
+if(TARGET Qt6::Core5Compat)
+    target_link_libraries(qmobipocket Qt6::Core5Compat)
+endif()
 
 install(FILES
     mobipocket.h
