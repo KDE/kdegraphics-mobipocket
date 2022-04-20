@@ -8,7 +8,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH} )
 include(FeatureSummary)
 include(GenerateExportHeader)
 include(ECMOptionalAddSubdirectory)
-include(ECMPackageConfigHelpers)
+include(CMakePackageConfigHelpers)
 include(ECMSetupVersion)
 include(KDEInstallDirs)
 include(KDECMakeSettings)
@@ -31,7 +31,7 @@ add_subdirectory(lib)
 
 set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/QMobipocket")
 
-ecm_configure_package_config_file(
+configure_package_config_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/QMobipocketConfig.cmake.in"
     "${CMAKE_CURRENT_BINARY_DIR}/QMobipocketConfig.cmake"
     INSTALL_DESTINATION ${CMAKECONFIG_INSTALL_DIR}
