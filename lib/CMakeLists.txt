@@ -21,7 +21,7 @@ install(FILES
     mobipocket.h
     qfilestream.h
     ${CMAKE_CURRENT_BINARY_DIR}/qmobipocket_export.h
-    DESTINATION ${INCLUDE_INSTALL_DIR}/qmobipocket/ COMPONENT Devel
+    DESTINATION ${KDE_INSTALL_INCLUDEDIR}/qmobipocket/ COMPONENT Devel
 )
 
 install(TARGETS qmobipocket EXPORT QMobipocketTargets ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})

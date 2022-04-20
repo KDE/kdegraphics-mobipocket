@@ -29,7 +29,7 @@ ecm_setup_version("2.0.0"
 
 add_subdirectory(lib)
 
-set(CMAKECONFIG_INSTALL_DIR "${LIB_INSTALL_DIR}/cmake/QMobipocket")
+set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/QMobipocket")
 
 ecm_configure_package_config_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/QMobipocketConfig.cmake.in"
