@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.16 FATAL_ERROR)
 
 project(mobipocket)
 
-find_package(ECM 5.68.0 REQUIRED NO_MODULE)
+find_package(ECM 5.90.0 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH} )
 
 include(FeatureSummary)
