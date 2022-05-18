@@ -4,7 +4,7 @@ project(mobipocket)
 
 find_package(ECM 5.90.0 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH} )
-
+set(KDE_COMPILERSETTINGS_LEVEL "5.82")
 include(FeatureSummary)
 include(GenerateExportHeader)
 include(ECMOptionalAddSubdirectory)
