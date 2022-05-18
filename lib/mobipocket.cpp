@@ -133,11 +133,11 @@ struct DocumentPrivate
 
 void DocumentPrivate::parseHtmlHead(const QString& data)
 {
-    static QRegExp title("<dc:title.*>(.*)</dc:title>", Qt::CaseInsensitive);
-    static QRegExp author("<dc:creator.*>(.*)</dc:creator>", Qt::CaseInsensitive);
-    static QRegExp copyright("<dc:rights.*>(.*)</dc:rights>", Qt::CaseInsensitive);
-    static QRegExp subject("<dc:subject.*>(.*)</dc:subject>", Qt::CaseInsensitive);
-    static QRegExp description("<dc:description.*>(.*)</dc:description>", Qt::CaseInsensitive);
+    static QRegExp title(QLatin1String("<dc:title.*>(.*)</dc:title>"), Qt::CaseInsensitive);
+    static QRegExp author(QLatin1String("<dc:creator.*>(.*)</dc:creator>"), Qt::CaseInsensitive);
+    static QRegExp copyright(QLatin1String("<dc:rights.*>(.*)</dc:rights>"), Qt::CaseInsensitive);
+    static QRegExp subject(QLatin1String("<dc:subject.*>(.*)</dc:subject>"), Qt::CaseInsensitive);
+    static QRegExp description(QLatin1String("<dc:description.*>(.*)</dc:description>"), Qt::CaseInsensitive);
     title.setMinimal(true);
     author.setMinimal(true);
     copyright.setMinimal(true);
