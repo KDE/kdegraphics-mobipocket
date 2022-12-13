@@ -235,7 +235,7 @@ Decompressor* Decompressor::create(quint8 type, const PDB& pdb)
             case 1 : return new NOOPDecompressor(pdb); 
             case 2 : return new RLEDecompressor(pdb); 
             case 'H' : return  new HuffdicDecompressor(pdb);
-            default : return 0;
+            default : return nullptr;
         }
 
 }
