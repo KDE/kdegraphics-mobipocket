@@ -13,12 +13,13 @@ target_sources( qmobipocket PRIVATE
 generate_export_header(qmobipocket)
 
 target_link_libraries (qmobipocket
+    PUBLIC
     Qt${QT_MAJOR_VERSION}::Core
     Qt${QT_MAJOR_VERSION}::Gui
 )
 
 if(TARGET Qt6::Core5Compat)
-    target_link_libraries(qmobipocket Qt6::Core5Compat)
+    target_link_libraries(qmobipocket PRIVATE Qt6::Core5Compat)
 endif()
 
 install(FILES
