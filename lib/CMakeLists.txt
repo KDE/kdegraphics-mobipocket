@@ -1,11 +1,15 @@
+add_library(qmobipocket SHARED)
+set_target_properties(qmobipocket PROPERTIES
+    VERSION ${QMOBIPOCKET_VERSION}
+    SOVERSION ${QMOBIPOCKET_SOVERSION}
+)
 
-set (QMOBIPOCKET_SRCS
+target_sources( qmobipocket PRIVATE
     decompressor.cpp
     mobipocket.cpp
     qfilestream.cpp
 )
 
-add_library(qmobipocket SHARED ${QMOBIPOCKET_SRCS})
 generate_export_header(qmobipocket)
 
 target_link_libraries (qmobipocket
@@ -25,4 +29,3 @@ install(FILES
 )
 
 install(TARGETS qmobipocket EXPORT QMobipocketTargets ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
-set_target_properties(qmobipocket PROPERTIES VERSION ${QMOBIPOCKET_VERSION} SOVERSION ${QMOBIPOCKET_SOVERSION})
