@@ -13,7 +13,7 @@
 #include <QString>
 #include <QByteArray>
 #include <QMap>
-#include <QtGui/QImage>
+#include <QImage>
 
 #include "qmobipocket_export.h"
 
