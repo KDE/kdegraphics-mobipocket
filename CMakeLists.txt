@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.16 FATAL_ERROR)
 
-project(mobipocket)
+project(mobipocket VERSION 2.1.0)
 
 find_package(ECM 5.92.0 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH} )
@@ -23,7 +23,7 @@ if(TARGET Qt6::Core)
     find_package(Qt6 REQUIRED COMPONENTS Core5Compat)
 endif()
 
-ecm_setup_version("2.0.0"
+ecm_setup_version(PROJECT
     VARIABLE_PREFIX QMOBIPOCKET
     PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/QMobipocketConfigVersion.cmake"
     SOVERSION "2"

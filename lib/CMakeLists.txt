@@ -1,3 +1,5 @@
+set(qmobipocket_INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR}/QMobipocket)
+
 add_library(qmobipocket SHARED)
 set_target_properties(qmobipocket PROPERTIES
     VERSION ${QMOBIPOCKET_VERSION}
@@ -22,11 +24,17 @@ if(TARGET Qt6::Core5Compat)
     target_link_libraries(qmobipocket PRIVATE Qt6::Core5Compat)
 endif()
 
+target_include_directories(qmobipocket
+    INTERFACE
+        "$<INSTALL_INTERFACE:${qmobipocket_INCLUDE_INSTALL_DIR}>"
+)
+
 install(FILES
     mobipocket.h
     qfilestream.h
     ${CMAKE_CURRENT_BINARY_DIR}/qmobipocket_export.h
-    DESTINATION ${KDE_INSTALL_INCLUDEDIR}/qmobipocket/ COMPONENT Devel
+    DESTINATION ${qmobipocket_INCLUDE_INSTALL_DIR}/qmobipocket
+    COMPONENT Devel
 )
 
 install(TARGETS qmobipocket EXPORT QMobipocketTargets ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
