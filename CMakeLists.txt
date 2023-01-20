@@ -4,14 +4,16 @@ project(mobipocket)
 
 find_package(ECM 5.92.0 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH} )
+
+include(KDEInstallDirs)
+include(KDECMakeSettings)
+include(KDECompilerSettings NO_POLICY_SCOPE)
+
 include(FeatureSummary)
 include(GenerateExportHeader)
 include(ECMOptionalAddSubdirectory)
 include(CMakePackageConfigHelpers)
 include(ECMSetupVersion)
-include(KDEInstallDirs)
-include(KDECMakeSettings)
-include(KDECompilerSettings NO_POLICY_SCOPE)
 include(ECMDeprecationSettings)
 
 set(REQUIRED_QT_VERSION 5.12.0)
