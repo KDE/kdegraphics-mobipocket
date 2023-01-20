@@ -23,9 +23,15 @@ if(TARGET Qt6::Core)
     find_package(Qt6 REQUIRED COMPONENTS Core5Compat)
 endif()
 
+if (QT_MAJOR_VERSION STREQUAL "6")
+    set(CMAKECONFIG_NAME "QMobipocket6")
+else()
+    set(CMAKECONFIG_NAME "QMobipocket")
+endif()
+
 ecm_setup_version(PROJECT
     VARIABLE_PREFIX QMOBIPOCKET
-    PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/QMobipocketConfigVersion.cmake"
+    PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/${CMAKECONFIG_NAME}ConfigVersion.cmake"
     SOVERSION "2"
 )
 
@@ -35,22 +41,22 @@ ecm_set_disabled_deprecation_versions(
 
 add_subdirectory(lib)
 
-set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/QMobipocket")
+set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/${CMAKECONFIG_NAME}")
 
 configure_package_config_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/QMobipocketConfig.cmake.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/QMobipocketConfig.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKECONFIG_NAME}Config.cmake"
     INSTALL_DESTINATION ${CMAKECONFIG_INSTALL_DIR}
 )
 
 install(EXPORT QMobipocketTargets
     DESTINATION ${CMAKECONFIG_INSTALL_DIR}
-    FILE QMobipocketTargets.cmake
+    FILE ${CMAKECONFIG_NAME}Targets.cmake
 )
 
 install(FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/QMobipocketConfig.cmake
-    ${CMAKE_CURRENT_BINARY_DIR}/QMobipocketConfigVersion.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/${CMAKECONFIG_NAME}Config.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/${CMAKECONFIG_NAME}ConfigVersion.cmake
     DESTINATION ${CMAKECONFIG_INSTALL_DIR}
 )
 

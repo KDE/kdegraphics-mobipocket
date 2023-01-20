@@ -1,10 +1,20 @@
-set(qmobipocket_INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR}/QMobipocket)
+if (QT_MAJOR_VERSION STREQUAL "6")
+    set(qmobipocket_INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR}/QMobipocket6)
+else()
+    set(qmobipocket_INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR}/QMobipocket)
+endif()
 
 add_library(qmobipocket SHARED)
 set_target_properties(qmobipocket PROPERTIES
     VERSION ${QMOBIPOCKET_VERSION}
     SOVERSION ${QMOBIPOCKET_SOVERSION}
 )
+if (QT_MAJOR_VERSION STREQUAL "6")
+    set_target_properties(qmobipocket PROPERTIES
+        LIBRARY_OUTPUT_NAME QMobipocket6
+        EXPORT_NAME QMobipocket6
+    )
+endif()
 
 target_sources( qmobipocket PRIVATE
     decompressor.cpp
