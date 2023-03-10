@@ -31,6 +31,7 @@ endif()
 
 ecm_setup_version(PROJECT
     VARIABLE_PREFIX QMOBIPOCKET
+    VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/lib/qmobipocket_version.h"
     PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/${CMAKECONFIG_NAME}ConfigVersion.cmake"
     SOVERSION "2"
 )

@@ -47,4 +47,10 @@ install(FILES
     COMPONENT Devel
 )
 
+install(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/qmobipocket_version.h
+    DESTINATION ${qmobipocket_INCLUDE_INSTALL_DIR}
+    COMPONENT Devel
+)
+
 install(TARGETS qmobipocket EXPORT QMobipocketTargets ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
