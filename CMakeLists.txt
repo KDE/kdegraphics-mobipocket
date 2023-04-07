@@ -10,7 +10,7 @@ include(KDECMakeSettings)
 include(KDECompilerSettings NO_POLICY_SCOPE)
 
 include(FeatureSummary)
-include(GenerateExportHeader)
+include(ECMGenerateExportHeader)
 include(ECMOptionalAddSubdirectory)
 include(CMakePackageConfigHelpers)
 include(ECMSetupVersion)
