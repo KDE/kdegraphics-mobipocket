@@ -15,7 +15,7 @@
 #include <QBuffer>
 #include <QTextCodec>
 #include <QImageReader>
-#include <QRegExp>
+#include <QRegularExpression>
 
 namespace Mobipocket {
 
@@ -133,23 +133,20 @@ struct DocumentPrivate
 
 void DocumentPrivate::parseHtmlHead(const QString& data)
 {
-    static QRegExp title(QLatin1String("<dc:title.*>(.*)</dc:title>"), Qt::CaseInsensitive);
-    static QRegExp author(QLatin1String("<dc:creator.*>(.*)</dc:creator>"), Qt::CaseInsensitive);
-    static QRegExp copyright(QLatin1String("<dc:rights.*>(.*)</dc:rights>"), Qt::CaseInsensitive);
-    static QRegExp subject(QLatin1String("<dc:subject.*>(.*)</dc:subject>"), Qt::CaseInsensitive);
-    static QRegExp description(QLatin1String("<dc:description.*>(.*)</dc:description>"), Qt::CaseInsensitive);
-    title.setMinimal(true);
-    author.setMinimal(true);
-    copyright.setMinimal(true);
-    subject.setMinimal(true);
-    description.setMinimal(true);
+    static const QRegularExpression title(QLatin1String("<dc:title.*>(.*)</dc:title>"), QRegularExpression::CaseInsensitiveOption | QRegularExpression::InvertedGreedinessOption);
+    static const QRegularExpression author(QLatin1String("<dc:creator.*>(.*)</dc:creator>"), QRegularExpression::CaseInsensitiveOption | QRegularExpression::InvertedGreedinessOption);
+    static const QRegularExpression copyright(QLatin1String("<dc:rights.*>(.*)</dc:rights>"), QRegularExpression::CaseInsensitiveOption | QRegularExpression::InvertedGreedinessOption);
+    static const QRegularExpression subject(QLatin1String("<dc:subject.*>(.*)</dc:subject>"), QRegularExpression::CaseInsensitiveOption | QRegularExpression::InvertedGreedinessOption);
+    static const QRegularExpression description(QLatin1String("<dc:description.*>(.*)</dc:description>"), QRegularExpression::CaseInsensitiveOption | QRegularExpression::InvertedGreedinessOption);
     
     // title could have been already taken from MOBI record
-    if (!metadata.contains(Document::Title) && title.indexIn(data)!=-1) metadata[Document::Title]=title.capturedTexts()[1];
-    if (author.indexIn(data)!=-1) metadata[Document::Author]=author.capturedTexts()[1];
-    if (copyright.indexIn(data)!=-1) metadata[Document::Copyright]=copyright.capturedTexts()[1];
-    if (subject.indexIn(data)!=-1) metadata[Document::Subject]=subject.capturedTexts()[1];
-    if (description.indexIn(data)!=-1) metadata[Document::Description]=description.capturedTexts()[1];
+    if (!metadata.contains(Document::Title)) {
+        if (const auto titleMatch = title.match(data); titleMatch.hasMatch()) metadata[Document::Title]=titleMatch.captured(1);
+    }
+    if (const auto authorMatch = author.match(data); authorMatch.hasMatch()) metadata[Document::Author]=authorMatch.captured(1);
+    if (const auto copyrightMatch = copyright.match(data); copyrightMatch.hasMatch()) metadata[Document::Copyright]=copyrightMatch.captured(1);
+    if (const auto subjectMatch = subject.match(data); subjectMatch.hasMatch()) metadata[Document::Subject]=subjectMatch.captured(1);
+    if (const auto descriptionMatch = description.match(data); descriptionMatch.hasMatch()) metadata[Document::Description]=descriptionMatch.captured(1);
     
 }
 
