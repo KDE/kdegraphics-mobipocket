@@ -138,9 +138,13 @@ QByteArray RLEDecompressor::decompress(const QByteArray& data)
                                         N+=(unsigned char)data.at(i++);
 					copyLength = (N & 7) + 3;
 					shift = (N & 0x3fff) / 8;
-					shifted = ret.size()-shift;
-					if (shifted>(ret.size()-1)) goto endOfLoop;
-					for (int i=0;i<copyLength;i++) ret.append(ret.at(shifted+i));
+					if ((shift < 1) || (shift > ret.size())) {
+						return ret;
+					}
+					shifted = ret.size() - shift;
+					for (int i = shifted; i < shifted + copyLength; i++) {
+						ret.append(ret.at(i));
+					}
 					break;
 			}
 		}
