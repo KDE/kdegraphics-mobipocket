@@ -231,12 +231,12 @@ fail:
     valid=false;
 }
 
-Decompressor* Decompressor::create(quint8 type, const PDB& pdb) 
+std::unique_ptr<Decompressor> Decompressor::create(quint8 type, const PDB& pdb)
 {
         switch (type) {
-            case 1 : return new NOOPDecompressor(pdb); 
-            case 2 : return new RLEDecompressor(pdb); 
-            case 'H' : return  new HuffdicDecompressor(pdb);
+            case 1 : return std::make_unique<NOOPDecompressor>(pdb);
+            case 2 : return std::make_unique<RLEDecompressor>(pdb);
+            case 'H' : return  std::make_unique<HuffdicDecompressor>(pdb);
             default : return nullptr;
         }
 
