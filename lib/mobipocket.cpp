@@ -107,7 +107,7 @@ struct DocumentPrivate
     DocumentPrivate(Stream* d) : pdb(d), valid(true), firstImageRecord(0), 
         drm(false), thumbnailIndex(0) {}
     PDB pdb;
-    Decompressor* dec;
+    std::unique_ptr<Decompressor> dec;
     quint16 ntextrecords;
     quint16 maxRecordSize;
     bool valid;
