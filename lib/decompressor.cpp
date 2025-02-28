@@ -56,10 +56,8 @@ public:
 class BitReader
 {
 public:
-    BitReader(const QByteArray& d) : pos(0), data(d)
-    {
+    BitReader(const QByteArray& d) : pos(0), len(d.size() * 8), data(d) {
         data.append("\000\000\000\000");    //krazy:exclude=strings
-        len=data.size()*8;
     }
     
     quint32 read() {
