@@ -14,28 +14,9 @@
 namespace Mobipocket
 {
 
-QByteArray Stream::read(int len)
-{
-    QByteArray ret;
-    ret.resize(len);
-    len = read(ret.data(), len);
-    if (len < 0)
-        len = 0;
-    ret.resize(len);
-    return ret;
-}
-
-QByteArray Stream::readAll()
-{
-    QByteArray ret, bit;
-    while (!(bit = read(4096)).isEmpty())
-        ret += bit;
-    return ret;
-}
-
 struct PDBPrivate {
     QList<quint32> recordOffsets;
-    Stream *device;
+    QIODevice *device;
     QString fileType;
     quint16 nrecords;
     bool valid;
@@ -67,10 +48,10 @@ fail:
     valid = false;
 }
 
-PDB::PDB(Stream *dev)
+PDB::PDB(QIODevice *device)
     : d(new PDBPrivate)
 {
-    d->device = dev;
+    d->device = device;
     d->init();
 }
 
@@ -102,9 +83,9 @@ int PDB::recordCount() const
     return d->nrecords;
 }
 
-////////////////////////////////////////////
-struct DocumentPrivate {
-    DocumentPrivate(Stream *d)
+struct DocumentPrivate 
+{
+    DocumentPrivate(QIODevice *d)
         : pdb(d)
         , valid(true)
         , firstImageRecord(0)
@@ -281,9 +262,11 @@ void DocumentPrivate::parseEXTH(const QByteArray &data)
     }
 }
 
-Document::Document(Stream *dev)
+Document::Document(QIODevice *dev)
     : d(new DocumentPrivate(dev))
 {
+    Q_ASSERT(dev->openMode() & QIODevice::ReadOnly);
+    Q_ASSERT(!dev->isSequential());
     d->init();
 }
 

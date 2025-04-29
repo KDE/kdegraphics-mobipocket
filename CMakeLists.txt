@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.16 FATAL_ERROR)
 
-project(mobipocket VERSION 2.1.0)
+project(mobipocket VERSION 3.0.0)
 
 find_package(ECM 5.92.0 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH} )
@@ -35,7 +35,7 @@ ecm_setup_version(PROJECT
     VARIABLE_PREFIX QMOBIPOCKET
     VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/lib/qmobipocket_version.h"
     PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/${CMAKECONFIG_NAME}ConfigVersion.cmake"
-    SOVERSION "2"
+    SOVERSION "3"
 )
 
 ecm_set_disabled_deprecation_versions(

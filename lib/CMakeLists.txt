@@ -19,7 +19,6 @@ endif()
 target_sources( qmobipocket PRIVATE
     decompressor.cpp
     mobipocket.cpp
-    qfilestream.cpp
 )
 
 if (QT_MAJOR_VERSION STREQUAL "5")
@@ -57,7 +56,6 @@ target_include_directories(qmobipocket
 
 install(FILES
     mobipocket.h
-    qfilestream.h
     ${CMAKE_CURRENT_BINARY_DIR}/qmobipocket_export.h
     DESTINATION ${qmobipocket_INCLUDE_INSTALL_DIR}/qmobipocket
     COMPONENT Devel
