@@ -16,29 +16,11 @@ class QIODevice;
 namespace Mobipocket
 {
 
-/**
-Minimalistic stream abstraction. It is supposed to allow mobipocket document classes to be
-used with QIODevice (for Okular generator), and previously also with InputStream for Strigi
-analyzer.
-*/
-class QMOBIPOCKET_EXPORT Stream
-{
-public:
-    virtual int read(char *buf, int size) = 0;
-    virtual bool seek(int pos) = 0;
-
-    QByteArray readAll();
-    QByteArray read(int len);
-    virtual ~Stream()
-    {
-    }
-};
-
 struct PDBPrivate;
 class PDB
 {
 public:
-    PDB(Stream *s);
+    PDB(QIODevice *device);
     ~PDB();
     QString fileType() const;
     int recordCount() const;
@@ -60,10 +42,19 @@ public:
         Description,
         Subject
     };
-    ~Document();
-    Document(Stream *s);
+
+    /**
+     * Mobipocket::Document constructor
+     *
+     * @params device The IO device corresponding to the mobipocket document. The device must
+     * be open for read operations and the ocument does not take ownership over the device
+     * and it is expected to be kept alive with at least same lifetime as the document.
+     */
+    explicit Document(QIODevice *device);
+    virtual ~Document();
+
     QMap<MetaKey, QString> metadata() const;
-    QString text(int size = -1) const;
+    QString text(int size=-1) const;
     int imageCount() const;
     QImage getImage(int i) const;
     QImage thumbnail() const;
