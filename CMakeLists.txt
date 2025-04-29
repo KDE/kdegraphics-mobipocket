@@ -9,12 +9,14 @@ include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(KDECompilerSettings NO_POLICY_SCOPE)
 
+include(CMakePackageConfigHelpers)
 include(FeatureSummary)
 include(ECMGenerateExportHeader)
 include(ECMOptionalAddSubdirectory)
-include(CMakePackageConfigHelpers)
 include(ECMSetupVersion)
 include(ECMDeprecationSettings)
+include(KDEGitCommitHooks)
+include(KDEClangFormat)
 
 set(REQUIRED_QT_VERSION 5.12.0)
 find_package(Qt${QT_MAJOR_VERSION} ${REQUIRED_QT_VERSION} CONFIG REQUIRED Core Gui)
@@ -60,6 +62,11 @@ install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/${CMAKECONFIG_NAME}ConfigVersion.cmake
     DESTINATION ${CMAKECONFIG_INSTALL_DIR}
 )
+
+file(GLOB_RECURSE ALL_CLANG_FORMAT_SOURCE_FILES lib/*.cpp lib/*.h)
+kde_clang_format(${ALL_CLANG_FORMAT_SOURCE_FILES})
+
+kde_configure_git_pre_commit_hook(CHECKS CLANG_FORMAT)
 
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
 

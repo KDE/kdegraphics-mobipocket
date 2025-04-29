@@ -10,18 +10,20 @@
 #ifndef QFILESTREAM_H
 #define QFILESTREAM_H
 
-#include <QFile>
 #include "mobipocket.h"
+#include <QFile>
 
-namespace Mobipocket {
+namespace Mobipocket
+{
 
 class QMOBIPOCKET_EXPORT QFileStream : public Stream
 {
 public:
-    QFileStream(const QString& name);
+    QFileStream(const QString &name);
     ~QFileStream();
-    int read(char* buf, int size) override;
+    int read(char *buf, int size) override;
     bool seek(int pos) override;
+
 private:
     QFile *d;
 };

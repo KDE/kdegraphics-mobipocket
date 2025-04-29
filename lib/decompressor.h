@@ -12,23 +12,35 @@
 
 #include <QByteArray>
 #include <memory>
-namespace Mobipocket {
+namespace Mobipocket
+{
 
 class PDB;
 
-class Decompressor {
+class Decompressor
+{
 public:
-    Decompressor(const PDB& p) : pdb(p), valid(true) {}
-    virtual QByteArray decompress(const QByteArray& data) = 0; 
-    virtual ~Decompressor() {}
-    bool isValid() const { return valid; }
+    Decompressor(const PDB &p)
+        : pdb(p)
+        , valid(true)
+    {
+    }
+    virtual QByteArray decompress(const QByteArray &data) = 0;
+    virtual ~Decompressor()
+    {
+    }
+    bool isValid() const
+    {
+        return valid;
+    }
 
-    static std::unique_ptr<Decompressor> create(quint8 type, const PDB& pdb);
+    static std::unique_ptr<Decompressor> create(quint8 type, const PDB &pdb);
+
 protected:
-    const PDB& pdb;
+    const PDB &pdb;
     bool valid;
 };
 
-quint32 readBELong(const QByteArray& data, int offset);
+quint32 readBELong(const QByteArray &data, int offset);
 }
 #endif

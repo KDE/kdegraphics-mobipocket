@@ -11,8 +11,8 @@
 
 using namespace Mobipocket;
 
-QFileStream::QFileStream(const QString& name)
- : d(new QFile(name))
+QFileStream::QFileStream(const QString &name)
+    : d(new QFile(name))
 {
     d->open(QIODevice::ReadOnly);
 }
@@ -22,9 +22,9 @@ QFileStream::~QFileStream()
     delete d;
 }
 
-int QFileStream::read(char* buf, int size)
+int QFileStream::read(char *buf, int size)
 {
-    return d->read(buf,size);
+    return d->read(buf, size);
 }
 
 bool QFileStream::seek(int pos)
