@@ -8,7 +8,7 @@
 #include <QIODevice>
 #include <QImageReader>
 #include <QRegularExpression>
-#include <QTextCodec>
+#include <QStringConverter>
 #include <QtEndian>
 
 namespace Mobipocket
@@ -102,7 +102,7 @@ struct DocumentPrivate
     // number of first record holding image. Usually it is directly after end of text, but not always
     quint16 firstImageRecord;
     QMap<Document::MetaKey, QString> metadata;
-    QTextCodec *codec;
+    QStringDecoder toUtf16;
     bool drm;
 
     // index of thumbnail in image list. May be specified in EXTH.
@@ -169,16 +169,22 @@ void DocumentPrivate::init()
     maxRecordSize += (unsigned char)mhead[11];
     if (mhead.size() > 31)
         encoding = readBELong(mhead, 28);
-    if (encoding == 65001)
-        codec = QTextCodec::codecForName("UTF-8");
-    else
-        codec = QTextCodec::codecForName("CP1252");
+    if (encoding == 65001) {
+        toUtf16 = QStringDecoder(QStringDecoder::Utf8);
+    } else {
+        const auto converterEncoding = QStringConverter::encodingForName("cp1252");
+        if (converterEncoding) {
+            toUtf16 = QStringDecoder(*converterEncoding);
+        } else {
+            toUtf16 = QStringDecoder(QStringConverter::Latin1);
+        }
+    }
     if (mhead.size() > 176)
         parseEXTH(mhead);
 
     // try getting metadata from HTML if nothing or only title was recovered from MOBI and EXTH records
     if (metadata.size() < 2 && !drm)
-        parseHtmlHead(codec->toUnicode(dec->decompress(pdb.getRecord(1))));
+        parseHtmlHead(toUtf16(dec->decompress(pdb.getRecord(1))));
     return;
 fail:
     valid = false;
@@ -205,7 +211,7 @@ QString DocumentPrivate::readEXTHRecord(const QByteArray &data, quint32 &offset)
     quint32 len = readBELong(data, offset);
     offset += 4;
     len -= 8;
-    QString ret = codec->toUnicode(data.mid(offset, len));
+    QString ret = toUtf16(data.mid(offset, len));
     offset += len;
     return ret;
 }
@@ -223,7 +229,7 @@ void DocumentPrivate::parseEXTH(const QByteArray &data)
         qint32 nameoffset = readBELong(data, 84);
         qint32 namelen = readBELong(data, 88);
         if ((nameoffset + namelen) < data.size()) {
-            metadata[Document::Title] = codec->toUnicode(data.mid(nameoffset, namelen));
+            metadata[Document::Title] = toUtf16(data.mid(nameoffset, namelen));
         }
     }
 
@@ -290,7 +296,7 @@ QString Document::text(int size) const
         if (size != -1 && whole.size() > size)
             break;
     }
-    return d->codec->toUnicode(whole);
+    return d->toUtf16(whole);
 }
 
 int Document::imageCount() const

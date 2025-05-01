@@ -45,10 +45,6 @@ target_link_libraries (qmobipocket
     Qt${QT_MAJOR_VERSION}::Gui
 )
 
-if(TARGET Qt6::Core5Compat)
-    target_link_libraries(qmobipocket PRIVATE Qt6::Core5Compat)
-endif()
-
 target_include_directories(qmobipocket
     INTERFACE
         "$<INSTALL_INTERFACE:${qmobipocket_INCLUDE_INSTALL_DIR}>"
