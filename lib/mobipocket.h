@@ -45,6 +45,7 @@ public:
     QByteArray getRecord(int i) const;
     bool isValid() const;
 
+    Q_DISABLE_COPY(PDB);
 private:
     PDBPrivate *const d;
 };
@@ -72,6 +73,7 @@ public:
     // if true then it is impossible to get text of book. Images should still be readable
     bool hasDRM() const;
 
+    Q_DISABLE_COPY(Document);
 private:
     DocumentPrivate *const d;
 };
