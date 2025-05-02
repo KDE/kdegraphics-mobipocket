@@ -16,21 +16,6 @@ class QIODevice;
 namespace Mobipocket
 {
 
-struct PDBPrivate;
-class PDB
-{
-public:
-    PDB(QIODevice *device);
-    ~PDB();
-    QString fileType() const;
-    int recordCount() const;
-    QByteArray getRecord(int i) const;
-    bool isValid() const;
-
-private:
-    PDBPrivate *const d;
-};
-
 struct DocumentPrivate;
 class QMOBIPOCKET_EXPORT Document
 {

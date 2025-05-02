@@ -6,15 +6,16 @@
 
 #include <QByteArray>
 #include <memory>
+
+class KPDBFile;
+
 namespace Mobipocket
 {
-
-class PDB;
 
 class Decompressor
 {
 public:
-    Decompressor(const PDB &p)
+    Decompressor(const KPDBFile &p)
         : pdb(p)
         , valid(true)
     {
@@ -28,10 +29,10 @@ public:
         return valid;
     }
 
-    static std::unique_ptr<Decompressor> create(quint8 type, const PDB &pdb);
+    static std::unique_ptr<Decompressor> create(quint8 type, const KPDBFile &pdbFile);
 
 protected:
-    const PDB &pdb;
+    const KPDBFile &pdb;
     bool valid;
 };
 

@@ -15,6 +15,7 @@ include(ECMGenerateExportHeader)
 include(ECMOptionalAddSubdirectory)
 include(ECMSetupVersion)
 include(ECMDeprecationSettings)
+include(ECMAddTests)
 include(KDEGitCommitHooks)
 include(KDEClangFormat)
 
@@ -43,6 +44,10 @@ ecm_set_disabled_deprecation_versions(
 )
 
 add_subdirectory(lib)
+if (BUILD_TESTING)
+    find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} NO_MODULE COMPONENTS Test)
+    add_subdirectory(autotests)
+endif()
 
 set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/${CMAKECONFIG_NAME}")
 
