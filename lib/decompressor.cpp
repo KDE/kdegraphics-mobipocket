@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "decompressor.h"
-#include "mobipocket.h"
+#include "kpdb.h"
 
 #include "bitreader_p.h"
 
@@ -38,8 +38,8 @@ namespace Mobipocket
 class NOOPDecompressor : public Decompressor
 {
 public:
-    NOOPDecompressor(const PDB &p)
-        : Decompressor(p)
+    NOOPDecompressor(const KPDBFile &pdbFile)
+        : Decompressor(pdbFile)
     {
     }
     QByteArray decompress(const QByteArray &data) override
@@ -51,8 +51,8 @@ public:
 class RLEDecompressor : public Decompressor
 {
 public:
-    RLEDecompressor(const PDB &p)
-        : Decompressor(p)
+    RLEDecompressor(const KPDBFile &pdbFile)
+        : Decompressor(pdbFile)
     {
     }
     QByteArray decompress(const QByteArray &data) override;
@@ -61,7 +61,7 @@ public:
 class HuffdicDecompressor : public Decompressor
 {
 public:
-    HuffdicDecompressor(const PDB &p);
+    HuffdicDecompressor(const KPDBFile &pdbFile);
     QByteArray decompress(const QByteArray &data) override;
 
 private:
@@ -135,19 +135,19 @@ quint32 readBELong(const QByteArray &data, int offset)
     return ret;
 }
 
-HuffdicDecompressor::HuffdicDecompressor(const PDB &p)
-    : Decompressor(p)
+HuffdicDecompressor::HuffdicDecompressor(const KPDBFile &pdbFile)
+    : Decompressor(pdbFile)
 {
-    QByteArray header = p.getRecord(0);
+    QByteArray header = pdbFile.recordAt(0);
     quint32 huff_ofs = readBELong(header, 0x70);
     quint32 huff_num = readBELong(header, 0x74);
     quint32 off1, off2;
 
-    QByteArray huff1 = p.getRecord(huff_ofs);
+    QByteArray huff1 = pdbFile.recordAt(huff_ofs);
     if (huff1.isNull())
         goto fail;
     for (unsigned int i = 1; i < huff_num; i++) {
-        QByteArray h = p.getRecord(huff_ofs + i);
+        QByteArray h = pdbFile.recordAt(huff_ofs + i);
         if (h.isNull())
             goto fail;
         dicts.append(h);
@@ -217,15 +217,15 @@ fail:
     valid = false;
 }
 
-std::unique_ptr<Decompressor> Decompressor::create(quint8 type, const PDB &pdb)
+std::unique_ptr<Decompressor> Decompressor::create(quint8 type, const KPDBFile &pdbFile)
 {
     switch (type) {
     case 1:
-        return std::make_unique<NOOPDecompressor>(pdb);
+        return std::make_unique<NOOPDecompressor>(pdbFile);
     case 2:
-        return std::make_unique<RLEDecompressor>(pdb);
+        return std::make_unique<RLEDecompressor>(pdbFile);
     case 'H':
-        return std::make_unique<HuffdicDecompressor>(pdb);
+        return std::make_unique<HuffdicDecompressor>(pdbFile);
     default:
         return nullptr;
     }

@@ -3,6 +3,7 @@
 
 #include "mobipocket.h"
 #include "decompressor.h"
+#include "kpdb.h"
 
 #include <QBuffer>
 #include <QIODevice>
@@ -18,86 +19,18 @@
 namespace Mobipocket
 {
 
-struct PDBPrivate {
-    QList<quint32> recordOffsets;
-    QIODevice *device;
-    QString fileType;
-    quint16 nrecords;
-    bool valid;
-
-    void init();
-};
-
-void PDBPrivate::init()
-{
-    valid = true;
-    quint16 word;
-    quint32 dword;
-    if (!device->seek(0x3c))
-        goto fail;
-    fileType = QString::fromLatin1(device->read(8));
-
-    if (!device->seek(0x4c))
-        goto fail;
-    device->read((char *)&word, 2);
-    nrecords = qFromBigEndian(word);
-
-    for (int i = 0; i < nrecords; i++) {
-        device->read((char *)&dword, 4);
-        recordOffsets.append(qFromBigEndian(dword));
-        device->read((char *)&dword, 4);
-    }
-    return;
-fail:
-    valid = false;
-}
-
-PDB::PDB(QIODevice *device)
-    : d(new PDBPrivate)
-{
-    d->device = device;
-    d->init();
-}
-
-PDB::~PDB()
-{
-    delete d;
-}
-
-QByteArray PDB::getRecord(int i) const
-{
-    if (i >= d->nrecords)
-        return QByteArray();
-    quint32 offset = d->recordOffsets[i];
-    bool last = (i == (d->nrecords - 1));
-    if (!d->device->seek(offset))
-        return QByteArray();
-    if (last)
-        return d->device->readAll();
-    return d->device->read(d->recordOffsets[i + 1] - offset);
-}
-
-bool PDB::isValid() const
-{
-    return d->valid;
-}
-
-int PDB::recordCount() const
-{
-    return d->nrecords;
-}
-
 struct DocumentPrivate 
 {
     DocumentPrivate(QIODevice *d)
-        : pdb(d)
+        : pdbFile()
         , valid(true)
         , firstImageRecord(0)
         , drm(false)
         , thumbnailIndex(0)
     {
+        pdbFile.read(d);
     }
-    PDB pdb;
+    KPDBFile pdbFile;
     std::unique_ptr<Decompressor> dec;
     quint16 ntextrecords;
     quint16 maxRecordSize;
@@ -122,7 +55,7 @@ struct DocumentPrivate
     void parseEXTH(const QByteArray &data);
     void parseHtmlHead(const QString &data);
     QString readEXTHRecord(const QByteArray &data, quint32 &offset);
-    QImage getImageFromRecord(int recnum);
+    QImage imageFromRecordAt(int recnum) const;
 };
 
 void DocumentPrivate::parseHtmlHead(const QString &data)
@@ -157,13 +90,13 @@ void DocumentPrivate::init()
 {
     quint32 encoding = 0;
 
-    valid = pdb.isValid();
+    valid = pdbFile.isValid();
     if (!valid)
         return;
-    QByteArray mhead = pdb.getRecord(0);
+    QByteArray mhead = pdbFile.header().name();
     if (mhead.isNull() || mhead.size() < 14)
         goto fail;
-    dec = Decompressor::create(mhead[1], pdb);
+    dec = Decompressor::create(mhead[1], pdbFile);
     if ((int)mhead[12] != 0 || (int)mhead[13] != 0)
         drm = true;
     if (!dec)
@@ -200,9 +133,9 @@ void DocumentPrivate::init()
     // try getting metadata from HTML if nothing or only title was recovered from MOBI and EXTH records
     if (metadata.size() < 2 && !drm)
 #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
-        parseHtmlHead(toUtf16(dec->decompress(pdb.getRecord(1))));
+        parseHtmlHead(toUtf16(dec->decompress(pdbFile.recordAt(1))));
 #else
-        parseHtmlHead(codec->toUnicode(dec->decompress(pdb.getRecord(1))));
+        parseHtmlHead(codec->toUnicode(dec->decompress(pdbFile.recordAt(1))));
 #endif
     return;
 fail:
@@ -212,8 +145,8 @@ fail:
 void DocumentPrivate::findFirstImage()
 {
     firstImageRecord = ntextrecords + 1;
-    while (firstImageRecord < pdb.recordCount()) {
-        QByteArray rec = pdb.getRecord(firstImageRecord);
+    while (firstImageRecord < pdbFile.header().recordCount()) {
+        auto rec = pdbFile.recordAt(firstImageRecord);
         if (rec.isNull())
             return;
         QBuffer buf(&rec);
@@ -239,9 +172,9 @@ QString DocumentPrivate::readEXTHRecord(const QByteArray &data, quint32 &offset)
     return ret;
 }
 
-QImage DocumentPrivate::getImageFromRecord(int i)
+QImage DocumentPrivate::imageFromRecordAt(int i) const
 {
-    QByteArray rec = pdb.getRecord(i);
+    const auto rec = pdbFile.recordAt(i);
     return (rec.isNull()) ? QImage() : QImage::fromData(rec);
 }
 
@@ -312,7 +245,7 @@ QString Document::text(int size) const
 {
     QByteArray whole;
     for (int i = 1; i < d->ntextrecords + 1; i++) {
-        QByteArray decompressedRecord = d->dec->decompress(d->pdb.getRecord(i));
+        QByteArray decompressedRecord = d->dec->decompress(d->pdbFile.recordAt(i));
         if (decompressedRecord.size() > d->maxRecordSize)
             decompressedRecord.resize(d->maxRecordSize);
         whole += decompressedRecord;
@@ -333,7 +266,7 @@ QString Document::text(int size) const
 int Document::imageCount() const
 {
     // FIXME: don't count FLIS and FCIS records
-    return d->pdb.recordCount() - d->ntextrecords;
+    return d->pdbFile.header().recordCount() - d->ntextrecords;
 }
 
 bool Document::isValid() const
@@ -345,7 +278,7 @@ QImage Document::getImage(int i) const
 {
     if (!d->firstImageRecord)
         d->findFirstImage();
-    return d->getImageFromRecord(d->firstImageRecord + i);
+    return d->imageFromRecordAt(d->firstImageRecord + i);
 }
 
 QMap<Document::MetaKey, QString> Document::metadata() const
@@ -362,11 +295,11 @@ QImage Document::thumbnail() const
 {
     if (!d->firstImageRecord)
         d->findFirstImage();
-    QImage img = d->getImageFromRecord(d->thumbnailIndex + d->firstImageRecord);
+    QImage img = d->imageFromRecordAt(d->thumbnailIndex + d->firstImageRecord);
     // does not work, try first image
     if (img.isNull() && d->thumbnailIndex) {
         d->thumbnailIndex = 0;
-        img = d->getImageFromRecord(d->firstImageRecord);
+        img = d->imageFromRecordAt(d->firstImageRecord);
     }
     return img;
 }

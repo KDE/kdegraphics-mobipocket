@@ -16,6 +16,7 @@ include(ECMGenerateExportHeader)
 include(ECMOptionalAddSubdirectory)
 include(ECMSetupVersion)
 include(ECMDeprecationSettings)
+include(ECMAddTests)
 include(KDEGitCommitHooks)
 include(KDEClangFormat)
 
