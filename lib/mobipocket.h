@@ -38,7 +38,7 @@ struct PDBPrivate;
 class PDB
 {
 public:
-    PDB(Stream *s);
+    explicit PDB(Stream *s);
     ~PDB();
     QString fileType() const;
     int recordCount() const;
@@ -62,7 +62,7 @@ public:
         Subject
     };
     ~Document();
-    Document(Stream *s);
+    explicit Document(Stream *s);
     QMap<MetaKey, QString> metadata() const;
     QString text(int size = -1) const;
     int imageCount() const;
