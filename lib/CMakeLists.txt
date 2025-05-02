@@ -4,6 +4,7 @@ else()
     set(qmobipocket_INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR}/QMobipocket)
 endif()
 
+
 add_library(qmobipocket SHARED)
 set_target_properties(qmobipocket PROPERTIES
     VERSION ${QMOBIPOCKET_VERSION}
@@ -16,9 +17,14 @@ if (QT_MAJOR_VERSION STREQUAL "6")
     )
 endif()
 
+if(BUILD_TESTING)
+    target_compile_definitions(qmobipocket PRIVATE -DBUILD_TESTING)
+endif()
+
 target_sources( qmobipocket PRIVATE
     decompressor.cpp
     mobipocket.cpp
+    kpdb.cpp
 )
 
 if (QT_MAJOR_VERSION STREQUAL "5")

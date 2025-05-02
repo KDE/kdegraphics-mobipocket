@@ -21,3 +21,9 @@ ecm_mark_as_test(decompressortest_bin)
 
 # Run the benchmarks with just 1 iteration during CI, so we known it works
 add_test(NAME decompressortest COMMAND decompressortest_bin "-iterations" "1")
+
+add_definitions(-DDATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}/testdata")
+
+ecm_add_tests(kpdbtest.cpp
+    LINK_LIBRARIES Qt::Test qmobipocket
+)
