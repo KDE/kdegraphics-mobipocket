@@ -25,8 +25,8 @@ private Q_SLOTS:
         QCOMPARE(pdb.header().attributes(), 0);
         QCOMPARE(pdb.header().attributes(), 0);
         QCOMPARE(pdb.header().version(), 0);
-        QCOMPARE(pdb.header().creationTime(), QDateTime(QDate(2022, 02, 05), QTime(22, 53, 52), QTimeZone::UTC));
-        QCOMPARE(pdb.header().modificationTime(), QDateTime(QDate(2022, 02, 05), QTime(22, 53, 52), QTimeZone::UTC));
+        QCOMPARE(pdb.header().creationTime(), QDateTime(QDate(2025, 05, 01), QTime(23, 10, 25), QTimeZone::UTC));
+        QCOMPARE(pdb.header().modificationTime(), QDateTime(QDate(2025, 05, 01), QTime(23, 10, 25), QTimeZone::UTC));
         QCOMPARE(pdb.header().backupTime(), QDateTime::fromSecsSinceEpoch(0, QTimeZone::UTC));
         QCOMPARE(pdb.header().modificationNumber(), 0);
         QCOMPARE(pdb.header().appInfoOffset(), 0);
@@ -54,8 +54,8 @@ private Q_SLOTS:
         QCOMPARE(pdb.header().attributes(), 0);
         QCOMPARE(pdb.header().attributes(), 0);
         QCOMPARE(pdb.header().version(), 0);
-        QCOMPARE(pdb.header().creationTime(), QDateTime(QDate(2017, 04, 25), QTime(07, 51, 28), QTimeZone::UTC));
-        QCOMPARE(pdb.header().modificationTime(), QDateTime(QDate(2017, 04, 25), QTime(07, 51, 28), QTimeZone::UTC));
+        QCOMPARE(pdb.header().creationTime(), QDateTime(QDate(2025, 05, 01), QTime(23, 10, 16), QTimeZone::UTC));
+        QCOMPARE(pdb.header().modificationTime(), QDateTime(QDate(2025, 05, 01), QTime(23, 10, 16), QTimeZone::UTC));
         QCOMPARE(pdb.header().backupTime(), QDateTime::fromSecsSinceEpoch(0, QTimeZone::UTC));
         QCOMPARE(pdb.header().modificationNumber(), 0);
         QCOMPARE(pdb.header().appInfoOffset(), 0);
