@@ -22,7 +22,7 @@ bool Utils::readUint16(QIODevice *device, quint16 &value)
         return false;
     }
 
-    value = (quint16)((quint16)word[0] << 8 | (quint16)word[1]);
+    value = (quint16)((quint8)word[0] << 8 | (quint8)word[1]);
     return true;
 }
 
@@ -33,6 +33,6 @@ bool Utils::readUint32(QIODevice *device, quint32 &value)
         return false;
     }
 
-    value = (quint16)((quint16)word[0] << 24 | (quint16)word[1] << 16 | (quint16)word[2] << 8 | (quint16)word[3]);
+    value = (quint32)((quint8)word[0] << 24 | (quint8)word[1] << 16 | (quint8)word[2] << 8 | (quint8)word[3]);
     return true;
 }

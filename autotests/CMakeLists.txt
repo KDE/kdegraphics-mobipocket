@@ -3,7 +3,6 @@
 
 add_definitions(-DDATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}/testdata")
 
-ecm_add_test(kpdbtest.cpp
-    TEST_NAME kpdbtest
+ecm_add_tests(kpdbtest.cpp metadatatest.cpp
     LINK_LIBRARIES Qt::Test qmobipocket
 )

@@ -304,6 +304,10 @@ bool KPDBFile::isValid() const
 
 QByteArray KPDBFile::recordAt(int record) const
 {
+    if (record >= d->records.size()) {
+        qWarning() << "trying to access record" << record << "but only" << d->records.size() << "exists";
+        return {};
+    }
     return d->records.at(record).data;
 }
 
