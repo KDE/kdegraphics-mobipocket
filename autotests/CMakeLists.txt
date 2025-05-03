@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2025 Carl Schwan <carl@carlschwan.eu>
+# SPDX-Licence-Identifier: BSD-2-Clause
+
 find_package(Qt${QT_MAJOR_VERSION} ${REQUIRED_QT_VERSION} CONFIG REQUIRED Test)
 
 add_executable(bitreadertest_bin bitreadertest.cpp)
@@ -24,6 +27,6 @@ add_test(NAME decompressortest COMMAND decompressortest_bin "-iterations" "1")
 
 add_definitions(-DDATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}/testdata")
 
-ecm_add_tests(kpdbtest.cpp
+ecm_add_tests(kpdbtest.cpp metadatatest.cpp
     LINK_LIBRARIES Qt::Test qmobipocket
 )

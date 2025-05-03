@@ -19,6 +19,9 @@ include(ECMDeprecationSettings)
 include(KDEGitCommitHooks)
 include(KDEClangFormat)
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 set(REQUIRED_QT_VERSION 5.12.0)
 find_package(Qt${QT_MAJOR_VERSION} ${REQUIRED_QT_VERSION} CONFIG REQUIRED Core Gui)
 

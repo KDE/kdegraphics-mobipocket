@@ -4,6 +4,8 @@
 #include "mobipocket.h"
 #include "decompressor.h"
 #include "kpdb_p.h"
+#include "mobiheader_p.h"
+#include "palmdocheader_p.h"
 
 #include <QBuffer>
 #include <QIODevice>
@@ -16,6 +18,115 @@
 #endif
 #include <QtEndian>
 
+template<typename T>
+T safeRead(const QByteArray &data, quint32 offset)
+{
+    if (data.size() < offset + static_cast<quint32>(sizeof(T))) {
+        return 0;
+    }
+    return qFromBigEndian<T>(data.constData() + offset);
+}
+
+namespace
+{
+
+constexpr auto MOBI_HEADER_V7_SIZE = 0xe4;
+constexpr uint MOBI_TITLE_SIZEMAX = 1024;
+
+enum Type {
+    Numeric,
+    String,
+    DateTime,
+    Binary,
+};
+
+struct ExthMetadata {
+    Mobipocket::Document::MetaKey metaKey;
+    Type type;
+    QLatin1String description; // TODO translation?
+};
+
+#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+constexpr auto static exthMetadata = std::to_array<ExthMetadata>({
+#else
+static std::vector<ExthMetadata> exthMetadata = {
+#endif
+    ExthMetadata{Mobipocket::Document::Sample, Numeric, QLatin1String("Sample")},
+        ExthMetadata{Mobipocket::Document::StartThreading, Numeric, QLatin1String("Start offset")},
+        ExthMetadata{Mobipocket::Document::KF8Boundary, Numeric, QLatin1String("K8 Boundary Offset")},
+        ExthMetadata{Mobipocket::Document::CountResources, Numeric, QLatin1String("K8 Resources Count")}, // of , fonts, images
+        ExthMetadata{Mobipocket::Document::RESCOffset, Numeric, QLatin1String("RESC Offset")},
+        ExthMetadata{Mobipocket::Document::CoverOffset, Numeric, QLatin1String("Cover Offset")},
+        ExthMetadata{Mobipocket::Document::ThumbnailOffset, Numeric, QLatin1String("Thumbnail Offset")},
+        ExthMetadata{Mobipocket::Document::HasFakeCover, Numeric, QLatin1String("Has Fake Cover")},
+        ExthMetadata{Mobipocket::Document::CreatorSoftware, Numeric, QLatin1String("Creator Software")},
+        ExthMetadata{Mobipocket::Document::CreatorMajorVersion, Numeric, QLatin1String("Creator Major Version")},
+        ExthMetadata{Mobipocket::Document::CreatorMinorVersion, Numeric, QLatin1String("Creator Minor Version")},
+        ExthMetadata{Mobipocket::Document::CreatorBuild, Numeric, QLatin1String("Creator Build Number")},
+        ExthMetadata{Mobipocket::Document::ClippingLimit, Numeric, QLatin1String("Clipping Limit")},
+        ExthMetadata{Mobipocket::Document::PublisherLimit, Numeric, QLatin1String("Publisher Limit")},
+        ExthMetadata{Mobipocket::Document::TTSDisable, Numeric, QLatin1String("Text-to-Speech Disabled")},
+        ExthMetadata{Mobipocket::Document::Rental, Numeric, QLatin1String("Rental Indicator")},
+        ExthMetadata{Mobipocket::Document::DrmServer, String, QLatin1String("DRM Server ID")},
+        ExthMetadata{Mobipocket::Document::DrmCommerce, String, QLatin1String("DRM Commerce ID")},
+        ExthMetadata{Mobipocket::Document::DrmBookbase, String, QLatin1String("DRM Ebookbase Book ID")},
+        ExthMetadata{Mobipocket::Document::Title, String, QLatin1String("Title")}, ExthMetadata{Mobipocket::Document::Author, String, QLatin1String("Creator")},
+        ExthMetadata{Mobipocket::Document::Publisher, String, QLatin1String("Publisher")},
+        ExthMetadata{Mobipocket::Document::Imprint, String, QLatin1String("Imprint")},
+        ExthMetadata{Mobipocket::Document::Description, String, QLatin1String("Description")},
+        ExthMetadata{Mobipocket::Document::ISBN, String, QLatin1String("ISBN")}, ExthMetadata{Mobipocket::Document::Subject, String, QLatin1String("Subject")},
+        ExthMetadata{Mobipocket::Document::PublishingDate, DateTime, QLatin1String("Published")},
+        ExthMetadata{Mobipocket::Document::Review, String, QLatin1String("Review")},
+        ExthMetadata{Mobipocket::Document::Contributor, String, QLatin1String("Contributor")},
+        ExthMetadata{Mobipocket::Document::Rights, String, QLatin1String("Rights")},
+        ExthMetadata{Mobipocket::Document::SubjectCode, String, QLatin1String("Subject Code")},
+        ExthMetadata{Mobipocket::Document::Type, String, QLatin1String("Type")}, ExthMetadata{Mobipocket::Document::Source, String, QLatin1String("Source")},
+        ExthMetadata{Mobipocket::Document::ASIN, String, QLatin1String("ASIN")},
+        ExthMetadata{Mobipocket::Document::Version, String, QLatin1String("Version Number")},
+        ExthMetadata{Mobipocket::Document::Adult, String, QLatin1String("Adult")}, ExthMetadata{Mobipocket::Document::Price, String, QLatin1String("Price")},
+        ExthMetadata{Mobipocket::Document::Currency, String, QLatin1String("Currency")},
+        ExthMetadata{Mobipocket::Document::FixedLayout, String, QLatin1String("Fixed Layout")},
+        ExthMetadata{Mobipocket::Document::BookType, String, QLatin1String("Book Type")},
+        ExthMetadata{Mobipocket::Document::OrientationLock, String, QLatin1String("Orientation Lock")},
+        ExthMetadata{Mobipocket::Document::OriginalResolution, String, QLatin1String("Original Resolution")},
+        ExthMetadata{Mobipocket::Document::ZeroGutter, String, QLatin1String("Zero Gutter")},
+        ExthMetadata{Mobipocket::Document::ZeroMargin, String, QLatin1String("Zero margin")},
+        ExthMetadata{Mobipocket::Document::KF8CoverUri, String, QLatin1String("K8 Masthead/Cover Image")},
+        ExthMetadata{Mobipocket::Document::RegionMag, String, QLatin1String("Region Magnification")},
+        ExthMetadata{Mobipocket::Document::DictionaryName, String, QLatin1String("Dictionary Short Name")},
+        ExthMetadata{Mobipocket::Document::Watermark, String, QLatin1String("Watermark")},
+        ExthMetadata{Mobipocket::Document::Doctype, String, QLatin1String("Document Type")},
+        ExthMetadata{Mobipocket::Document::LastUpdate, String, QLatin1String("Last Update Time")},
+        ExthMetadata{Mobipocket::Document::UpdatedTitle, String, QLatin1String("Updated Title")},
+        ExthMetadata{Mobipocket::Document::ASIN504, String, QLatin1String("ASIN (504)")},
+        ExthMetadata{Mobipocket::Document::TitleFileAs, String, QLatin1String("Title File As")},
+        ExthMetadata{Mobipocket::Document::CreatorFileAs, String, QLatin1String("Creator File As")},
+        ExthMetadata{Mobipocket::Document::PublisherFileAs, String, QLatin1String("Publisher File As")},
+        ExthMetadata{Mobipocket::Document::Language, String, QLatin1String("Language")},
+        ExthMetadata{Mobipocket::Document::Alignment, String, QLatin1String("Primary Writing Mode")},
+        ExthMetadata{Mobipocket::Document::PageDir, String, QLatin1String("Page Progression Direction")},
+        ExthMetadata{Mobipocket::Document::OverrideKindleFonts, String, QLatin1String("Override Kindle Fonts")},
+        ExthMetadata{Mobipocket::Document::OriginalSourceDescription, String, QLatin1String("Original Source description")},
+        ExthMetadata{Mobipocket::Document::DictionaryInputLanguage, String, QLatin1String("Dictionary Input Language")},
+        ExthMetadata{Mobipocket::Document::DictionaryOutputLanguage, String, QLatin1String("Dictionary Output Language")},
+        ExthMetadata{Mobipocket::Document::InputSource, String, QLatin1String("Input Source")},
+        ExthMetadata{Mobipocket::Document::CreatorBuildRevision, String, QLatin1String("Kindlegen BuildRev Number")},
+        ExthMetadata{Mobipocket::Document::TamperKeys, Binary, QLatin1String("Tamper Proof Keys")},
+        ExthMetadata{Mobipocket::Document::FontSignature, Binary, QLatin1String("Font Signature")},
+        ExthMetadata{Mobipocket::Document::ReadForFree, Binary, QLatin1String("Read For Free")},
+        ExthMetadata{Mobipocket::Document::Unknown403, Binary, QLatin1String("Unknown (403)")},
+        ExthMetadata{Mobipocket::Document::Unknown407, Binary, QLatin1String("Unknown (407)")},
+        ExthMetadata{Mobipocket::Document::Unknown450, Binary, QLatin1String("Unknown (450)")},
+        ExthMetadata{Mobipocket::Document::Unknown451, Binary, QLatin1String("Unknown (451)")},
+        ExthMetadata{Mobipocket::Document::Unknown452, Binary, QLatin1String("Unknown (452)")},
+        ExthMetadata{Mobipocket::Document::Unknown453, Binary, QLatin1String("Unknown (453)")},
+#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+});
+#else
+};
+#endif
+}
+
 namespace Mobipocket
 {
 
@@ -26,14 +137,15 @@ struct DocumentPrivate
     {
     }
     KPDBFile pdbFile;
+    PalmDocHeader palmDocHeader;
+    MobiHeader mobiHeader;
     std::unique_ptr<Decompressor> dec;
-    quint16 ntextrecords = 0;
-    quint16 maxRecordSize = 0;
     bool valid = false;
+    bool isKF8 = false;
 
     // number of first record holding image. Usually it is directly after end of text, but not always
     quint16 firstImageRecord = 0;
-    QMap<Document::MetaKey, QString> metadata;
+    QMap<Document::MetaKey, QVariant> metadata;
 #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
     QStringDecoder toUtf16;
 #else
@@ -106,27 +218,53 @@ namespace {
 
 void DocumentPrivate::init()
 {
-    quint32 encoding = 0;
-
     if (!pdbFile.isValid())
         return;
 
-    QByteArray mhead = pdbFile.header().name();
-    if (mhead.isNull() || mhead.size() < 14)
+    if (pdbFile.header().databaseType() != "TEXt" && pdbFile.header().databaseType() != "BOOK") {
+        qWarning() << "Unsupported file";
+        valid = false;
         return;
+    }
 
-    dec = Decompressor::create(mhead[1], getHuffRecords(pdbFile));
-    if ((int)mhead[12] != 0 || (int)mhead[13] != 0)
-        drm = true;
+    // Parse PalmDoc Header
+    const QByteArray mhead = pdbFile.recordAt(0);
+    if (mhead.isNull() || mhead.size() < 16) {
+        qWarning() << "Empty record0 in mobipocket file";
+        valid = false;
+        return;
+    }
+
+    palmDocHeader.compression = qFromBigEndian<quint16>(mhead.constData());
+    palmDocHeader.textLength = qFromBigEndian<quint32>(mhead.constData() + 4);
+    palmDocHeader.recordCount = qFromBigEndian<quint16>(mhead.constData() + 8);
+    palmDocHeader.recordSize = qFromBigEndian<quint16>(mhead.constData() + 10);
+    palmDocHeader.encryptionType = qFromBigEndian<quint16>(mhead.constData() + 12);
+
+    dec = Decompressor::create(palmDocHeader.compression, getHuffRecords(pdbFile));
     if (!dec)
         return;
 
-    ntextrecords = qFromBigEndian<quint16>(mhead.constData() + 8);
-    maxRecordSize = qFromBigEndian<quint16>(mhead.constData() + 10);
-    if (mhead.size() > 31)
-        encoding = qFromBigEndian<quint32>(mhead.constData() + 28);
+    drm = palmDocHeader.encryptionType != 0;
+
+    // Parse Mobi Header
+    if (mhead.size() <= 20) {
+        valid = false;
+        return;
+    }
+    mobiHeader.mobiMagic = mhead.mid(16, 4);
+    if (mobiHeader.mobiMagic != "MOBI") {
+        valid = false;
+        return;
+    }
+
+    mobiHeader.headerLength = safeRead<quint32>(mhead, 20);
+    quint32 mobiType = safeRead<quint32>(mhead, 24);
+    mobiHeader.mobiType = static_cast<MobiHeader::MobiType>(mobiType);
+    mobiHeader.textEncoding = safeRead<quint32>(mhead, 28);
+
 #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
-    if (encoding == 65001) {
+    if (mobiHeader.textEncoding == 0 || mobiHeader.textEncoding == 65001) {
         toUtf16 = QStringDecoder(QStringDecoder::Utf8);
     } else {
         const auto converterEncoding = QStringConverter::encodingForName("cp1252");
@@ -137,27 +275,128 @@ void DocumentPrivate::init()
         }
     }
 #else
-    if (encoding == 65001)
+    if (mobiHeader.textEncoding == 0 || mobiHeader.textEncoding == 65001)
         codec = QTextCodec::codecForName("UTF-8");
     else
         codec = QTextCodec::codecForName("CP1252");
 #endif
-    if (mhead.size() >= 92)
+
+    mobiHeader.uid = safeRead<quint32>(mhead, 32);
+    mobiHeader.version = safeRead<quint32>(mhead, 36);
+
+    if (mobiHeader.headerLength >= MOBI_HEADER_V7_SIZE && mobiHeader.version == 8) {
+        isKF8 = true;
+    }
+
+    mobiHeader.orthIndex = safeRead<quint32>(mhead, 40);
+    mobiHeader.inflIndex = safeRead<quint32>(mhead, 44);
+    mobiHeader.namesIndex = safeRead<quint32>(mhead, 48);
+    mobiHeader.keysIndex = safeRead<quint32>(mhead, 52);
+    mobiHeader.extra0Index = safeRead<quint32>(mhead, 56);
+    mobiHeader.extra1Index = safeRead<quint32>(mhead, 60);
+    mobiHeader.extra2Index = safeRead<quint32>(mhead, 64);
+    mobiHeader.extra3Index = safeRead<quint32>(mhead, 68);
+    mobiHeader.extra4Index = safeRead<quint32>(mhead, 72);
+    mobiHeader.extra5Index = safeRead<quint32>(mhead, 76);
+    mobiHeader.nonTextIndex = safeRead<quint32>(mhead, 80);
+    mobiHeader.fullNameOffset = safeRead<quint32>(mhead, 84);
+    mobiHeader.fullNameLength = safeRead<quint32>(mhead, 88);
+    mobiHeader.locale = safeRead<quint32>(mhead, 92);
+    mobiHeader.dictInputLang = safeRead<quint32>(mhead, 96);
+    mobiHeader.dictOutputLang = safeRead<quint32>(mhead, 100);
+    mobiHeader.minVersion = safeRead<quint32>(mhead, 104);
+    mobiHeader.imageIndex = safeRead<quint32>(mhead, 108);
+    mobiHeader.huffRecIndex = safeRead<quint32>(mhead, 112);
+    mobiHeader.huffRecCount = safeRead<quint32>(mhead, 116);
+    mobiHeader.datpRecIndex = safeRead<quint32>(mhead, 120);
+    mobiHeader.datpRecCount = safeRead<quint32>(mhead, 124);
+    mobiHeader.exthFlags = safeRead<quint32>(mhead, 128);
+
+    // 32 unknown bytes
+
+    mobiHeader.unknown6 = safeRead<quint32>(mhead, 164);
+    mobiHeader.drmOffset = safeRead<quint32>(mhead, 168);
+    mobiHeader.drmCount = safeRead<quint32>(mhead, 172);
+    mobiHeader.drmSize = safeRead<quint32>(mhead, 176);
+    mobiHeader.drmFlags = safeRead<quint32>(mhead, 180);
+
+    // 8 unknown bytes
+
+    if (isKF8) {
+        mobiHeader.fdstIndex = safeRead<quint32>(mhead, 192);
+    } else {
+        mobiHeader.firstTextIndex = safeRead<quint16>(mhead, 192);
+        mobiHeader.lastTextIndex = safeRead<quint16>(mhead, 194);
+    }
+    mobiHeader.fdstSectionCount = safeRead<quint32>(mhead, 196);
+    mobiHeader.fcisIndex = safeRead<quint32>(mhead, 200);
+    mobiHeader.fcisCount = safeRead<quint32>(mhead, 204);
+    mobiHeader.flisIndex = safeRead<quint32>(mhead, 208);
+    mobiHeader.flisCount = safeRead<quint32>(mhead, 212);
+    mobiHeader.unknown10 = safeRead<quint32>(mhead, 216);
+    mobiHeader.unknown11 = safeRead<quint32>(mhead, 220);
+    mobiHeader.srcsIndex = safeRead<quint32>(mhead, 224);
+    mobiHeader.srcsCount = safeRead<quint32>(mhead, 228);
+    mobiHeader.unknown12 = safeRead<quint32>(mhead, 232);
+    mobiHeader.unknown13 = safeRead<quint32>(mhead, 236);
+
+    // skip 2 bytes
+
+    mobiHeader.extraFlags = safeRead<quint16>(mhead, 242);
+    mobiHeader.ncxIndex = safeRead<quint32>(mhead, 244);
+    if (isKF8) {
+        mobiHeader.fragmentIndex = safeRead<quint32>(mhead, 248);
+        mobiHeader.skeletonIndex = safeRead<quint32>(mhead, 252);
+    } else {
+        mobiHeader.unknown14 = safeRead<quint32>(mhead, 248);
+        mobiHeader.unknown15 = safeRead<quint32>(mhead, 252);
+    }
+    mobiHeader.datpIndex = safeRead<quint32>(mhead, 256);
+    if (isKF8) {
+        mobiHeader.guideIndex = safeRead<quint32>(mhead, 260);
+    } else {
+        mobiHeader.unknown16 = safeRead<quint32>(mhead, 260);
+    }
+
+    mobiHeader.unknown17 = safeRead<quint32>(mhead, 264);
+    mobiHeader.unknown18 = safeRead<quint32>(mhead, 268);
+    mobiHeader.unknown19 = safeRead<quint32>(mhead, 272);
+    mobiHeader.unknown20 = safeRead<quint32>(mhead, 276);
+
+    // try to get name
+    if (mobiHeader.fullNameOffset && mobiHeader.fullNameLength) {
+        const quint32 fullNameLength = std::min(mobiHeader.fullNameLength, MOBI_TITLE_SIZEMAX);
+        if ((mobiHeader.fullNameOffset + fullNameLength) <= mhead.size()) {
+#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+            metadata[Document::Title] = QString(toUtf16(mhead.mid(mobiHeader.fullNameOffset, mobiHeader.fullNameLength)));
+#else
+            metadata[Document::Title] = codec->toUnicode(mhead.mid(mobiHeader.fullNameOffset, mobiHeader.fullNameLength));
+#endif
+        }
+    }
+
+    if (mobiHeader.exthFlags & 0x40) {
         parseEXTH(mhead);
+    }
 
     // try getting metadata from HTML if nothing or only title was recovered from MOBI and EXTH records
-    if (metadata.size() < 2 && !drm)
+    if (metadata.size() < 2 && !drm) {
 #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
         parseHtmlHead(toUtf16(dec->decompress(pdbFile.recordAt(1))));
 #else
         parseHtmlHead(codec->toUnicode(dec->decompress(pdbFile.recordAt(1))));
 #endif
+    }
     valid = true;
 }
 
 void DocumentPrivate::findFirstImage()
 {
-    firstImageRecord = ntextrecords + 1;
+    if (mobiHeader.imageIndex) {
+        firstImageRecord = mobiHeader.imageIndex;
+    } else {
+        firstImageRecord = palmDocHeader.recordCount + 1;
+    }
     while (firstImageRecord < pdbFile.header().recordCount()) {
         auto rec = pdbFile.recordAt(firstImageRecord);
         if (rec.isNull())
@@ -193,19 +432,6 @@ QImage DocumentPrivate::imageFromRecordAt(int i) const
 
 void DocumentPrivate::parseEXTH(const QByteArray &data)
 {
-    // try to get name
-    if (data.size() >= 92) {
-        qint32 nameoffset = qFromBigEndian<quint32>(data.constData() + 84);
-        qint32 namelen = qFromBigEndian<quint32>(data.constData() + 88);
-        if ((nameoffset + namelen) <= data.size()) {
-#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
-            metadata[Document::Title] = toUtf16(data.mid(nameoffset, namelen));
-#else
-            metadata[Document::Title] = codec->toUnicode(data.mid(nameoffset, namelen));
-#endif
-        }
-    }
-
     quint32 exthoffs = qFromBigEndian<quint32>(data.constData() + 20);
 
     if (data.mid(exthoffs + 16, 4) != "EXTH")
@@ -215,28 +441,47 @@ void DocumentPrivate::parseEXTH(const QByteArray &data)
     for (unsigned int i = 0; i < records; i++) {
         if (offset + 4 > quint32(data.size()))
             break;
-        quint32 type = qFromBigEndian<quint32>(data.constData() + offset);
+        auto type = static_cast<Document::MetaKey>(qFromBigEndian<quint32>(data.constData() + offset));
         offset += 4;
-        switch (type) {
-        case 100:
-            metadata[Document::Author] = readEXTHRecord(data, offset);
-            break;
-        case 103:
-            metadata[Document::Description] = readEXTHRecord(data, offset);
-            break;
-        case 105:
-            metadata[Document::Subject] = readEXTHRecord(data, offset);
-            break;
-        case 109:
-            metadata[Document::Copyright] = readEXTHRecord(data, offset);
-            break;
-        case 202:
-            offset += 4;
-            thumbnailIndex = qFromBigEndian<quint32>(data.constData() + offset);
-            offset += 4;
-            break;
-        default:
+
+        auto it = std::find_if(exthMetadata.cbegin(), exthMetadata.cend(), [type](auto metadata) {
+            return metadata.metaKey == type;
+        });
+
+        if (it == exthMetadata.cend()) {
+            // Unknown key
             readEXTHRecord(data, offset);
+            continue;
+        }
+
+        if (it->type == String) {
+            metadata[it->metaKey] = readEXTHRecord(data, offset);
+        } else {
+            quint32 len = qFromBigEndian<quint32>(data.constData() + offset);
+            offset += 4;
+            len -= 8;
+            const auto byteArray = data.mid(offset, len);
+
+            if (it->type == Numeric) {
+                metadata[it->metaKey] =
+                    (quint16)((quint16)byteArray[0] << 24 | (quint16)byteArray[1] << 16 | (quint16)byteArray[2] << 8 | (quint16)byteArray[3]);
+            } else if (it->type == DateTime) {
+                const auto date = QString::fromUtf8(byteArray);
+                metadata[it->metaKey] = QDateTime::fromString(date, Qt::ISODate);
+                if (!metadata[it->metaKey].isValid()) {
+                    metadata[it->metaKey] =
+#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+                        QDateTime::fromString(date.first(date.indexOf(QStringLiteral(".")) + 4) + date.mid(date.indexOf(QStringLiteral(".")) + 7),
+                                              QStringLiteral("yyyy-MM-dd HH:mm:ss.zzzttt"));
+#else
+                        QDateTime::fromString(date.left(date.indexOf(QStringLiteral(".")) + 4) + date.mid(date.indexOf(QStringLiteral(".")) + 7),
+                                              QStringLiteral("yyyy-MM-dd HH:mm:ss.zzzttt"));
+#endif
+                }
+            } else if (it->type == Binary) {
+                metadata[it->metaKey] = QString::fromUtf8(byteArray);
+            }
+            offset += len;
         }
     }
 }
@@ -257,10 +502,10 @@ Document::~Document()
 QString Document::text(int size) const
 {
     QByteArray whole;
-    for (int i = 1; i < d->ntextrecords + 1; i++) {
+    for (int i = 1; i < d->palmDocHeader.recordCount + 1; i++) {
         QByteArray decompressedRecord = d->dec->decompress(d->pdbFile.recordAt(i));
-        if (decompressedRecord.size() > d->maxRecordSize)
-            decompressedRecord.resize(d->maxRecordSize);
+        if (decompressedRecord.size() > d->palmDocHeader.recordSize)
+            decompressedRecord.resize(d->palmDocHeader.recordSize);
         whole += decompressedRecord;
         if (!d->dec->isValid()) {
             d->valid = false;
@@ -279,7 +524,7 @@ QString Document::text(int size) const
 int Document::imageCount() const
 {
     // FIXME: don't count FLIS and FCIS records
-    return d->pdbFile.header().recordCount() - d->ntextrecords;
+    return d->pdbFile.header().recordCount() - d->palmDocHeader.recordCount;
 }
 
 bool Document::isValid() const
@@ -294,7 +539,7 @@ QImage Document::getImage(int i) const
     return d->imageFromRecordAt(d->firstImageRecord + i);
 }
 
-QMap<Document::MetaKey, QString> Document::metadata() const
+QMap<Document::MetaKey, QVariant> Document::metadata() const
 {
     return d->metadata;
 }
@@ -308,13 +553,17 @@ QImage Document::thumbnail() const
 {
     if (!d->firstImageRecord)
         d->findFirstImage();
-    QImage img = d->imageFromRecordAt(d->thumbnailIndex + d->firstImageRecord);
+    const int thumbnailIndex = d->metadata[ThumbnailOffset].toInt();
+    QImage img = d->imageFromRecordAt(thumbnailIndex + d->firstImageRecord);
     // does not work, try first image
-    if (img.isNull() && d->thumbnailIndex) {
-        d->thumbnailIndex = 0;
+    if (img.isNull() && thumbnailIndex) {
         img = d->imageFromRecordAt(d->firstImageRecord);
     }
     return img;
 }
 
+const MobiHeader &Document::mobiHeader() const
+{
+    return d->mobiHeader;
+}
 }
