@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "decompressor.h"
-#include "kpdb.h"
+#include "kpdb_p.h"
 
 #include "bitreader_p.h"
 

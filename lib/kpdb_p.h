@@ -75,6 +75,8 @@ private:
 
 /**
  * This class represents a PDB file.
+ *
+ * See https://en.wikipedia.org/wiki/PDB_(Palm_OS)
  */
 class QMOBIPOCKET_TESTS_EXPORT KPDBFile final
 {

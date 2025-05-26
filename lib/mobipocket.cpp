@@ -3,7 +3,7 @@
 
 #include "mobipocket.h"
 #include "decompressor.h"
-#include "kpdb.h"
+#include "kpdb_p.h"
 
 #include <QBuffer>
 #include <QIODevice>

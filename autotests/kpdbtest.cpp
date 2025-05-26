@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2025 Carl Schwan <carl@carlschwan.eu>
 // SPDX-Licence-Identifier: BSD-2-Clauses
 
-#include "../lib/kpdb.h"
+#include "../lib/kpdb_p.h"
 #include <QFile>
 #include <QObject>
 #include <QTest>

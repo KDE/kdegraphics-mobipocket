@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2025 Carl Schwan <carl@carlschwan.eu>
 // SPDX-License-Identifier: LGPL-2.0-or-later
 
-#include "kpdb.h"
+#include "kpdb_p.h"
 #include "utils.h"
 
 #include <QIODevice>
