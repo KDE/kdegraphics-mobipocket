@@ -26,7 +26,7 @@ private Q_SLOTS:
             metadata[Mobipocket::Document::Subject].toString(),
             QStringLiteral(
                 "Science fiction; Satire; Utopias -- Fiction; Imperialism -- Fiction; Utopian fiction; Space flight to the moon -- Fiction; Moon -- Fiction"));
-        QCOMPARE(metadata[Mobipocket::Document::PublishingDate].toString(), QStringLiteral("2025-04-28 18:16:24.255372+00:00"));
+        QCOMPARE(metadata[Mobipocket::Document::PublishingDate].toDateTime(), QDateTime(QDate(2025, 04, 28), QTime(18, 16, 24, 255), QTimeZone::UTC));
         QCOMPARE(metadata[Mobipocket::Document::Contributor].toString(), QStringLiteral("calibre (8.0.1) [https://calibre-ebook.com]"));
         QCOMPARE(metadata[Mobipocket::Document::Source].toString(), QStringLiteral("calibre:7615562a-570a-432e-a70c-2e00b3294077"));
         QCOMPARE(metadata[Mobipocket::Document::ASIN].toString(), QStringLiteral("7615562a-570a-432e-a70c-2e00b3294077"));
@@ -65,7 +65,7 @@ private Q_SLOTS:
             metadata[Mobipocket::Document::Subject].toString(),
             QStringLiteral(
                 "Science fiction; Satire; Utopias -- Fiction; Imperialism -- Fiction; Utopian fiction; Space flight to the moon -- Fiction; Moon -- Fiction"));
-        QCOMPARE(metadata[Mobipocket::Document::PublishingDate].toString(), QStringLiteral("2025-04-28 18:16:24.255372+00:00"));
+        QCOMPARE(metadata[Mobipocket::Document::PublishingDate].toDateTime(), QDateTime(QDate(2025, 04, 28), QTime(18, 16, 24, 255), QTimeZone::UTC));
         QCOMPARE(metadata[Mobipocket::Document::Contributor].toString(), QStringLiteral("calibre (8.0.1) [https://calibre-ebook.com]"));
         QCOMPARE(metadata[Mobipocket::Document::Source].toString(), QStringLiteral("calibre:7615562a-570a-432e-a70c-2e00b3294077"));
         QCOMPARE(metadata[Mobipocket::Document::ASIN].toString(), QStringLiteral("7615562a-570a-432e-a70c-2e00b3294077"));

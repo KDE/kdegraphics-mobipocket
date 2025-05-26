@@ -25,6 +25,7 @@ constexpr uint MOBI_TITLE_SIZEMAX = 1024;
 enum Type {
     Numeric,
     String,
+    DateTime,
     Binary,
 };
 
@@ -61,7 +62,7 @@ constexpr auto static exthMetadata = std::to_array<ExthMetadata>({
     {Mobipocket::Document::Description, String, QLatin1String("Description")},
     {Mobipocket::Document::ISBN, String, QLatin1String("ISBN")},
     {Mobipocket::Document::Subject, String, QLatin1String("Subject")},
-    {Mobipocket::Document::PublishingDate, String, QLatin1String("Published")},
+    {Mobipocket::Document::PublishingDate, DateTime, QLatin1String("Published")},
     {Mobipocket::Document::Review, String, QLatin1String("Review")},
     {Mobipocket::Document::Contributor, String, QLatin1String("Contributor")},
     {Mobipocket::Document::Rights, String, QLatin1String("Rights")},
@@ -511,7 +512,15 @@ void DocumentPrivate::parseEXTH(const QByteArray &data)
             if (it->type == Numeric) {
                 metadata[it->metaKey] =
                     (quint16)((quint16)byteArray[0] << 24 | (quint16)byteArray[1] << 16 | (quint16)byteArray[2] << 8 | (quint16)byteArray[3]);
-            } else {
+            } else if (it->type == DateTime) {
+                const auto date = QString::fromUtf8(byteArray);
+                metadata[it->metaKey] = QDateTime::fromString(date, Qt::ISODate);
+                if (!metadata[it->metaKey].isValid()) {
+                    metadata[it->metaKey] =
+                        QDateTime::fromString(date.first(date.indexOf(QStringLiteral(".")) + 4) + date.mid(date.indexOf(QStringLiteral(".")) + 7),
+                                              QStringLiteral("yyyy-MM-dd HH:mm:ss.zzzttt"));
+                }
+            } else if (it->type == Binary) {
                 metadata[it->metaKey] = QString::fromUtf8(byteArray);
             }
             offset += len;
