@@ -16,7 +16,6 @@ class Decompressor
 public:
     Decompressor(const PDB &p)
         : pdb(p)
-        , valid(true)
     {
     }
     virtual QByteArray decompress(const QByteArray &data) = 0;
@@ -32,7 +31,7 @@ public:
 
 protected:
     const PDB &pdb;
-    bool valid;
+    bool valid = false;
 };
 }
 #endif

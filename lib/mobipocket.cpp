@@ -91,31 +91,27 @@ struct DocumentPrivate
 {
     DocumentPrivate(QIODevice *d)
         : pdb(d)
-        , valid(true)
-        , firstImageRecord(0)
-        , drm(false)
-        , thumbnailIndex(0)
     {
     }
     PDB pdb;
     std::unique_ptr<Decompressor> dec;
-    quint16 ntextrecords;
-    quint16 maxRecordSize;
-    bool valid;
+    quint16 ntextrecords = 0;
+    quint16 maxRecordSize = 0;
+    bool valid = false;
 
     // number of first record holding image. Usually it is directly after end of text, but not always
-    quint16 firstImageRecord;
+    quint16 firstImageRecord = 0;
     QMap<Document::MetaKey, QString> metadata;
 #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
     QStringDecoder toUtf16;
 #else
     QTextCodec *codec = nullptr;
 #endif
-    bool drm;
+    bool drm = false;
 
     // index of thumbnail in image list. May be specified in EXTH.
     // If not then just use first image and hope for the best
-    int thumbnailIndex;
+    int thumbnailIndex = 0;
 
     void init();
     void findFirstImage();
@@ -157,17 +153,16 @@ void DocumentPrivate::init()
 {
     quint32 encoding = 0;
 
-    valid = pdb.isValid();
-    if (!valid)
+    if (!pdb.isValid())
         return;
     QByteArray mhead = pdb.getRecord(0);
     if (mhead.isNull() || mhead.size() < 14)
-        goto fail;
+        return;
     dec = Decompressor::create(mhead[1], pdb);
     if ((int)mhead[12] != 0 || (int)mhead[13] != 0)
         drm = true;
     if (!dec)
-        goto fail;
+        return;
 
     ntextrecords = qFromBigEndian<quint16>(mhead.constData() + 8);
     maxRecordSize = qFromBigEndian<quint16>(mhead.constData() + 10);
@@ -200,9 +195,7 @@ void DocumentPrivate::init()
 #else
         parseHtmlHead(codec->toUnicode(dec->decompress(pdb.getRecord(1))));
 #endif
-    return;
-fail:
-    valid = false;
+    valid = true;
 }
 
 void DocumentPrivate::findFirstImage()

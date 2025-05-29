@@ -42,6 +42,7 @@ public:
     NOOPDecompressor(const PDB &p)
         : Decompressor(p)
     {
+        valid = true;
     }
     QByteArray decompress(const QByteArray &data) override
     {
@@ -55,6 +56,7 @@ public:
     RLEDecompressor(const PDB &p)
         : Decompressor(p)
     {
+        valid = true;
     }
     QByteArray decompress(const QByteArray &data) override;
 };
@@ -134,30 +136,27 @@ HuffdicDecompressor::HuffdicDecompressor(const PDB &p)
     quint32 huff_num = qFromBigEndian<quint32>(header.constData() + 0x74);
 
     QByteArray huff1 = p.getRecord(huff_ofs);
-    if (huff1.isNull())
-        goto fail;
+    if (!huff1.startsWith("HUFF"))
+        return;
+
     for (unsigned int i = 1; i < huff_num; i++) {
         QByteArray h = p.getRecord(huff_ofs + i);
         if (h.isNull())
-            goto fail;
+            return;
         dicts.append(h);
     }
 
     quint32 off1 = qFromBigEndian<quint32>(huff1.constData() + 16);
     quint32 off2 = qFromBigEndian<quint32>(huff1.constData() + 20);
 
-    if (!huff1.startsWith("HUFF"))
-        goto fail; // krazy:exclude=strings
     if (!dicts[0].startsWith("CDIC"))
-        goto fail; // krazy:exclude=strings
+        return;
 
     entry_bits = qFromBigEndian<quint32>(dicts[0].constData() + 12);
 
     memcpy(dict1, huff1.data() + off1, 256 * 4);
     memcpy(dict2, huff1.data() + off2, 64 * 4);
-    return;
-fail:
-    valid = false;
+    valid = true;
 }
 
 QByteArray HuffdicDecompressor::decompress(const QByteArray &data)
