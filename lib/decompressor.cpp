@@ -203,9 +203,10 @@ void HuffdicDecompressor::unpack(BitReader reader, int depth)
             return;
         quint32 dict_no = r >> entry_bits;
         quint32 off1 = 16 + (r - (dict_no << entry_bits)) * 2;
-        QByteArray dict = dicts[dict_no];
-        quint32 off2 = 16 + (unsigned char)dict[off1] * 256 + (unsigned char)dict[off1 + 1];
-        quint32 blen = (unsigned char)dict[off2] * 256 + (unsigned char)dict[off2 + 1];
+        const QByteArray &dict = dicts.at(dict_no);
+        quint16 off2 = 16 + qFromBigEndian<quint16>(dict.constData() + off1);
+        quint16 blen = qFromBigEndian<quint16>(dict.constData() + off2);
+
         QByteArray slice = dict.mid(off2 + 2, (blen & 0x7fff));
         if (blen & 0x8000)
             buf += slice;
