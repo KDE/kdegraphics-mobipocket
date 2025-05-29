@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <QByteArray>
+#include <QtEndian>
 
 namespace Mobipocket
 {
@@ -10,23 +11,40 @@ class BitReader
 {
 public:
     BitReader(const QByteArray &d)
-        : pos(0)
-        , len(d.size() * 8)
+        : len(d.size() * 8)
         , data(d)
     {
-        data.append(4, '\0');
     }
 
     quint32 read()
     {
-        quint32 g = 0;
-        quint64 r = 0;
-        while (g < 32) {
-            r = (r << 8) | (quint8)data[(pos + g) >> 3];
-            g = g + 8 - ((pos + g) & 7);
+        if (left() <= 0) {
+            return 0;
         }
-        return (r >> (g - 32));
+
+        while (rEndPos - pos < 32) {
+            // r does not hold sufficient data, fetch some more
+            qint64 bytePos = rEndPos / 8;
+
+            if (data.size() - bytePos >= 4) {
+                r <<= 32;
+                r |= qFromBigEndian<quint32>(data.constData() + bytePos);
+                rEndPos += 32;
+            } else if (bytePos < data.size()) {
+                r <<= 8;
+                quint8 d = data.at(bytePos);
+                r |= d;
+                rEndPos += 8;
+            } else {
+                r <<= 8;
+                rEndPos += 8;
+            }
+        }
+
+        quint64 t = r << (64 - (rEndPos - pos));
+        return t >> 32;
     }
+
     bool eat(int n)
     {
         pos += n;
@@ -39,8 +57,10 @@ public:
     }
 
 private:
-    int pos;
-    int len;
+    quint64 r = 0;
+    int pos = 0;
+    int len = 0;
+    int rEndPos = 0; //< position past the LSB of r
     QByteArray data;
 };
 } // namespace Mobipocket
