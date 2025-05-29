@@ -39,8 +39,7 @@ namespace Mobipocket
 class NOOPDecompressor : public Decompressor
 {
 public:
-    NOOPDecompressor(const PDB &p)
-        : Decompressor(p)
+    NOOPDecompressor()
     {
         valid = true;
     }
@@ -53,8 +52,7 @@ public:
 class RLEDecompressor : public Decompressor
 {
 public:
-    RLEDecompressor(const PDB &p)
-        : Decompressor(p)
+    RLEDecompressor()
     {
         valid = true;
     }
@@ -129,7 +127,6 @@ endOfLoop:
 }
 
 HuffdicDecompressor::HuffdicDecompressor(const PDB &p)
-    : Decompressor(p)
 {
     const QByteArray header = p.getRecord(0);
     quint32 huff_ofs = qFromBigEndian<quint32>(header.constData() + 0x70);
@@ -210,9 +207,9 @@ std::unique_ptr<Decompressor> Decompressor::create(quint8 type, const PDB &pdb)
 {
     switch (type) {
     case 1:
-        return std::make_unique<NOOPDecompressor>(pdb);
+        return std::make_unique<NOOPDecompressor>();
     case 2:
-        return std::make_unique<RLEDecompressor>(pdb);
+        return std::make_unique<RLEDecompressor>();
     case 'H':
         return std::make_unique<HuffdicDecompressor>(pdb);
     default:

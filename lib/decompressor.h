@@ -14,14 +14,9 @@ class PDB;
 class Decompressor
 {
 public:
-    Decompressor(const PDB &p)
-        : pdb(p)
-    {
-    }
+    Decompressor() = default;
+    virtual ~Decompressor() = default;
     virtual QByteArray decompress(const QByteArray &data) = 0;
-    virtual ~Decompressor()
-    {
-    }
     bool isValid() const
     {
         return valid;
@@ -30,7 +25,6 @@ public:
     static std::unique_ptr<Decompressor> create(quint8 type, const PDB &pdb);
 
 protected:
-    const PDB &pdb;
     bool valid = false;
 };
 }
