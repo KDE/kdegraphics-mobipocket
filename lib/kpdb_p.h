@@ -12,7 +12,7 @@
 class QIODevice;
 
 struct KPDBFilePrivate;
-struct KPDBHeaderPrivate;
+class KPDBHeaderPrivate;
 class KPDBFile;
 
 /**

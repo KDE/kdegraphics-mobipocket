@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <QtTypes>
+#include <QtGlobal>
 
 class QIODevice;
 

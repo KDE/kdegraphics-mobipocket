@@ -46,7 +46,9 @@ struct KPDBRecord {
     QByteArray data; ///< Record data
 };
 
-struct KPDBHeaderPrivate : public QSharedData {
+class KPDBHeaderPrivate : public QSharedData
+{
+public:
     QByteArray name; ///< offset 0
     quint16 attributes; ///< offset 32
     quint16 version; ///< offset 34
