@@ -4,6 +4,7 @@
 #include "mobipocket.h"
 #include "decompressor.h"
 #include "kpdb_p.h"
+#include "mobiheader_p.h"
 
 #include <QBuffer>
 #include <QIODevice>
@@ -110,82 +111,6 @@ constexpr auto static exthMetadata = std::to_array<ExthMetadata>({
     {Mobipocket::Document::Unknown452, Binary, QLatin1String("Unknown (452)")},
     {Mobipocket::Document::Unknown453, Binary, QLatin1String("Unknown (453)")},
 });
-
-struct MobiHeader {
-    /* MOBI header, offset 16 */
-    QByteArray mobiMagic; /**< 16: M O B I { 77, 79, 66, 73 } */
-    std::optional<quint32> headerLength; /**< 20: the length of the MOBI header, including the previous 4 bytes */
-    std::optional<quint32> mobiType; /**< 24: mobipocket file type */
-    std::optional<quint32> textEncoding; /**< 28: 1252 = CP1252, 65001 = UTF-8 */
-    std::optional<quint32> uid; /**< 32: unique id */
-    std::optional<quint32> version; /**< 36: mobipocket format */
-    std::optional<quint32> orthIndex; /**< 40: section number of orthographic meta index. */
-    std::optional<quint32> inflIndex; /**< 44: section number of inflection meta index. */
-    std::optional<quint32> namesIndex; /**< 48: section number of names meta index. */
-    std::optional<quint32> keysIndex; /**< 52: section number of keys meta index. */
-    std::optional<quint32> extra0Index; /**< 56: section number of extra 0 meta index. */
-    std::optional<quint32> extra1Index; /**< 60: section number of extra 1 meta index. */
-    std::optional<quint32> extra2Index; /**< 64: section number of extra 2 meta index. */
-    std::optional<quint32> extra3Index; /**< 68: section number of extra 3 meta index. */
-    std::optional<quint32> extra4Index; /**< 72: section number of extra 4 meta index. */
-    std::optional<quint32> extra5Index; /**< 76: section number of extra 5 meta index. */
-    std::optional<quint32> nonTextIndex; /**< 80: first record number (starting with 0) that's not the book's text */
-    std::optional<quint32> fullNameOffset; /**< 84: offset in record 0 (not from start of file) of the full name of the book */
-    std::optional<quint32> fullNameLength; /**< 88: length of the full name */
-    std::optional<quint32> locale; /**< 92: first byte is main language: 09 = English, next byte is dialect, 08 = British, 04 = US */
-    std::optional<quint32> dictInputLang; /**< 96: input language for a dictionary */
-    std::optional<quint32> dictOutputLang; /**< 100: output language for a dictionary */
-    std::optional<quint32> minVersion; /**< 104: minimum mobipocket version support needed to read this file. */
-    std::optional<quint32> imageIndex; /**< 108: first record number (starting with 0) that contains an image (sequential) */
-    std::optional<quint32> huffRecIndex; /**< 112: first huffman compression record */
-    std::optional<quint32> huffRecCount; /**< 116: huffman compression records count */
-    std::optional<quint32> datpRecIndex; /**< 120: section number of DATP record */
-    std::optional<quint32> datpRecCount; /**< 124: DATP records count */
-    std::optional<quint32> exthFlags; /**< 128: bitfield. if bit 6 (0x40) is set, then there's an EXTH record */
-    /* 32 unknown bytes, usually 0, related to encryption and unknown6 */
-    /* unknown2 */
-    /* unknown3 */
-    /* unknown4 */
-    /* unknown5 */
-    std::optional<quint32> unknown6; /**< 164: use MOBI_NOTSET , related to encryption*/
-    std::optional<quint32> drmOffset; /**< 168: offset to DRM key info in DRMed files. MOBI_NOTSET if no DRM */
-    std::optional<quint32> drmCount; /**< 172: number of entries in DRM info */
-    std::optional<quint32> drmSize; /**< 176: number of bytes in DRM info */
-    std::optional<quint32> drmFlags; /**< 180: some flags concerning DRM info, bit 0 set if password encryption */
-    /* 8 unknown bytes 0? */
-    /* unknown7 */
-    /* unknown8 */
-    std::optional<quint16> firstTextIndex; /**< 192: section number of first text record */
-    std::optional<quint16> lastTextIndex; /**< 194: */
-    std::optional<quint32> fdstIndex; /**< 192 (KF8) section number of FDST record */
-    // std::optional<quint32> unknown9; /**< 196: */
-    std::optional<quint32> fdstSectionCount; /**< 196 (KF8) */
-    std::optional<quint32> fcisIndex; /**< 200: section number of FCIS record */
-    std::optional<quint32> fcisCount; /**< 204: FCIS records count */
-    std::optional<quint32> flisIndex; /**< 208: section number of FLIS record */
-    std::optional<quint32> flisCount; /**< 212: FLIS records count */
-    std::optional<quint32> unknown10; /**< 216: */
-    std::optional<quint32> unknown11; /**< 220: */
-    std::optional<quint32> srcsIndex; /**< 224: section number of SRCS record */
-    std::optional<quint32> srcsCount; /**< 228: SRCS records count */
-    std::optional<quint32> unknown12; /**< 232: */
-    std::optional<quint32> unknown13; /**< 236: */
-    /* quint16 fill 0 */
-    std::optional<quint16> extraFlags; /**< 242: extra flags */
-    std::optional<quint32> ncxIndex; /**< 244: section number of NCX record  */
-    std::optional<quint32> unknown14; /**< 248: */
-    std::optional<quint32> fragmentIndex; /**< 248 (KF8) section number of fragments record */
-    std::optional<quint32> unknown15; /**< 252: */
-    std::optional<quint32> skeletonIndex; /**< 252 (KF8) section number of SKEL record */
-    std::optional<quint32> datpIndex; /**< 256: section number of DATP record */
-    std::optional<quint32> unknown16; /**< 260: */
-    std::optional<quint32> guideIndex; /**< 260 (KF8) section number of guide record */
-    std::optional<quint32> unknown17; /**< 264: */
-    std::optional<quint32> unknown18; /**< 268: */
-    std::optional<quint32> unknown19; /**< 272: */
-    std::optional<quint32> unknown20; /**< 276: */
-    QByteArray fullName; /**< variable offset (fullNameOffset): full name */
-};
 }
 
 namespace Mobipocket
@@ -207,7 +132,7 @@ struct DocumentPrivate
     quint16 ntextrecords;
     quint16 maxRecordSize;
     bool valid;
-    bool isKF8;
+    bool isKF8 = false;
 
     // number of first record holding image. Usually it is directly after end of text, but not always
     quint16 firstImageRecord;
@@ -275,6 +200,26 @@ static void read32(const QByteArray &data, qsizetype offset, std::optional<quint
     value = (quint32)((quint8)data[offset] << 24 | (quint8)data[offset + 1] << 16 | (quint8)data[offset + 2] << 8 | (quint8)data[offset + 3]);
 }
 
+static void read16(const QByteArray &data, qsizetype offset, quint16 &value)
+{
+    if (data.size() <= offset + 2) {
+        value = 0;
+        return;
+    }
+
+    value = (quint16)((quint8)data[offset] << 8 | (quint8)data[offset + 1]);
+}
+
+static void read32(const QByteArray &data, qsizetype offset, quint32 &value)
+{
+    if (data.size() <= offset + 4) {
+        value = 0;
+        return;
+    }
+
+    value = (quint32)((quint8)data[offset] << 24 | (quint8)data[offset + 1] << 16 | (quint8)data[offset + 2] << 8 | (quint8)data[offset + 3]);
+}
+
 void DocumentPrivate::init()
 {
     valid = pdbFile.isValid();
@@ -293,13 +238,16 @@ void DocumentPrivate::init()
 
     mobiHeader.mobiMagic = mhead.mid(16, 4);
     Q_ASSERT(mobiHeader.mobiMagic == "MOBI");
+
+    quint32 mobiType;
     read32(mhead, 20, mobiHeader.headerLength);
-    read32(mhead, 24, mobiHeader.mobiType);
+    read32(mhead, 24, mobiType);
+    mobiHeader.mobiType = static_cast<MobiHeader::MobiType>(mobiType);
     read32(mhead, 28, mobiHeader.textEncoding);
-    Q_ASSERT(*mobiHeader.textEncoding == 1252 || *mobiHeader.textEncoding == 65001);
+    Q_ASSERT(mobiHeader.textEncoding == 1252 || mobiHeader.textEncoding == 65001);
 
 #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
-    if (!mobiHeader.textEncoding || *mobiHeader.textEncoding == 65001) {
+    if (mobiHeader.textEncoding == 0 || mobiHeader.textEncoding == 65001) {
         toUtf16 = QStringDecoder(QStringDecoder::Utf8);
     } else {
         const auto converterEncoding = QStringConverter::encodingForName("cp1252");
@@ -310,7 +258,7 @@ void DocumentPrivate::init()
         }
     }
 #else
-    if (!mobiHeader.textEncoding || *mobiHeader.textEncoding == 65001)
+    if (mobiHeader.textEncoding == 0 || mobiHeader.textEncoding == 65001)
         codec = QTextCodec::codecForName("UTF-8");
     else
         codec = QTextCodec::codecForName("CP1252");
@@ -319,8 +267,8 @@ void DocumentPrivate::init()
     read32(mhead, 32, mobiHeader.uid);
     read32(mhead, 36, mobiHeader.version);
 
-    if (*mobiHeader.headerLength >= MOBI_HEADER_V7_SIZE && mobiHeader.version && *mobiHeader.version == 8) {
-        isKF8 = 1;
+    if (mobiHeader.headerLength >= MOBI_HEADER_V7_SIZE && mobiHeader.version == 8) {
+        isKF8 = true;
     }
 
     read32(mhead, 40, mobiHeader.orthIndex);
@@ -353,6 +301,7 @@ void DocumentPrivate::init()
     read32(mhead, 168, mobiHeader.drmOffset);
     read32(mhead, 172, mobiHeader.drmCount);
     read32(mhead, 176, mobiHeader.drmSize);
+    read32(mhead, 180, mobiHeader.drmFlags);
 
     // 8 unknown bytes
 
@@ -397,7 +346,7 @@ void DocumentPrivate::init()
     read32(mhead, 276, mobiHeader.unknown20);
 
     if (mobiHeader.fullNameOffset && mobiHeader.fullNameLength) {
-        const quint32 fullNameLength = std::min(*mobiHeader.fullNameLength, MOBI_TITLE_SIZEMAX);
+        const quint32 fullNameLength = std::min(mobiHeader.fullNameLength, MOBI_TITLE_SIZEMAX);
         if (fullNameLength) {
             mobiHeader.fullName = mhead.mid(280, fullNameLength);
         }
@@ -427,7 +376,7 @@ fail:
 void DocumentPrivate::findFirstImage()
 {
     if (mobiHeader.imageIndex) {
-        firstImageRecord = *mobiHeader.imageIndex;
+        firstImageRecord = mobiHeader.imageIndex;
     } else {
         firstImageRecord = ntextrecords + 1;
     }
@@ -604,4 +553,8 @@ QImage Document::thumbnail() const
     return img;
 }
 
+const MobiHeader &Document::mobiHeader() const
+{
+    return d->mobiHeader;
+}
 }

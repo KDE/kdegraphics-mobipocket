@@ -12,10 +12,12 @@
 #include "qmobipocket_export.h"
 
 class QIODevice;
+class MetadataTest;
 
 namespace Mobipocket
 {
 
+struct MobiHeader;
 struct DocumentPrivate;
 class QMOBIPOCKET_EXPORT Document
 {
@@ -126,6 +128,9 @@ public:
 
     Q_DISABLE_COPY(Document);
 private:
+    friend MetadataTest;
+    const MobiHeader &mobiHeader() const;
+
     DocumentPrivate *const d;
 };
 }
