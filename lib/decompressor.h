@@ -34,7 +34,5 @@ protected:
     const PDB &pdb;
     bool valid;
 };
-
-quint32 readBELong(const QByteArray &data, int offset);
 }
 #endif

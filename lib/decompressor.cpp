@@ -10,6 +10,7 @@
 #include "bitreader_p.h"
 
 #include <QList>
+#include <QtEndian>
 
 // clang-format off
 static const unsigned char TOKEN_CODE[256] = {
@@ -125,23 +126,12 @@ endOfLoop:
     return ret;
 }
 
-quint32 readBELong(const QByteArray &data, int offset)
-{
-    quint32 ret = 0;
-    for (int i = 0; i < 4; i++) {
-        ret <<= 8;
-        ret += (unsigned char)data[offset + i];
-    }
-    return ret;
-}
-
 HuffdicDecompressor::HuffdicDecompressor(const PDB &p)
     : Decompressor(p)
 {
-    QByteArray header = p.getRecord(0);
-    quint32 huff_ofs = readBELong(header, 0x70);
-    quint32 huff_num = readBELong(header, 0x74);
-    quint32 off1, off2;
+    const QByteArray header = p.getRecord(0);
+    quint32 huff_ofs = qFromBigEndian<quint32>(header.constData() + 0x70);
+    quint32 huff_num = qFromBigEndian<quint32>(header.constData() + 0x74);
 
     QByteArray huff1 = p.getRecord(huff_ofs);
     if (huff1.isNull())
@@ -153,15 +143,15 @@ HuffdicDecompressor::HuffdicDecompressor(const PDB &p)
         dicts.append(h);
     }
 
-    off1 = readBELong(huff1, 16);
-    off2 = readBELong(huff1, 20);
+    quint32 off1 = qFromBigEndian<quint32>(huff1.constData() + 16);
+    quint32 off2 = qFromBigEndian<quint32>(huff1.constData() + 20);
 
     if (!huff1.startsWith("HUFF"))
         goto fail; // krazy:exclude=strings
     if (!dicts[0].startsWith("CDIC"))
         goto fail; // krazy:exclude=strings
 
-    entry_bits = readBELong(dicts[0], 12);
+    entry_bits = qFromBigEndian<quint32>(dicts[0].constData() + 12);
 
     memcpy(dict1, huff1.data() + off1, 256 * 4);
     memcpy(dict2, huff1.data() + off2, 64 * 4);

@@ -169,14 +169,10 @@ void DocumentPrivate::init()
     if (!dec)
         goto fail;
 
-    ntextrecords = (unsigned char)mhead[8];
-    ntextrecords <<= 8;
-    ntextrecords += (unsigned char)mhead[9];
-    maxRecordSize = (unsigned char)mhead[10];
-    maxRecordSize <<= 8;
-    maxRecordSize += (unsigned char)mhead[11];
+    ntextrecords = qFromBigEndian<quint16>(mhead.constData() + 8);
+    maxRecordSize = qFromBigEndian<quint16>(mhead.constData() + 10);
     if (mhead.size() > 31)
-        encoding = readBELong(mhead, 28);
+        encoding = qFromBigEndian<quint32>(mhead.constData() + 28);
 #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
     if (encoding == 65001) {
         toUtf16 = QStringDecoder(QStringDecoder::Utf8);
@@ -227,7 +223,7 @@ void DocumentPrivate::findFirstImage()
 
 QString DocumentPrivate::readEXTHRecord(const QByteArray &data, quint32 &offset)
 {
-    quint32 len = readBELong(data, offset);
+    quint32 len = qFromBigEndian<quint32>(data.constData() + offset);
     offset += 4;
     len -= 8;
 #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
@@ -249,8 +245,8 @@ void DocumentPrivate::parseEXTH(const QByteArray &data)
 {
     // try to get name
     if (data.size() >= 92) {
-        qint32 nameoffset = readBELong(data, 84);
-        qint32 namelen = readBELong(data, 88);
+        qint32 nameoffset = qFromBigEndian<quint32>(data.constData() + 84);
+        qint32 namelen = qFromBigEndian<quint32>(data.constData() + 88);
         if ((nameoffset + namelen) < data.size()) {
 #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
             metadata[Document::Title] = toUtf16(data.mid(nameoffset, namelen));
@@ -260,16 +256,16 @@ void DocumentPrivate::parseEXTH(const QByteArray &data)
         }
     }
 
-    quint32 exthoffs = readBELong(data, 20) + 16;
+    quint32 exthoffs = qFromBigEndian<quint32>(data.constData() + 20);
 
-    if (data.mid(exthoffs, 4) != "EXTH")
+    if (data.mid(exthoffs + 16, 4) != "EXTH")
         return;
-    quint32 records = readBELong(data, exthoffs + 8);
-    quint32 offset = exthoffs + 12;
+    quint32 records = qFromBigEndian<quint32>(data.constData() + exthoffs + 24);
+    quint32 offset = exthoffs + 28;
     for (unsigned int i = 0; i < records; i++) {
         if (offset + 4 > quint32(data.size()))
             break;
-        quint32 type = readBELong(data, offset);
+        quint32 type = qFromBigEndian<quint32>(data.constData() + offset);
         offset += 4;
         switch (type) {
         case 100:
@@ -286,7 +282,7 @@ void DocumentPrivate::parseEXTH(const QByteArray &data)
             break;
         case 202:
             offset += 4;
-            thumbnailIndex = readBELong(data, offset);
+            thumbnailIndex = qFromBigEndian<quint32>(data.constData() + offset);
             offset += 4;
             break;
         default:
