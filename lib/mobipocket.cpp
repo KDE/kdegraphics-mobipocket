@@ -187,7 +187,7 @@ static void read16(const QByteArray &data, qsizetype offset, std::optional<quint
         return;
     }
 
-    value = (quint16)((quint8)data[offset] << 8 | (quint8)data[offset + 1]);
+    value = qFromBigEndian<quint16>(data.constData() + offset);
 }
 
 static void read32(const QByteArray &data, qsizetype offset, std::optional<quint32> &value)
@@ -197,7 +197,7 @@ static void read32(const QByteArray &data, qsizetype offset, std::optional<quint
         return;
     }
 
-    value = (quint32)((quint8)data[offset] << 24 | (quint8)data[offset + 1] << 16 | (quint8)data[offset + 2] << 8 | (quint8)data[offset + 3]);
+    value = qFromBigEndian<quint32>(data.constData() + offset);
 }
 
 static void read16(const QByteArray &data, qsizetype offset, quint16 &value)
@@ -207,7 +207,7 @@ static void read16(const QByteArray &data, qsizetype offset, quint16 &value)
         return;
     }
 
-    value = (quint16)((quint8)data[offset] << 8 | (quint8)data[offset + 1]);
+    value = qFromBigEndian<quint16>(data.constData() + offset);
 }
 
 static void read32(const QByteArray &data, qsizetype offset, quint32 &value)
@@ -217,7 +217,7 @@ static void read32(const QByteArray &data, qsizetype offset, quint32 &value)
         return;
     }
 
-    value = (quint32)((quint8)data[offset] << 24 | (quint8)data[offset + 1] << 16 | (quint8)data[offset + 2] << 8 | (quint8)data[offset + 3]);
+    value = qFromBigEndian<quint32>(data.constData() + offset);
 }
 
 void DocumentPrivate::init()
