@@ -11,6 +11,7 @@ include(KDECompilerSettings NO_POLICY_SCOPE)
 
 include(CMakePackageConfigHelpers)
 include(FeatureSummary)
+include(ECMAddTests)
 include(ECMGenerateExportHeader)
 include(ECMOptionalAddSubdirectory)
 include(ECMSetupVersion)
@@ -39,6 +40,9 @@ ecm_set_disabled_deprecation_versions(
 )
 
 add_subdirectory(lib)
+if (BUILD_TESTING)
+  add_subdirectory(autotests)
+endif()
 
 set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/${CMAKECONFIG_NAME}")
 
