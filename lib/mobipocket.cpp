@@ -149,6 +149,29 @@ void DocumentPrivate::parseHtmlHead(const QString &data)
         metadata[Document::Description] = descriptionMatch.captured(1);
 }
 
+namespace {
+    const QVector<QByteArray> getHuffRecords(const PDB &pdb)
+    {
+        const QByteArray header = pdb.getRecord(0);
+        if (header[1] != 'H') {
+            return {};
+        }
+
+        quint32 huff_ofs = qFromBigEndian<quint32>(header.constData() + 0x70);
+        quint32 huff_num = qFromBigEndian<quint32>(header.constData() + 0x74);
+
+        QVector<QByteArray> records(huff_num);
+        for (quint32 i = 0; i < huff_num; i++) {
+            if (auto r = pdb.getRecord(huff_ofs + i); r.isNull()) {
+                return {};
+            } else {
+                records[i] = r;
+            }
+        }
+        return records;
+    };
+}
+
 void DocumentPrivate::init()
 {
     quint32 encoding = 0;
@@ -158,7 +181,8 @@ void DocumentPrivate::init()
     QByteArray mhead = pdb.getRecord(0);
     if (mhead.isNull() || mhead.size() < 14)
         return;
-    dec = Decompressor::create(mhead[1], pdb);
+
+    dec = Decompressor::create(mhead[1], getHuffRecords(pdb));
     if ((int)mhead[12] != 0 || (int)mhead[13] != 0)
         drm = true;
     if (!dec)

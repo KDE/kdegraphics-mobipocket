@@ -9,8 +9,6 @@
 namespace Mobipocket
 {
 
-class PDB;
-
 class Decompressor
 {
 public:
@@ -22,7 +20,7 @@ public:
         return valid;
     }
 
-    static std::unique_ptr<Decompressor> create(quint8 type, const PDB &pdb);
+    static std::unique_ptr<Decompressor> create(quint8 type, const QVector<QByteArray> &auxData);
 
 protected:
     bool valid = false;

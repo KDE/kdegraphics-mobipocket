@@ -5,11 +5,10 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "decompressor.h"
-#include "mobipocket.h"
 
 #include "bitreader_p.h"
 
-#include <QList>
+#include <QVector>
 #include <QtEndian>
 
 // clang-format off
@@ -62,12 +61,14 @@ public:
 class HuffdicDecompressor : public Decompressor
 {
 public:
-    HuffdicDecompressor(const PDB &p);
+    HuffdicDecompressor() = delete;
+    HuffdicDecompressor(const HuffdicDecompressor &) = delete;
+    HuffdicDecompressor(const QVector<QByteArray> &huffData);
     QByteArray decompress(const QByteArray &data) override;
 
 private:
     void unpack(BitReader reader, int depth = 0);
-    QList<QByteArray> dicts;
+    const QVector<QByteArray> dicts;
     quint32 entry_bits;
     quint32 dict1[256];
     quint32 dict2[64];
@@ -126,33 +127,29 @@ endOfLoop:
     return ret;
 }
 
-HuffdicDecompressor::HuffdicDecompressor(const PDB &p)
+HuffdicDecompressor::HuffdicDecompressor(const QVector<QByteArray> &huffData)
+    : dicts(huffData.mid(1))
 {
-    const QByteArray header = p.getRecord(0);
-    quint32 huff_ofs = qFromBigEndian<quint32>(header.constData() + 0x70);
-    quint32 huff_num = qFromBigEndian<quint32>(header.constData() + 0x74);
-
-    QByteArray huff1 = p.getRecord(huff_ofs);
-    if (!huff1.startsWith("HUFF"))
+    if (dicts.empty())
         return;
 
-    for (unsigned int i = 1; i < huff_num; i++) {
-        QByteArray h = p.getRecord(huff_ofs + i);
-        if (h.isNull())
-            return;
-        dicts.append(h);
-    }
+    if ((dicts[0].size() < 18) || !dicts[0].startsWith("CDIC"))
+        return;
+
+    const QByteArray &huff1 = huffData[0];
+    if ((huff1.size() < 24) || !huff1.startsWith("HUFF"))
+        return;
 
     quint32 off1 = qFromBigEndian<quint32>(huff1.constData() + 16);
     quint32 off2 = qFromBigEndian<quint32>(huff1.constData() + 20);
-
-    if (!dicts[0].startsWith("CDIC"))
+    if (((off1 + 256 * 4) > huff1.size()) || ((off2 + 64 * 4) > huff1.size()))
         return;
-
-    entry_bits = qFromBigEndian<quint32>(dicts[0].constData() + 12);
 
     memcpy(dict1, huff1.data() + off1, 256 * 4);
     memcpy(dict2, huff1.data() + off2, 64 * 4);
+
+    entry_bits = qFromBigEndian<quint32>(dicts[0].constData() + 12);
+
     valid = true;
 }
 
@@ -203,7 +200,7 @@ fail:
     valid = false;
 }
 
-std::unique_ptr<Decompressor> Decompressor::create(quint8 type, const PDB &pdb)
+std::unique_ptr<Decompressor> Decompressor::create(quint8 type, const QVector<QByteArray> &auxData)
 {
     switch (type) {
     case 1:
@@ -211,7 +208,7 @@ std::unique_ptr<Decompressor> Decompressor::create(quint8 type, const PDB &pdb)
     case 2:
         return std::make_unique<RLEDecompressor>();
     case 'H':
-        return std::make_unique<HuffdicDecompressor>(pdb);
+        return std::make_unique<HuffdicDecompressor>(auxData);
     default:
         return nullptr;
     }
