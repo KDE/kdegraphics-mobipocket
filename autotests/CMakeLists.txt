@@ -21,6 +21,7 @@ target_include_directories(decompressortest_bin
 target_link_libraries(decompressortest_bin
     Qt${QT_MAJOR_VERSION}::Test
     Qt${QT_MAJOR_VERSION}::Gui
+    qmobipocket
 )
 ecm_mark_as_test(decompressortest_bin)
 
