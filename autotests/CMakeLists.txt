@@ -8,3 +8,21 @@ ecm_mark_as_test(bitreadertest_bin)
 
 # Run the benchmarks with just 1 iteration during CI, so we known it works
 add_test(NAME bitreadertest COMMAND bitreadertest_bin "-iterations" "1")
+
+
+add_executable(decompressortest_bin
+    decompressortest.cpp
+    ../lib/decompressor.cpp
+    ../lib/mobipocket.cpp
+)
+target_include_directories(decompressortest_bin
+    PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/../lib
+)
+target_link_libraries(decompressortest_bin
+    Qt${QT_MAJOR_VERSION}::Test
+    Qt${QT_MAJOR_VERSION}::Gui
+)
+ecm_mark_as_test(decompressortest_bin)
+
+# Run the benchmarks with just 1 iteration during CI, so we known it works
+add_test(NAME decompressortest COMMAND decompressortest_bin "-iterations" "1")
