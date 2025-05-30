@@ -48,8 +48,6 @@ void DecompressorTest::testRLE()
 
     auto decompressor = Decompressor::create(2, {});
 
-    QEXPECT_FAIL("repeat", "broken end check", Abort);
-    QEXPECT_FAIL("repeat 2", "broken end check", Abort);
     auto r = decompressor->decompress(data);
     QCOMPARE(r, expected);
 }
