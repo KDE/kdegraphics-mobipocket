@@ -80,21 +80,18 @@ QByteArray RLEDecompressor::decompress(const QByteArray &data)
     QByteArray ret;
     ret.reserve(8192);
 
-    unsigned char token;
-    unsigned short copyLength, N, shift;
-    unsigned short shifted;
     int i = 0;
     int maxIndex = data.size() - 1;
 
     while (i < data.size()) {
-        token = data.at(i++);
+        unsigned char token = data.at(i++);
         switch (TOKEN_CODE[token]) {
         case 0:
             ret.append(token);
             break;
         case 1:
             if ((i + token > maxIndex)) {
-                goto endOfLoop;
+                return ret;
             }
             ret.append(data.mid(i, token));
             i += token;
@@ -104,25 +101,25 @@ QByteArray RLEDecompressor::decompress(const QByteArray &data)
             ret.append(token ^ 0x80);
             break;
         case 3:
-            if (i + 1 > maxIndex) {
-                goto endOfLoop;
-            }
-            N = token;
-            N <<= 8;
-            N += (unsigned char)data.at(i++);
-            copyLength = (N & 7) + 3;
-            shift = (N & 0x3fff) / 8;
-            if ((shift < 1) || (shift > ret.size())) {
-                return ret;
-            }
-            shifted = ret.size() - shift;
-            for (int i = shifted; i < shifted + copyLength; i++) {
-                ret.append(ret.at(i));
+            {
+                if (i > maxIndex) {
+                    return ret;
+                }
+                quint16 N = token << 8;
+                N += (unsigned char)data.at(i++);
+                quint16 copyLength = (N & 7) + 3;
+                quint16 shift = (N & 0x3fff) / 8;
+                if ((shift < 1) || (shift > ret.size())) {
+                    return ret;
+                }
+                auto shifted = ret.size() - shift;
+                for (auto j = shifted; j < shifted + copyLength; j++) {
+                    ret.append(ret.at(j));
+                }
             }
             break;
         }
     }
-endOfLoop:
     return ret;
 }
 
