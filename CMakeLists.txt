@@ -44,7 +44,10 @@ ecm_set_disabled_deprecation_versions(
 
 add_subdirectory(lib)
 if (BUILD_TESTING)
-  add_subdirectory(autotests)
+    add_subdirectory(autotests)
+    if (QT_MAJOR_VERSION STREQUAL "6")
+        add_subdirectory(tools)
+    endif()
 endif()
 
 set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/${CMAKECONFIG_NAME}")

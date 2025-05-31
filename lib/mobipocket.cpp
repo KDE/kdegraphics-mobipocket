@@ -566,4 +566,58 @@ const MobiHeader &Document::mobiHeader() const
 {
     return d->mobiHeader;
 }
+
+QString Document::formatMetadata(Document::MetaKey metaKey, const QVariant &metadata) const
+{
+    auto it = std::find_if(exthMetadata.cbegin(), exthMetadata.cend(), [metaKey](auto metadata) {
+        return metadata.metaKey == metaKey;
+    });
+
+    if (it == exthMetadata.cend()) {
+        return {};
+    }
+
+    if (metadata.userType() == QMetaType::QString) {
+        return QStringLiteral("%1: %2").arg(it->description, metadata.toString());
+    } else if (metadata.userType() == QMetaType::Int) {
+        return QStringLiteral("%1: %2").arg(it->description, QString::number(metadata.toInt()));
+    } else if (metadata.userType() == QMetaType::QDateTime) {
+        return QStringLiteral("%1: %2").arg(it->description, metadata.toDateTime().toString());
+    } else {
+        return QStringLiteral("%1: %2").arg(it->description, QStringLiteral("Unknown type"));
+    }
+}
+
+bool Document::isKF8() const
+{
+    return d->mobiHeader.headerLength >= MOBI_HEADER_V7_SIZE && d->mobiHeader.version == 8;
+}
+
+QString Document::plainText() const
+{
+    const auto input = text();
+
+    QString output;
+    output.reserve(input.size());
+
+    bool insideTag = false;
+    for (QChar ch : input) {
+        if (ch == u'<') {
+            insideTag = true;
+            continue;
+        }
+        if (insideTag) {
+            if (ch == u'>') {
+                insideTag = false;
+            }
+            continue;
+        }
+        if (ch == u'\t') {
+            continue;
+        }
+        output.append(ch);
+    }
+
+    return output;
+}
 }

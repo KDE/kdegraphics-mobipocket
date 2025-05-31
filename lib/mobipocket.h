@@ -123,8 +123,17 @@ public:
     QImage thumbnail() const;
     bool isValid() const;
 
-    // if true then it is impossible to get text of book. Images should still be readable
+    /*! Returns whether it is impossible to get text of book. Images should still be readable */
     bool hasDRM() const;
+
+    /*! Returns whether this document is a KF8 file */
+    bool isKF8() const;
+
+    /*! Returns the plain text content of the document */
+    QString plainText() const;
+
+    /*! \internal */
+    QString formatMetadata(MetaKey metaKey, const QVariant &metadata) const;
 
     Q_DISABLE_COPY(Document);
 private:
