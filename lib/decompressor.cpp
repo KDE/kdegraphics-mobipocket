@@ -91,7 +91,7 @@ QByteArray RLEDecompressor::decompress(const QByteArray &data)
             ret.append(token);
             break;
         case 1:
-            if ((i + token > maxIndex)) {
+            if ((i + token > maxIndex + 1)) {
                 return ret;
             }
             ret.append(data.mid(i, token));

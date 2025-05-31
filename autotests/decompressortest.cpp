@@ -61,6 +61,14 @@ void DecompressorTest::testRLE_data()
     // Token '0x00' is passed verbatim
     QTest::addRow("0x00 * 10") << QByteArray(10, '\x00') << QByteArray(10, '\x00');
 
+    // Tokens in the range 0x01..0x08 denotes the length of raw copied data
+    QTest::addRow("raw 0x01...") << QByteArray("\x01\xff", 2) << QByteArray("\xff", 1);
+    QTest::addRow("raw .0x01...") << QByteArray("d\x01\xc0kj", 5) << QByteArray("d\xc0kj", 4);
+    QTest::addRow("raw .0x02...") << QByteArray("d\x02\xc0kj", 5) << QByteArray("d\xc0kj", 4);
+    QTest::addRow("raw .0x03...") << QByteArray("d\x03\xc0kj", 5) << QByteArray("d\xc0kj", 4);
+    // Short data
+    QTest::addRow("short 0x03...") << QByteArray("d\x03\xc0k", 4) << QByteArray("d", 1);
+
     // Tokens in the range 0x09..0x7f are passed verbatim
     QTest::addRow("0x20 * 20") << QByteArray(20, '\x20') << QByteArray(20, '\x20');
     QTest::addRow("0x7f * 20") << QByteArray(20, '\x7f') << QByteArray(20, '\x7f');
