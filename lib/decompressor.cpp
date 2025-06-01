@@ -183,14 +183,22 @@ void HuffdicDecompressor::unpack(BitReader reader, int depth)
             return;
         quint32 dict_no = quint64(r) >> entry_bits;
         quint32 off1 = 16 + (r - (dict_no << entry_bits)) * 2;
+#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+        QByteArrayView dict = dicts.at(dict_no);
+#else
         const QByteArray &dict = dicts.at(dict_no);
+#endif
         quint16 off2 = 16 + qFromBigEndian<quint16>(dict.constData() + off1);
         quint16 blen = qFromBigEndian<quint16>(dict.constData() + off2);
-        QByteArray slice = dict.mid(off2 + 2, (blen & 0x7fff));
+        auto slice = dict.mid(off2 + 2, (blen & 0x7fff));
         if (blen & 0x8000)
             buf += slice;
         else
+#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+            unpack(BitReader(slice.toByteArray()), depth + 1);
+#else
             unpack(BitReader(slice), depth + 1);
+#endif
     }
     return;
 fail:
