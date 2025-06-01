@@ -209,7 +209,7 @@ void DocumentPrivate::init()
     else
         codec = QTextCodec::codecForName("CP1252");
 #endif
-    if (mhead.size() > 176)
+    if (mhead.size() >= 92)
         parseEXTH(mhead);
 
     // try getting metadata from HTML if nothing or only title was recovered from MOBI and EXTH records
@@ -264,7 +264,7 @@ void DocumentPrivate::parseEXTH(const QByteArray &data)
     if (data.size() >= 92) {
         qint32 nameoffset = qFromBigEndian<quint32>(data.constData() + 84);
         qint32 namelen = qFromBigEndian<quint32>(data.constData() + 88);
-        if ((nameoffset + namelen) < data.size()) {
+        if ((nameoffset + namelen) <= data.size()) {
 #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
             metadata[Document::Title] = toUtf16(data.mid(nameoffset, namelen));
 #else
