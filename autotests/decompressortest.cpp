@@ -7,6 +7,8 @@
 
 #include <QBuffer>
 #include <QTest>
+#include <QVector>
+#include <QtEndian>
 
 using namespace Mobipocket;
 
@@ -19,7 +21,59 @@ private Q_SLOTS:
     void testRLE();
     void testRLE_data();
     void testHuffInit();
+    void testHuffDecompress();
+    void benchmarkHuffDecompress();
 };
+
+namespace {
+    QVector<QByteArray> createHuffIdentityDict()
+    {
+        // Create a Huffman dictionary which maps each input byte to itself
+        static std::array<quint8, 256 * 4> hdict = []() {
+            std::array<quint8, 256 * 4> d;
+            for (size_t i = 0; i < d.size(); i += 4) {
+                // 1. Codelen is 8 bits
+                // 2. Only use the first tree dictionary, set the termination flag
+                d[i] = 8 | 0x80;
+                d[i + 1] = i / 2;
+                d[i + 2] = i / 512;
+            }
+            return d;
+        }();
+
+        QByteArray huff("HUFF", 4);
+        huff.resize(24);
+        qToBigEndian<quint32>(huff.size(), huff.data() + 16);
+#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+        huff.append(QByteArrayView(hdict));
+#else
+        huff.append(QByteArray::fromRawData(reinterpret_cast<char*>(hdict.data()), hdict.size()));
+#endif
+        qToBigEndian<quint32>(huff.size(), huff.data() + 20);
+        huff.append(64 * 4, '\0');
+
+        static std::array<quint8, 256 * (2 + 3)> entries = []() {
+            std::array<quint8, 256 * (2 + 3)> d;
+            for (size_t i = 0; i < 256; i++) {
+                quint16 off = 512 + 3 * i;
+                qToBigEndian<quint16>(off, &d[2 * i]);
+                qToBigEndian<quint16>(0x8001, &d[off]); // len==1 | termination flag
+                d[off + 2] = i;
+            }
+            return d;
+        }();
+
+        QByteArray cdic("CDIC\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0", 16);
+        qToBigEndian<quint32>(32, cdic.data() + 12);
+#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+        cdic.append(QByteArrayView(entries));
+#else
+        cdic.append(QByteArray::fromRawData(reinterpret_cast<char*>(entries.data()), entries.size()));
+#endif
+
+        return {huff, cdic};
+    }
+}
 
 void DecompressorTest::testNoop()
 {
@@ -105,6 +159,46 @@ void DecompressorTest::testHuffInit()
 
         auto decompressor = Decompressor::create('H', {HDic + fill, CDic + fill});
         QVERIFY(!decompressor->isValid());
+    }
+    {
+        auto decompressor = Decompressor::create('H', createHuffIdentityDict());
+        QVERIFY(decompressor->isValid());
+    }
+}
+
+void DecompressorTest::testHuffDecompress()
+{
+    auto decompressor = Decompressor::create('H', createHuffIdentityDict());
+    QVERIFY(decompressor->isValid());
+
+    {
+        auto r = decompressor->decompress(QByteArray("\0", 1));
+        QCOMPARE(r, QByteArray("\0", 1));
+    }
+    {
+        auto r = decompressor->decompress(QByteArray("\1\xcc", 2));
+        QCOMPARE(r, QByteArray("\1\xcc", 2));
+    }
+    {
+        QByteArray d(256, '\0');
+        for (int i = 0; i < d.size(); i++) {
+            d[i] = i;
+        }
+        auto r = decompressor->decompress(d);
+        QCOMPARE(r, d);
+    }
+}
+
+void DecompressorTest::benchmarkHuffDecompress()
+{
+    auto decompressor = Decompressor::create('H', createHuffIdentityDict());
+    QVERIFY(decompressor->isValid());
+
+    QByteArray data(1024, '\x01');
+
+    QBENCHMARK {
+        auto r = decompressor->decompress(data);
+        QCOMPARE(r, data);
     }
 }
 

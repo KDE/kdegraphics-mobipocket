@@ -181,7 +181,7 @@ void HuffdicDecompressor::unpack(BitReader reader, int depth)
             goto fail;
         if (!reader.eat(codelen))
             return;
-        quint32 dict_no = r >> entry_bits;
+        quint32 dict_no = quint64(r) >> entry_bits;
         quint32 off1 = 16 + (r - (dict_no << entry_bits)) * 2;
         const QByteArray &dict = dicts.at(dict_no);
         quint16 off2 = 16 + qFromBigEndian<quint16>(dict.constData() + off1);
