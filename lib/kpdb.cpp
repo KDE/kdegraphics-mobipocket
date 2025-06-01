@@ -106,9 +106,19 @@ QByteArray KPDBHeader::name() const
     return d->name;
 }
 
+void KPDBHeader::setName(const QByteArray &name)
+{
+    d->name = name.leftJustified(PALMDB_NAME_SIZE_MAX, '\0');
+}
+
 quint16 KPDBHeader::attributes() const
 {
     return d->attributes;
+}
+
+void KPDBHeader::setAttributes(quint16 attributes)
+{
+    d->attributes = attributes;
 }
 
 quint16 KPDBHeader::version() const
@@ -116,9 +126,19 @@ quint16 KPDBHeader::version() const
     return d->version;
 }
 
+void KPDBHeader::setVersion(quint16 version)
+{
+    d->version = version;
+}
+
 QDateTime KPDBHeader::creationTime() const
 {
     return fromPdbtime(d->ctime);
+}
+
+void KPDBHeader::setCreationTime(const QDateTime &creationTime)
+{
+    d->ctime = creationTime.toSecsSinceEpoch();
 }
 
 QDateTime KPDBHeader::modificationTime() const
@@ -126,9 +146,19 @@ QDateTime KPDBHeader::modificationTime() const
     return fromPdbtime(d->mtime);
 }
 
+void KPDBHeader::setModificationTime(const QDateTime &modificationTime)
+{
+    d->mtime = modificationTime.toSecsSinceEpoch();
+}
+
 QDateTime KPDBHeader::backupTime() const
 {
     return fromPdbtime(d->btime);
+}
+
+void KPDBHeader::setBackupTime(const QDateTime &backupTime)
+{
+    d->btime = backupTime.toSecsSinceEpoch();
 }
 
 quint32 KPDBHeader::modificationNumber() const
@@ -136,9 +166,19 @@ quint32 KPDBHeader::modificationNumber() const
     return d->modificationNumber;
 }
 
+void KPDBHeader::setModificationNumber(quint32 modificationNumber)
+{
+    d->modificationNumber = modificationNumber;
+}
+
 quint32 KPDBHeader::appInfoOffset() const
 {
     return d->appInfoOffset;
+}
+
+void KPDBHeader::setAppInfoOffset(quint32 appInfoOffset)
+{
+    d->appInfoOffset = appInfoOffset;
 }
 
 quint32 KPDBHeader::sortInfoOffset() const
@@ -146,9 +186,19 @@ quint32 KPDBHeader::sortInfoOffset() const
     return d->sortInfoOffset;
 }
 
+void KPDBHeader::setSortInfoOffset(quint32 sortInfoOffset)
+{
+    d->sortInfoOffset = sortInfoOffset;
+}
+
 QByteArray KPDBHeader::databaseType() const
 {
     return d->type;
+}
+
+void KPDBHeader::setDatabaseType(const QByteArray &databaseType)
+{
+    d->type = databaseType.leftJustified(4, '\0');
 }
 
 QByteArray KPDBHeader::creator() const
@@ -156,9 +206,19 @@ QByteArray KPDBHeader::creator() const
     return d->creator;
 }
 
+void KPDBHeader::setCreator(const QByteArray &creator)
+{
+    d->creator = creator.leftJustified(4, '\0');
+}
+
 quint32 KPDBHeader::uid() const
 {
     return d->uid;
+}
+
+void KPDBHeader::setUid(quint32 uid)
+{
+    d->uid = uid;
 }
 
 quint32 KPDBHeader::nextRecord() const
@@ -166,9 +226,19 @@ quint32 KPDBHeader::nextRecord() const
     return d->nextRecord;
 }
 
+void KPDBHeader::setNextRecord(quint32 nextRecord)
+{
+    d->nextRecord = nextRecord;
+}
+
 quint16 KPDBHeader::recordCount() const
 {
     return d->recordCount;
+}
+
+void KPDBHeader::setRecordCount(quint32 recordCount)
+{
+    d->recordCount = recordCount;
 }
 
 struct KPDBFilePrivate : public QSharedData {
@@ -180,6 +250,9 @@ struct KPDBFilePrivate : public QSharedData {
     bool loadMetadata(QIODevice &device);
     bool loadRecordList(QIODevice &device);
     bool loadRecords(QIODevice &device);
+
+    void writeMetadata(QIODevice &device);
+    void writeRecords(QIODevice &device);
 };
 
 bool KPDBFilePrivate::loadMetadata(QIODevice &device)
@@ -299,6 +372,81 @@ bool KPDBFilePrivate::loadRecords(QIODevice &device)
     return true;
 }
 
+void KPDBFilePrivate::writeMetadata(QIODevice &device)
+{
+    device.write(header.d->name);
+    const auto attributes = qToBigEndian<quint16>(header.d->attributes);
+    device.write(reinterpret_cast<const char *>(&attributes), 2);
+
+    const auto version = qToBigEndian<quint16>(header.d->version);
+    device.write(reinterpret_cast<const char *>(&version), 2);
+
+    const auto ctime = qToBigEndian<quint32>(header.d->ctime);
+    device.write(reinterpret_cast<const char *>(&ctime), 4);
+
+    const auto mtime = qToBigEndian<quint32>(header.d->mtime);
+    device.write(reinterpret_cast<const char *>(&mtime), 4);
+
+    const auto btime = qToBigEndian<quint32>(header.d->btime);
+    device.write(reinterpret_cast<const char *>(&btime), 4);
+
+    const auto modificationNumber = qToBigEndian<quint32>(header.d->modificationNumber);
+    device.write(reinterpret_cast<const char *>(&modificationNumber), 4);
+
+    const auto appInfoOffset = qToBigEndian<quint32>(header.d->appInfoOffset);
+    device.write(reinterpret_cast<const char *>(&appInfoOffset), 4);
+
+    const auto sortInfoOffset = qToBigEndian<quint32>(header.d->sortInfoOffset);
+    device.write(reinterpret_cast<const char *>(&sortInfoOffset), 4);
+
+    device.write(header.d->type);
+    device.write(header.d->creator);
+
+    const auto uid = qToBigEndian<quint32>(header.d->uid);
+    device.write(reinterpret_cast<const char *>(&uid), 4);
+
+    const auto nextRecord = qToBigEndian<quint32>(header.d->nextRecord);
+    device.write(reinterpret_cast<const char *>(&nextRecord), 4);
+
+    const auto recordCount = qToBigEndian<quint16>(header.d->recordCount);
+    device.write(reinterpret_cast<const char *>(&recordCount), 2);
+}
+
+void KPDBFilePrivate::writeRecords(QIODevice &device)
+{
+    constexpr quint32 paddingSize = 2;
+    constexpr quint32 metadataSize = 78;
+    constexpr quint32 recordMetadataSize = 8;
+
+    quint32 offset = metadataSize + recordMetadataSize * records.size() + paddingSize;
+
+    for (const auto &record : records) {
+        if (offset > std::numeric_limits<quint32>::max()) {
+            return;
+        }
+
+        auto offsetBigEndian = qToBigEndian<quint32>(offset);
+        device.write(reinterpret_cast<const char *>(&offsetBigEndian), 4);
+        offset += record.size;
+
+        auto attributesBigEndian = qToBigEndian<quint8>(record.attributes);
+        device.write(reinterpret_cast<const char *>(&attributesBigEndian), 1);
+
+        quint8 h = qToBigEndian<quint8>((record.uid & 0xff0000U) >> 16);
+        quint16 l = qToBigEndian<quint16>(record.uid & 0xffffU);
+
+        device.write(reinterpret_cast<const char *>(&h), 1);
+        device.write(reinterpret_cast<const char *>(&l), 2);
+    }
+
+    const char padding[] = {0, 0};
+    device.write(padding, paddingSize);
+
+    for (const auto &record : records) {
+        device.write(record.data);
+    }
+}
+
 KPDBFile::KPDBFile()
     : d(std::make_unique<KPDBFilePrivate>())
 {
@@ -333,6 +481,19 @@ KPDBFile::KPDBFile(QIODevice &device)
 
 KPDBFile::~KPDBFile() = default;
 
+void KPDBFile::write(QIODevice &device)
+{
+    Q_ASSERT(device.isWritable());
+
+    if (d->header.recordCount() != d->records.size()) {
+        qWarning() << "Number of records don't match";
+        return;
+    }
+
+    d->writeMetadata(device);
+    d->writeRecords(device);
+}
+
 bool KPDBFile::isValid() const
 {
     return d->valid;
@@ -347,7 +508,23 @@ QByteArray KPDBFile::recordAt(int record) const
     return d->records.at(record).data;
 }
 
+void KPDBFile::addRecord(const QByteArray &record, quint8 attributes)
+{
+    return d->records.append(KPDBRecord {
+        0, // ignored will be calculated when writing
+        static_cast<quint32>(record.size()),
+        attributes,
+        static_cast<quint32>(d->records.size()) * 2,
+        record
+    });
+}
+
 KPDBHeader KPDBFile::header() const
 {
     return d->header;
+}
+
+void KPDBFile::setHeader(const KPDBHeader &header)
+{
+    d->header = header;
 }

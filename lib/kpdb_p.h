@@ -32,45 +32,59 @@ public:
 
     /// Get the database name of the file.
     QByteArray name() const;
+    void setName(const QByteArray &name);
 
     /// Get the attributes bitfield of the file.
     quint16 attributes() const;
+    void setAttributes(quint16 attributes);
 
     /// Get the file version of the file.
     quint16 version() const;
+    void setVersion(quint16 version);
 
     /// Get the creation time of the file.
     QDateTime creationTime() const;
+    void setCreationTime(const QDateTime &creationTime);
 
     /// Get the modification time of the file.
     QDateTime modificationTime() const;
+    void setModificationTime(const QDateTime &modificationTime);
 
     /// Get the backup time of the file.
     QDateTime backupTime() const;
+    void setBackupTime(const QDateTime &backupTime);
 
     /// Get the modification number of the file.
     quint32 modificationNumber() const;
+    void setModificationNumber(quint32 modificationNumber);
 
     /// Get the offset to the application info.
     quint32 appInfoOffset() const;
+    void setAppInfoOffset(quint32 appInfoOffset);
 
     /// Get the offset to the sort info.
     quint32 sortInfoOffset() const;
+    void setSortInfoOffset(quint32 sortInfoOffset);
 
     /// Get the database type.
     QByteArray databaseType() const;
+    void setDatabaseType(const QByteArray &databaseType);
 
     /// Get the creator type.
     QByteArray creator() const;
+    void setCreator(const QByteArray &creator);
 
     /// Get the internal uid.
     quint32 uid() const;
+    void setUid(quint32 uid);
 
     /// Not used
     quint32 nextRecord() const;
+    void setNextRecord(quint32 nextRecord);
 
     /// Get the number of records in the file.
     quint16 recordCount() const;
+    void setRecordCount(quint32 recordCount);
 
 private:
     friend KPDBFile;
@@ -101,7 +115,13 @@ public:
     [[nodiscard]] bool isValid() const;
 
     [[nodiscard]] KPDBHeader header() const;
+    void setHeader(const KPDBHeader &header);
+
     [[nodiscard]] QByteArray recordAt(int record) const;
+
+    void addRecord(const QByteArray &record, quint8 attributes = 0);
+
+    void write(QIODevice &device);
 
 private:
     std::unique_ptr<KPDBFilePrivate> const d;
