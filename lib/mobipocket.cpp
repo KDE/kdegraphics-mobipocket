@@ -108,6 +108,7 @@ struct DocumentPrivate
     QTextCodec *codec = nullptr;
 #endif
     bool drm = false;
+    quint32 extraflags = 0;
 
     // index of thumbnail in image list. May be specified in EXTH.
     // If not then just use first image and hope for the best
@@ -211,6 +212,11 @@ void DocumentPrivate::init()
 #endif
     if (mhead.size() >= 92)
         parseEXTH(mhead);
+
+    quint32 exthoffs = qFromBigEndian<quint32>(mhead.constData() + 20);
+    if ((mhead.size() >= 244) && ((exthoffs + 16) > 244)) {
+        extraflags = qFromBigEndian<quint32>(mhead.constData() + 240);
+    }
 
     // try getting metadata from HTML if nothing or only title was recovered from MOBI and EXTH records
     if (metadata.size() < 2 && !drm)
@@ -321,13 +327,66 @@ Document::~Document()
     delete d;
 }
 
+namespace {
+#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+constexpr qsizetype preTrailingDataLength(QByteArrayView data, quint32 flags)
+#else
+qsizetype preTrailingDataLength(QByteArray data, quint32 flags)
+#endif
+{
+    if (flags == 0) {
+        return data.size();
+    }
+
+    for (int i = 31; i > 0; i--) {
+        if ((flags & (1u << i)) == 0) {
+            continue;
+        }
+
+        qsizetype chopN = 0;
+        for (int j = 0; j < 4; j++) {
+            if (j + 1 > data.size()) {
+                return 0;
+            }
+            quint8 l = data.at(data.size() - (j + 1));
+            chopN |= (l & 0x7f) << (7 * j);
+            if (l & 0x80) {
+                break;
+            }
+        }
+        data.chop(std::min<qsizetype>(chopN, data.size()));
+    }
+    if ((flags & 0x1) && !data.isEmpty()) {
+        quint8 l = data.back() & 0x3;
+        data.chop(std::min<qsizetype>(l + 1, data.size()));
+    }
+    return data.size();
+}
+#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+static_assert(preTrailingDataLength({"0\x00", 2}, 0x0) == 2);
+static_assert(preTrailingDataLength({"0\x00", 2}, 0x1) == 1);
+static_assert(preTrailingDataLength({"0\x01", 2}, 0x1) == 0);
+static_assert(preTrailingDataLength({"0\x02", 2}, 0x1) == 0);
+static_assert(preTrailingDataLength({"abcd\x03", 5}, 0x1) == 1);
+static_assert(preTrailingDataLength({"abcd\x81", 5}, 0x2) == 4);
+static_assert(preTrailingDataLength({"\x02\x01", 2}, 0x2) == 0);
+static_assert(preTrailingDataLength({"\x80\x02", 2}, 0x2) == 0);
+static_assert(preTrailingDataLength({"abcd\x85", 5}, 0x2) == 0);
+static_assert(preTrailingDataLength({"abc\x01\x7f\x82", 6}, 0x2) == 4);
+static_assert(preTrailingDataLength({"abc\x01\x80\x02", 6}, 0x2) == 4);
+static_assert(preTrailingDataLength({"abc\x01\x7f\x82", 6}, 0x3) == 2);
+static_assert(preTrailingDataLength({"abc\x81\x80\x02", 6}, 0x6) == 3);
+static_assert(preTrailingDataLength({"abc\x00\x81\x81", 6}, 0x7) == 3);
+#endif
+} // namespace
+
 QString Document::text(int size) const
 {
     QByteArray whole;
     for (int i = 1; i < d->ntextrecords + 1; i++) {
-        QByteArray decompressedRecord = d->dec->decompress(d->pdb.getRecord(i));
-        if (decompressedRecord.size() > d->maxRecordSize)
-            decompressedRecord.resize(d->maxRecordSize);
+        auto record = d->pdb.getRecord(i);
+        record.resize(preTrailingDataLength(record, d->extraflags));
+        QByteArray decompressedRecord = d->dec->decompress(record);
         whole += decompressedRecord;
         if (!d->dec->isValid()) {
             d->valid = false;

@@ -55,7 +55,6 @@ void MobipocketTest::testText()
     const auto expected = QStringLiteral("<html><head></head><body>" //
         "<p height=\"1em\" width=\"0pt\">This is a sample PDF file for KFileMetaData. </p>" //
         "<mbp:pagebreak/><a ></a> <a ></a> <a ></a></body></html>");
-    QEXPECT_FAIL("", "trailing data byte not stripped", Continue);
     QCOMPARE(text, expected);
 }
 
