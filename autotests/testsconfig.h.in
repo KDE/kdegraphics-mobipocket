@@ -1,0 +1,11 @@
+/*
+    SPDX-FileCopyrightText: 2025 Stefan Brüns <stefan.bruens@rwth-aachen.de>
+    SPDX-License-Identifier: LGPL-2.1-or-later
+*/
+
+#ifndef MOBIPOCKET_TESTSCONFIG_H
+#define MOBIPOCKET_TESTSCONFIG_H
+
+#define TESTS_FILES_PATH "@CMAKE_CURRENT_SOURCE_DIR@/testdata"
+
+#endif
