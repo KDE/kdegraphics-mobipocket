@@ -153,6 +153,7 @@ HuffdicDecompressor::HuffdicDecompressor(const QVector<QByteArray> &huffData)
 QByteArray HuffdicDecompressor::decompress(const QByteArray &data)
 {
     buf.clear();
+    buf.reserve(data.size() * 2);
     unpack(BitReader(data));
     return buf;
 }
