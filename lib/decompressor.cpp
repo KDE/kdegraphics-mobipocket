@@ -195,11 +195,7 @@ void HuffdicDecompressor::unpack(BitReader reader, int depth)
         if (blen & 0x8000)
             buf += slice;
         else
-#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
-            unpack(BitReader(slice.toByteArray()), depth + 1);
-#else
             unpack(BitReader(slice), depth + 1);
-#endif
     }
     return;
 fail:
