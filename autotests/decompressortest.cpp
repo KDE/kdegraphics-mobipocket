@@ -9,6 +9,7 @@
 #include <QTest>
 #include <QVector>
 #include <QtEndian>
+#include <array>
 
 using namespace Mobipocket;
 
