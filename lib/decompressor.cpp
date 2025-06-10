@@ -67,13 +67,11 @@ public:
     QByteArray decompress(const QByteArray &data) override;
 
 private:
-    void unpack(BitReader reader, int depth = 0);
+    bool unpack(QByteArray &buf, BitReader reader, int depth) const;
     const QVector<QByteArray> dicts;
     quint32 entry_bits;
     quint32 dict1[256];
     quint32 dict2[64];
-
-    QByteArray buf;
 };
 
 QByteArray RLEDecompressor::decompress(const QByteArray &data)
@@ -152,22 +150,24 @@ HuffdicDecompressor::HuffdicDecompressor(const QVector<QByteArray> &huffData)
 
 QByteArray HuffdicDecompressor::decompress(const QByteArray &data)
 {
-    buf.clear();
+    QByteArray buf;
     buf.reserve(data.size() * 2);
-    unpack(BitReader(data));
+    if (!unpack(buf, BitReader(data), 0)) {
+        valid = false;
+    }
     return buf;
 }
 
-void HuffdicDecompressor::unpack(BitReader reader, int depth)
+bool HuffdicDecompressor::unpack(QByteArray &buf, BitReader reader, int depth) const
 {
     if (depth > 32)
-        goto fail;
+        return false;
     while (reader.left()) {
         quint32 dw = reader.read();
         quint32 v = dict1[dw >> 24];
         quint8 codelen = v & 0x1F;
         if (!codelen)
-            goto fail;
+            return false;
         quint32 code = dw >> (32 - codelen);
         quint32 r = (v >> 8);
         if (!(v & 0x80)) {
@@ -179,9 +179,9 @@ void HuffdicDecompressor::unpack(BitReader reader, int depth)
         }
         r -= code;
         if (!codelen)
-            goto fail;
+            return false;
         if (!reader.eat(codelen))
-            return;
+            return true;
         quint32 dict_no = quint64(r) >> entry_bits;
         quint32 off1 = 16 + (r - (dict_no << entry_bits)) * 2;
 #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
@@ -192,14 +192,13 @@ void HuffdicDecompressor::unpack(BitReader reader, int depth)
         quint16 off2 = 16 + qFromBigEndian<quint16>(dict.constData() + off1);
         quint16 blen = qFromBigEndian<quint16>(dict.constData() + off2);
         auto slice = dict.mid(off2 + 2, (blen & 0x7fff));
-        if (blen & 0x8000)
+        if (blen & 0x8000) {
             buf += slice;
-        else
-            unpack(BitReader(slice), depth + 1);
+        } else {
+            unpack(buf, BitReader(slice), depth + 1);
+        }
     }
-    return;
-fail:
-    valid = false;
+    return true;
 }
 
 std::unique_ptr<Decompressor> Decompressor::create(quint8 type, const QVector<QByteArray> &auxData)
