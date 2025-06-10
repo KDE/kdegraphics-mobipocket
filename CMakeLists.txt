@@ -41,6 +41,7 @@ ecm_set_disabled_deprecation_versions(
 )
 
 add_subdirectory(lib)
+add_subdirectory(tools)
 if (BUILD_TESTING)
   add_subdirectory(autotests)
 endif()
