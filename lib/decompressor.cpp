@@ -11,6 +11,8 @@
 #include <QVector>
 #include <QtEndian>
 
+#include <vector>
+
 // clang-format off
 static const unsigned char TOKEN_CODE[256] = {
 	0, 1, 1, 1,		1, 1, 1, 1,		1, 0, 0, 0,		0, 0, 0, 0,
@@ -67,7 +69,7 @@ public:
     QByteArray decompress(const QByteArray &data) override;
 
 private:
-    bool unpack(QByteArray &buf, BitReader reader, int depth) const;
+    bool unpack(std::vector<char> &buf, BitReader reader, int depth) const;
     const QVector<QByteArray> dicts;
     quint32 entry_bits;
     quint32 dict1[256];
@@ -150,15 +152,15 @@ HuffdicDecompressor::HuffdicDecompressor(const QVector<QByteArray> &huffData)
 
 QByteArray HuffdicDecompressor::decompress(const QByteArray &data)
 {
-    QByteArray buf;
-    buf.reserve(data.size() * 2);
+    std::vector<char> buf;
+    buf.reserve(4096);
     if (!unpack(buf, BitReader(data), 0)) {
         valid = false;
     }
-    return buf;
+    return QByteArray(buf.data(), buf.size());
 }
 
-bool HuffdicDecompressor::unpack(QByteArray &buf, BitReader reader, int depth) const
+bool HuffdicDecompressor::unpack(std::vector<char> &buf, BitReader reader, int depth) const
 {
     if (depth > 32)
         return false;
@@ -193,7 +195,7 @@ bool HuffdicDecompressor::unpack(QByteArray &buf, BitReader reader, int depth) c
         quint16 blen = qFromBigEndian<quint16>(dict.constData() + off2);
         auto slice = dict.mid(off2 + 2, (blen & 0x7fff));
         if (blen & 0x8000) {
-            buf += slice;
+            buf.insert(buf.end(), slice.begin(), slice.end());
         } else {
             unpack(buf, BitReader(slice), depth + 1);
         }
