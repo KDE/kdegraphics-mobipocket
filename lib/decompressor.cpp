@@ -180,8 +180,6 @@ bool HuffdicDecompressor::unpack(std::vector<char> &buf, BitReader reader, int d
             r = dict2[(codelen - 1) * 2 + 1];
         }
         r -= code;
-        if (!codelen)
-            return false;
         if (!reader.eat(codelen))
             return true;
         quint32 dict_no = quint64(r) >> entry_bits;

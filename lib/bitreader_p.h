@@ -22,19 +22,16 @@ public:
 
     quint32 read()
     {
-        if (left() <= 0) {
-            return 0;
-        }
-
         while (rEndPos - pos < 32) {
             // r does not hold sufficient data, fetch some more
             qint64 bytePos = rEndPos / 8;
 
-            if (data.size() - bytePos >= 4) {
+            if (len - rEndPos >= 32) {
                 r <<= 32;
                 r |= qFromBigEndian<quint32>(data.constData() + bytePos);
                 rEndPos += 32;
-            } else if (bytePos < data.size()) {
+                break;
+            } else if (len - rEndPos > 0) {
                 r <<= 8;
                 quint8 d = data.at(bytePos);
                 r |= d;
