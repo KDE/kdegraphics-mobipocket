@@ -19,6 +19,7 @@ endif()
 target_sources( qmobipocket PRIVATE
     decompressor.cpp
     mobipocket.cpp
+    pdb.cpp
 )
 
 if (QT_MAJOR_VERSION STREQUAL "5")
