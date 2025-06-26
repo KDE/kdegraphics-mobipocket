@@ -4,7 +4,6 @@
 #ifndef MOBIPOCKET_H
 #define MOBIPOCKET_H
 
-#include <QByteArray>
 #include <QImage>
 #include <QMap>
 #include <QString>
@@ -15,23 +14,6 @@ class QIODevice;
 
 namespace Mobipocket
 {
-
-struct PDBPrivate;
-class PDB
-{
-public:
-    explicit PDB(QIODevice *device);
-    ~PDB();
-    QString fileType() const;
-    int recordCount() const;
-    QByteArray getRecord(int i) const;
-    bool isValid() const;
-
-    Q_DISABLE_COPY(PDB);
-private:
-    PDBPrivate *const d;
-};
-
 struct DocumentPrivate;
 class QMOBIPOCKET_EXPORT Document
 {

@@ -3,6 +3,7 @@
 
 #include "mobipocket.h"
 #include "decompressor.h"
+#include "pdb_p.h"
 
 #include <QBuffer>
 #include <QIODevice>
@@ -17,75 +18,6 @@
 
 namespace Mobipocket
 {
-
-struct PDBPrivate {
-    QList<quint32> recordOffsets;
-    QIODevice *device;
-    QString fileType;
-    quint16 nrecords;
-    bool valid;
-
-    void init();
-};
-
-void PDBPrivate::init()
-{
-    valid = true;
-    quint16 word;
-    quint32 dword;
-    if (!device->seek(0x3c))
-        goto fail;
-    fileType = QString::fromLatin1(device->read(8));
-
-    if (!device->seek(0x4c))
-        goto fail;
-    device->read((char *)&word, 2);
-    nrecords = qFromBigEndian(word);
-
-    for (int i = 0; i < nrecords; i++) {
-        device->read((char *)&dword, 4);
-        recordOffsets.append(qFromBigEndian(dword));
-        device->read((char *)&dword, 4);
-    }
-    return;
-fail:
-    valid = false;
-}
-
-PDB::PDB(QIODevice *device)
-    : d(new PDBPrivate)
-{
-    d->device = device;
-    d->init();
-}
-
-PDB::~PDB()
-{
-    delete d;
-}
-
-QByteArray PDB::getRecord(int i) const
-{
-    if (i >= d->nrecords)
-        return QByteArray();
-    quint32 offset = d->recordOffsets[i];
-    bool last = (i == (d->nrecords - 1));
-    if (!d->device->seek(offset))
-        return QByteArray();
-    if (last)
-        return d->device->readAll();
-    return d->device->read(d->recordOffsets[i + 1] - offset);
-}
-
-bool PDB::isValid() const
-{
-    return d->valid;
-}
-
-int PDB::recordCount() const
-{
-    return d->nrecords;
-}
 
 struct DocumentPrivate 
 {
