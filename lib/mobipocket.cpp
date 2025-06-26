@@ -118,7 +118,7 @@ struct DocumentPrivate
     void findFirstImage();
     void parseEXTH(const QByteArray &data);
     void parseHtmlHead(const QString &data);
-    QString readEXTHRecord(const QByteArray &data, quint32 &offset);
+    QString readStringRecord(const QByteArray &data);
     QImage getImageFromRecord(int recnum);
 };
 
@@ -244,18 +244,13 @@ void DocumentPrivate::findFirstImage()
     }
 }
 
-QString DocumentPrivate::readEXTHRecord(const QByteArray &data, quint32 &offset)
+QString DocumentPrivate::readStringRecord(const QByteArray &data)
 {
-    quint32 len = qFromBigEndian<quint32>(data.constData() + offset);
-    offset += 4;
-    len -= 8;
 #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
-    QString ret = toUtf16(data.mid(offset, len));
+    return toUtf16(data);
 #else
-    QString ret = codec->toUnicode(data.mid(offset, len));
+    return codec->toUnicode(data);
 #endif
-    offset += len;
-    return ret;
 }
 
 QImage DocumentPrivate::getImageFromRecord(int i)
@@ -286,31 +281,33 @@ void DocumentPrivate::parseEXTH(const QByteArray &data)
     quint32 records = qFromBigEndian<quint32>(data.constData() + exthoffs + 24);
     quint32 offset = exthoffs + 28;
     for (unsigned int i = 0; i < records; i++) {
-        if (offset + 4 > quint32(data.size()))
+        if (offset + 8 > quint32(data.size()))
             break;
         quint32 type = qFromBigEndian<quint32>(data.constData() + offset);
-        offset += 4;
+        quint32 len = qFromBigEndian<quint32>(data.constData() + offset + 4);
+        if (offset + len > quint32(data.size()))
+            break;
         switch (type) {
         case 100:
-            metadata[Document::Author] = readEXTHRecord(data, offset);
+            metadata[Document::Author] = readStringRecord(data.mid(offset + 8, len - 8));
             break;
         case 103:
-            metadata[Document::Description] = readEXTHRecord(data, offset);
+            metadata[Document::Description] = readStringRecord(data.mid(offset + 8, len - 8));
             break;
         case 105:
-            metadata[Document::Subject] = readEXTHRecord(data, offset);
+            metadata[Document::Subject] = readStringRecord(data.mid(offset + 8, len - 8));
             break;
         case 109:
-            metadata[Document::Copyright] = readEXTHRecord(data, offset);
+            metadata[Document::Copyright] = readStringRecord(data.mid(offset + 8, len - 8));
             break;
         case 202:
-            offset += 4;
-            thumbnailIndex = qFromBigEndian<quint32>(data.constData() + offset);
-            offset += 4;
+            thumbnailIndex = qFromBigEndian<quint32>(data.constData() + offset + 8);
             break;
         default:
-            readEXTHRecord(data, offset);
+            // ignore
+            break;
         }
+        offset += len;
     }
 }
 
