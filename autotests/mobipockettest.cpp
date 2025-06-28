@@ -24,6 +24,7 @@ class MobipocketTest : public QObject
 private Q_SLOTS:
     void testMetadata();
     void testText();
+    void testThumbnail();
 };
 
 void MobipocketTest::testMetadata()
@@ -56,6 +57,19 @@ void MobipocketTest::testText()
         "<p height=\"1em\" width=\"0pt\">This is a sample PDF file for KFileMetaData. </p>" //
         "<mbp:pagebreak/><a ></a> <a ></a> <a ></a></body></html>");
     QCOMPARE(text, expected);
+}
+
+void MobipocketTest::testThumbnail()
+{
+    QFile file(testFilePath(QStringLiteral("test.mobi")));
+    file.open(QFile::ReadOnly);
+    Mobipocket::Document doc(&file);
+
+    QVERIFY(doc.isValid());
+
+    const auto thumb = doc.thumbnail();
+    QCOMPARE(thumb.width(), 179);
+    QCOMPARE(thumb.height(), 233);
 }
 
 QTEST_GUILESS_MAIN(MobipocketTest)
