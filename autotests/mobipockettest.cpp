@@ -8,6 +8,8 @@
 
 #include <QTest>
 
+#include <QBuffer>
+
 using namespace Mobipocket;
 
 namespace {
@@ -25,6 +27,7 @@ private Q_SLOTS:
     void testMetadata();
     void testText();
     void testThumbnail();
+    void testTruncation();
 };
 
 void MobipocketTest::testMetadata()
@@ -85,6 +88,25 @@ void MobipocketTest::testThumbnail()
     // Unfortunately allowed by API, fix occasionally and bump ABI version
     const auto invalid2 = doc.getImage(-10);
     QCOMPARE(invalid2.width(), 0);
+}
+
+void MobipocketTest::testTruncation()
+{
+    QFile file(testFilePath(QStringLiteral("test.mobi")));
+    file.open(QFile::ReadOnly);
+    auto data = file.readAll();
+
+    QCOMPARE(data.size(), 13653);
+
+    for (auto size = data.size(); size >= 0; size--) {
+        QBuffer buf;
+        buf.setData(data.constData(), size);
+        buf.open(QIODevice::ReadOnly);
+
+        Mobipocket::Document doc(&buf);
+        const auto metadata = doc.metadata();
+        const auto text = doc.text();
+    }
 }
 
 QTEST_GUILESS_MAIN(MobipocketTest)
