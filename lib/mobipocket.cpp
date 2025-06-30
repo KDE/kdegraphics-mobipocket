@@ -325,7 +325,7 @@ QString Document::text(int size) const
 #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
     return d->toUtf16(whole);
 #else
-    return d->codec->toUnicode(whole);
+    return d->codec ? d->codec->toUnicode(whole) : QString();
 #endif
 }
 
