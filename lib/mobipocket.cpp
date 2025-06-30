@@ -200,6 +200,9 @@ void DocumentPrivate::parseEXTH(const QByteArray &data)
     }
 
     quint32 exthoffs = qFromBigEndian<quint32>(data.constData() + 20);
+    if (exthoffs + 28 > quint32(data.size())) {
+        return;
+    }
 
     if (data.mid(exthoffs + 16, 4) != "EXTH")
         return;
