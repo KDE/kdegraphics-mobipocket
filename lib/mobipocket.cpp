@@ -144,9 +144,11 @@ void DocumentPrivate::init()
     if (mhead.size() >= 92)
         parseEXTH(mhead);
 
-    quint32 exthoffs = qFromBigEndian<quint32>(mhead.constData() + 20);
-    if ((mhead.size() >= 244) && ((exthoffs + 16) > 244)) {
-        extraflags = qFromBigEndian<quint32>(mhead.constData() + 240);
+    if (mhead.size() >= 244) {
+        quint32 exthoffs = qFromBigEndian<quint32>(mhead.constData() + 20);
+        if ((exthoffs + 16) > 244) {
+            extraflags = qFromBigEndian<quint32>(mhead.constData() + 240);
+        }
     }
 
     // try getting metadata from HTML if nothing or only title was recovered from MOBI and EXTH records
