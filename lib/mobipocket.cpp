@@ -119,7 +119,6 @@ struct DocumentPrivate
     void parseEXTH(const QByteArray &data);
     void parseHtmlHead(const QString &data);
     QString readStringRecord(const QByteArray &data);
-    QImage getImageFromRecord(int recnum);
 };
 
 void DocumentPrivate::parseHtmlHead(const QString &data)
@@ -251,12 +250,6 @@ QString DocumentPrivate::readStringRecord(const QByteArray &data)
 #else
     return codec->toUnicode(data);
 #endif
-}
-
-QImage DocumentPrivate::getImageFromRecord(int i)
-{
-    QByteArray rec = pdb.getRecord(i);
-    return (rec.isNull()) ? QImage() : QImage::fromData(rec);
 }
 
 void DocumentPrivate::parseEXTH(const QByteArray &data)
@@ -414,7 +407,14 @@ QImage Document::getImage(int i) const
 {
     if (!d->firstImageRecord)
         d->findFirstImage();
-    return d->getImageFromRecord(d->firstImageRecord + i);
+
+    if ((i < 0) || (i > std::numeric_limits<quint16>::max()) //
+        || (d->firstImageRecord + i) >= d->pdb.recordCount()) {
+        return {};
+    }
+
+    QByteArray rec = d->pdb.getRecord(d->firstImageRecord + i);
+    return (rec.isNull()) ? QImage() : QImage::fromData(rec);
 }
 
 QMap<Document::MetaKey, QString> Document::metadata() const
@@ -429,13 +429,12 @@ bool Document::hasDRM() const
 
 QImage Document::thumbnail() const
 {
-    if (!d->firstImageRecord)
-        d->findFirstImage();
-    QImage img = d->getImageFromRecord(d->thumbnailIndex + d->firstImageRecord);
+    QImage img = getImage(d->thumbnailIndex);
+
     // does not work, try first image
     if (img.isNull() && d->thumbnailIndex) {
         d->thumbnailIndex = 0;
-        img = d->getImageFromRecord(d->firstImageRecord);
+        img = getImage(0);
     }
     return img;
 }

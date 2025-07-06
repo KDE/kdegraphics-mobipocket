@@ -70,6 +70,21 @@ void MobipocketTest::testThumbnail()
     const auto thumb = doc.thumbnail();
     QCOMPARE(thumb.width(), 179);
     QCOMPARE(thumb.height(), 233);
+
+    QVERIFY(doc.imageCount() >= 2);
+    // Thumbnail is second image
+    QCOMPARE(thumb, doc.getImage(1));
+
+    const auto cover = doc.getImage(0);
+    QCOMPARE(cover.width(), 566);
+    QCOMPARE(cover.height(), 734);
+
+    // Should not crash
+    const auto invalid1 = doc.getImage(doc.imageCount() + 1);
+    QCOMPARE(invalid1.width(), 0);
+    // Unfortunately allowed by API, fix occasionally and bump ABI version
+    const auto invalid2 = doc.getImage(-10);
+    QCOMPARE(invalid2.width(), 0);
 }
 
 QTEST_GUILESS_MAIN(MobipocketTest)
