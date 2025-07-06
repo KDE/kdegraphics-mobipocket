@@ -92,6 +92,11 @@ namespace {
         quint32 huff_ofs = qFromBigEndian<quint32>(header.constData() + 0x70);
         quint32 huff_num = qFromBigEndian<quint32>(header.constData() + 0x74);
 
+        // Check for overflow and out-of-bounds access
+        if (((huff_ofs + huff_num) < huff_num) || ((huff_ofs + huff_num) > pdb.recordCount())) {
+            return {};
+        }
+
         QVector<QByteArray> records(huff_num);
         for (quint32 i = 0; i < huff_num; i++) {
             if (auto r = pdb.getRecord(huff_ofs + i); r.isNull()) {
