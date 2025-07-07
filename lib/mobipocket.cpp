@@ -4,6 +4,7 @@
 #include "mobipocket.h"
 #include "decompressor.h"
 #include "pdb_p.h"
+#include "qmobipocket_debug.h"
 
 #include <QBuffer>
 #include <QIODevice>
@@ -133,10 +134,9 @@ void DocumentPrivate::init()
     if (encoding == 65001) {
         toUtf16 = QStringDecoder(QStringDecoder::Utf8);
     } else {
-        const auto converterEncoding = QStringConverter::encodingForName("cp1252");
-        if (converterEncoding) {
-            toUtf16 = QStringDecoder(*converterEncoding);
-        } else {
+        toUtf16 = QStringDecoder("windows-1252");
+        if (!toUtf16.isValid()) {
+            qCWarning(QMOBIPOCKET_LOG) << "Text codec \"windows-1252\" not supported by Qt library, falling back to Latin1";
             toUtf16 = QStringDecoder(QStringConverter::Latin1);
         }
     }
