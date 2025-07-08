@@ -4,6 +4,14 @@ else()
     set(qmobipocket_INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR}/QMobipocket)
 endif()
 
+ecm_qt_declare_logging_category(debug_SRCS
+    HEADER qmobipocket_debug.h
+    IDENTIFIER QMOBIPOCKET_LOG
+    CATEGORY_NAME org.kde.mobipocket
+    DESCRIPTION "Mobipocket"
+    EXPORT QMOBIPOCKET
+)
+
 add_library(qmobipocket SHARED)
 set_target_properties(qmobipocket PROPERTIES
     VERSION ${QMOBIPOCKET_VERSION}
@@ -20,6 +28,7 @@ target_sources( qmobipocket PRIVATE
     decompressor.cpp
     mobipocket.cpp
     pdb.cpp
+    ${debug_SRCS}
 )
 
 if (QT_MAJOR_VERSION STREQUAL "5")
@@ -65,3 +74,9 @@ install(FILES
 )
 
 install(TARGETS qmobipocket EXPORT QMobipocketTargets ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
+
+ecm_qt_install_logging_categories(
+    EXPORT QMOBIPOCKET
+    FILE qmobipocket.categories
+    DESTINATION ${KDE_INSTALL_LOGGINGCATEGORIESDIR}
+)
