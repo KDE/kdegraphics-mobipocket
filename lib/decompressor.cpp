@@ -146,6 +146,8 @@ HuffdicDecompressor::HuffdicDecompressor(const QVector<QByteArray> &huffData)
     memcpy(dict2, huff1.data() + off2, 64 * 4);
 
     entry_bits = qFromBigEndian<quint32>(dicts[0].constData() + 12);
+    if (entry_bits > 32)
+        return;
 
     valid = true;
 }
@@ -164,6 +166,10 @@ bool HuffdicDecompressor::unpack(std::vector<char> &buf, BitReader reader, int d
 {
     if (depth > 32)
         return false;
+
+    auto dict_count = dicts.size();
+    quint32 entry_mask = (quint64(1) << entry_bits) - 1;
+
     while (reader.left()) {
         quint32 dw = reader.read();
         quint32 v = dict1[dw >> 24];
@@ -183,14 +189,31 @@ bool HuffdicDecompressor::unpack(std::vector<char> &buf, BitReader reader, int d
         if (!reader.eat(codelen))
             return true;
         quint32 dict_no = quint64(r) >> entry_bits;
-        quint32 off1 = 16 + (r - (dict_no << entry_bits)) * 2;
+        if (dict_no >= dict_count) {
+            return false;
+        }
 #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
         QByteArrayView dict = dicts.at(dict_no);
 #else
         const QByteArray &dict = dicts.at(dict_no);
 #endif
+        auto dict_size = dict.size();
+
+        quint32 off1 = 16 + (r & entry_mask) * 2;
+        if ((off1 + 2) >= dict_size) {
+            return false;
+        }
+
         quint16 off2 = 16 + qFromBigEndian<quint16>(dict.constData() + off1);
+        if ((off2 + 2) >= dict_size) {
+            return false;
+        }
+
         quint16 blen = qFromBigEndian<quint16>(dict.constData() + off2);
+        if (off2 + 2 + (blen & 0x7fff) > dict_size) {
+            return false;
+        }
+
         auto slice = dict.mid(off2 + 2, (blen & 0x7fff));
         if (blen & 0x8000) {
             buf.insert(buf.end(), slice.begin(), slice.end());
