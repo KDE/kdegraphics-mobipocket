@@ -218,7 +218,9 @@ bool HuffdicDecompressor::unpack(std::vector<char> &buf, BitReader reader, int d
         if (blen & 0x8000) {
             buf.insert(buf.end(), slice.begin(), slice.end());
         } else {
-            unpack(buf, BitReader(slice), depth + 1);
+            if (!unpack(buf, BitReader(slice), depth + 1)) {
+                return false;
+            }
         }
     }
     return true;
