@@ -164,8 +164,14 @@ QByteArray HuffdicDecompressor::decompress(const QByteArray &data)
 
 bool HuffdicDecompressor::unpack(std::vector<char> &buf, BitReader reader, int depth) const
 {
-    if (depth > 32)
+    // These two checks are fairly arbitrary, due to lack of an actual specification
+    // Both exceed typical real world files by far, but are useful to protect against
+    // 'ZIP bomb' style attacks
+    if (depth > 32) {
         return false;
+    } else if (buf.size() > 16 * 1024 * 1024) {
+        return false;
+    }
 
     auto dict_count = dicts.size();
     quint32 entry_mask = (quint64(1) << entry_bits) - 1;
