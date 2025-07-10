@@ -23,6 +23,7 @@ private Q_SLOTS:
     void testRLE_data();
     void testHuffInit();
     void testHuffDecompress();
+    void testFuzzHuff();
     void benchmarkHuffDecompress();
 };
 
@@ -200,6 +201,50 @@ void DecompressorTest::benchmarkHuffDecompress()
     QBENCHMARK {
         auto r = decompressor->decompress(data);
         QCOMPARE(r, data);
+    }
+}
+
+void DecompressorTest::testFuzzHuff()
+{
+    auto verify = [](const auto &decompressor) {
+        QByteArray d(256, '\0');
+        for (int i = 0; i < d.size(); i++) {
+            d[i] = i;
+        }
+        // The output does not matter and is likely
+        // just garbage, but it should not crash
+        auto r = decompressor->decompress(d);
+    };
+
+    auto dict = createHuffIdentityDict();
+
+    for (auto i = dict.at(0).size() - 1; i >= 0; i--) {
+        unsigned char originalValue = dict.at(0).at(i);
+
+        {
+            dict[0][i] = originalValue ^ 0xff;
+            auto decompressor = Decompressor::create('H', dict);
+            verify(decompressor);
+        }
+
+        if ((originalValue == 0) || (originalValue == 0xff)) {
+            dict[0][i] = originalValue;
+            continue;
+        }
+
+        {
+            dict[0][i] = 0;
+            auto decompressor = Decompressor::create('H', dict);
+            verify(decompressor);
+        }
+
+        {
+            dict[0][i] = static_cast<unsigned char>(0xff);
+            auto decompressor = Decompressor::create('H', dict);
+            verify(decompressor);
+        }
+
+        dict[0][i] = originalValue;
     }
 }
 
