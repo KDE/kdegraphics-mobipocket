@@ -54,6 +54,7 @@ void MobipocketTest::testText()
     Mobipocket::Document doc(&file);
 
     QVERIFY(doc.isValid());
+    QVERIFY(!doc.hasDRM());
 
     const auto text = doc.text();
     const auto expected = QStringLiteral("<html><head></head><body>" //
