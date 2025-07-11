@@ -1,8 +1,8 @@
-find_package(Qt${QT_MAJOR_VERSION} ${REQUIRED_QT_VERSION} CONFIG REQUIRED Test)
+find_package(Qt6 ${REQUIRED_QT_VERSION} CONFIG REQUIRED Test)
 
 add_executable(bitreadertest_bin bitreadertest.cpp)
 target_link_libraries(bitreadertest_bin
-    Qt${QT_MAJOR_VERSION}::Test
+    Qt6::Test
 )
 ecm_mark_as_test(bitreadertest_bin)
 
@@ -15,7 +15,7 @@ add_executable(decompressortest_bin
     ../lib/decompressor.cpp
 )
 target_link_libraries(decompressortest_bin
-    Qt${QT_MAJOR_VERSION}::Test
+    Qt6::Test
 )
 ecm_mark_as_test(decompressortest_bin)
 
@@ -28,6 +28,6 @@ configure_file(testsconfig.h.in
 ecm_add_test(mobipockettest.cpp
     TEST_NAME "mobipockettest"
     LINK_LIBRARIES
-        Qt${QT_MAJOR_VERSION}::Test
+        Qt6::Test
         qmobipocket
 )

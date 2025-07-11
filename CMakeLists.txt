@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.16 FATAL_ERROR)
 
 project(mobipocket VERSION 3.0.0)
 
-find_package(ECM 5.92.0 REQUIRED NO_MODULE)
+find_package(ECM 6.0 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH} )
 
 include(KDEInstallDirs)
@@ -20,14 +20,10 @@ include(ECMQtDeclareLoggingCategory)
 include(KDEGitCommitHooks)
 include(KDEClangFormat)
 
-set(REQUIRED_QT_VERSION 5.12.0)
-find_package(Qt${QT_MAJOR_VERSION} ${REQUIRED_QT_VERSION} CONFIG REQUIRED Core Gui)
+set(REQUIRED_QT_VERSION 6.5.0)
+find_package(Qt6 ${REQUIRED_QT_VERSION} CONFIG REQUIRED Core Gui)
 
-if (QT_MAJOR_VERSION STREQUAL "6")
-    set(CMAKECONFIG_NAME "QMobipocket6")
-else()
-    set(CMAKECONFIG_NAME "QMobipocket")
-endif()
+set(CMAKECONFIG_NAME "QMobipocket6")
 
 ecm_setup_version(PROJECT
     VARIABLE_PREFIX QMOBIPOCKET

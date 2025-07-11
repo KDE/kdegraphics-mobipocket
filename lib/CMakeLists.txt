@@ -1,8 +1,4 @@
-if (QT_MAJOR_VERSION STREQUAL "6")
-    set(qmobipocket_INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR}/QMobipocket6)
-else()
-    set(qmobipocket_INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR}/QMobipocket)
-endif()
+set(qmobipocket_INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR}/QMobipocket6)
 
 ecm_qt_declare_logging_category(debug_SRCS
     HEADER qmobipocket_debug.h
@@ -16,13 +12,9 @@ add_library(qmobipocket SHARED)
 set_target_properties(qmobipocket PROPERTIES
     VERSION ${QMOBIPOCKET_VERSION}
     SOVERSION ${QMOBIPOCKET_SOVERSION}
-)
-if (QT_MAJOR_VERSION STREQUAL "6")
-    set_target_properties(qmobipocket PROPERTIES
-        LIBRARY_OUTPUT_NAME QMobipocket6
-        EXPORT_NAME QMobipocket6
+    LIBRARY_OUTPUT_NAME QMobipocket6
+    EXPORT_NAME QMobipocket6
     )
-endif()
 
 target_sources( qmobipocket PRIVATE
     decompressor.cpp
@@ -31,28 +23,16 @@ target_sources( qmobipocket PRIVATE
     ${debug_SRCS}
 )
 
-if (QT_MAJOR_VERSION STREQUAL "5")
-    set(_generate_export_header_version_args)
-else()
-    # For Qt6/KF6 world transitively include the version header
-    if(ECM_VERSION VERSION_LESS "5.106")
-        set(include_version_header_code "#include <qmobipocket_version.h>\n")
-        set(_generate_export_header_version_args CUSTOM_CONTENT_FROM_VARIABLE include_version_header_code)
-    else()
-        set(_generate_export_header_version_args USE_VERSION_HEADER)
-    endif()
-endif()
-
 ecm_generate_export_header(qmobipocket
      VERSION ${QMOBIPOCKET_VERSION}
      DEPRECATED_BASE_VERSION 0
-    ${_generate_export_header_version_args}
+     USE_VERSION_HEADER}
 )
 
 target_link_libraries (qmobipocket
     PUBLIC
-    Qt${QT_MAJOR_VERSION}::Core
-    Qt${QT_MAJOR_VERSION}::Gui
+    Qt6::Core
+    Qt6::Gui
 )
 
 target_include_directories(qmobipocket
