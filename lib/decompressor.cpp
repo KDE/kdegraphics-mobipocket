@@ -206,17 +206,17 @@ bool HuffdicDecompressor::unpack(std::vector<char> &buf, BitReader reader, int d
         auto dict_size = dict.size();
 
         quint32 off1 = 16 + (r & entry_mask) * 2;
-        if ((off1 + 2) >= dict_size) {
+        if (off1 > (dict_size - 2)) {
             return false;
         }
 
         quint16 off2 = 16 + qFromBigEndian<quint16>(dict.constData() + off1);
-        if ((off2 + 2) >= dict_size) {
+        if (off2 > (dict_size - 2)) {
             return false;
         }
 
         quint16 blen = qFromBigEndian<quint16>(dict.constData() + off2);
-        if (off2 + 2 + (blen & 0x7fff) > dict_size) {
+        if ((blen & 0x7fff) > (dict_size - 2 - off2)) {
             return false;
         }
 
