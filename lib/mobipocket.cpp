@@ -43,9 +43,10 @@ struct DocumentPrivate
     bool drm = false;
     quint32 extraflags = 0;
 
-    // index of thumbnail in image list. May be specified in EXTH.
-    // If not then just use first image and hope for the best
-    int thumbnailIndex = 0;
+    // index of Thumbnail image in image list. May be specified in EXTH.
+    int thumbnailIndex = -1;
+    // index of Cover image in image list. May be specified in EXTH.
+    int coverIndex = -1;
 
     void init();
     void findFirstImage();
@@ -235,6 +236,9 @@ void DocumentPrivate::parseEXTH(const QByteArray &data)
         case 109:
             metadata[Document::Copyright] = readStringRecord(data.mid(offset + 8, len - 8));
             break;
+        case 201:
+            coverIndex = qFromBigEndian<quint32>(data.constData() + offset + 8);
+            break;
         case 202:
             thumbnailIndex = qFromBigEndian<quint32>(data.constData() + offset + 8);
             break;
@@ -371,14 +375,12 @@ bool Document::hasDRM() const
 
 QImage Document::thumbnail() const
 {
-    QImage img = getImage(d->thumbnailIndex);
-
-    // does not work, try first image
-    if (img.isNull() && d->thumbnailIndex) {
-        d->thumbnailIndex = 0;
-        img = getImage(0);
+    if (QImage img = getImage(d->thumbnailIndex); !img.isNull()) {
+        return img;
     }
-    return img;
+
+    // Fall back to cover image, or return an empty image
+    return getImage(d->coverIndex);
 }
 
 }
