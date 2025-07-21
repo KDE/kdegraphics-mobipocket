@@ -8,7 +8,7 @@ ecm_qt_declare_logging_category(debug_SRCS
     EXPORT QMOBIPOCKET
 )
 
-add_library(qmobipocket SHARED)
+add_library(qmobipocket)
 set_target_properties(qmobipocket PROPERTIES
     VERSION ${QMOBIPOCKET_VERSION}
     SOVERSION ${QMOBIPOCKET_SOVERSION}
