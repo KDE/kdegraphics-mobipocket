@@ -198,11 +198,7 @@ bool HuffdicDecompressor::unpack(std::vector<char> &buf, BitReader reader, int d
         if (dict_no >= dict_count) {
             return false;
         }
-#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
         QByteArrayView dict = dicts.at(dict_no);
-#else
-        const QByteArray &dict = dicts.at(dict_no);
-#endif
         auto dict_size = dict.size();
 
         quint32 off1 = 16 + (r & entry_mask) * 2;

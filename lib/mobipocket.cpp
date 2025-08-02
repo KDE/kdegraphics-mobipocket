@@ -10,11 +10,7 @@
 #include <QIODevice>
 #include <QImageReader>
 #include <QRegularExpression>
-#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
 #include <QStringConverter>
-#else
-#include <QTextCodec>
-#endif
 #include <QtEndian>
 
 namespace Mobipocket
@@ -35,11 +31,7 @@ struct DocumentPrivate
     // number of first record holding image. Usually it is directly after end of text, but not always
     quint16 firstImageRecord = 0;
     QMap<Document::MetaKey, QString> metadata;
-#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
     QStringDecoder toUtf16;
-#else
-    QTextCodec *codec = nullptr;
-#endif
     bool drm = false;
     quint32 extraflags = 0;
 
@@ -83,7 +75,8 @@ void DocumentPrivate::parseHtmlHead(const QString &data)
         metadata[Document::Description] = descriptionMatch.captured(1);
 }
 
-namespace {
+namespace
+{
     const QVector<QByteArray> getHuffRecords(const PDB &pdb)
     {
         const QByteArray header = pdb.getRecord(0);
@@ -131,7 +124,6 @@ void DocumentPrivate::init()
     maxRecordSize = qFromBigEndian<quint16>(mhead.constData() + 10);
     if (mhead.size() > 31)
         encoding = qFromBigEndian<quint32>(mhead.constData() + 28);
-#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
     if (encoding == 65001) {
         toUtf16 = QStringDecoder(QStringDecoder::Utf8);
     } else {
@@ -141,12 +133,6 @@ void DocumentPrivate::init()
             toUtf16 = QStringDecoder(QStringConverter::Latin1);
         }
     }
-#else
-    if (encoding == 65001)
-        codec = QTextCodec::codecForName("UTF-8");
-    else
-        codec = QTextCodec::codecForName("CP1252");
-#endif
     if (mhead.size() >= 92)
         parseEXTH(mhead);
 
@@ -159,11 +145,7 @@ void DocumentPrivate::init()
 
     // try getting metadata from HTML if nothing or only title was recovered from MOBI and EXTH records
     if (metadata.size() < 2 && !drm)
-#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
         parseHtmlHead(toUtf16(dec->decompress(pdb.getRecord(1))));
-#else
-        parseHtmlHead(codec->toUnicode(dec->decompress(pdb.getRecord(1))));
-#endif
     valid = true;
 }
 
@@ -185,11 +167,7 @@ void DocumentPrivate::findFirstImage()
 
 QString DocumentPrivate::readStringRecord(const QByteArray &data)
 {
-#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
     return toUtf16(data);
-#else
-    return codec->toUnicode(data);
-#endif
 }
 
 void DocumentPrivate::parseEXTH(const QByteArray &data)
@@ -199,11 +177,7 @@ void DocumentPrivate::parseEXTH(const QByteArray &data)
         qint32 nameoffset = qFromBigEndian<quint32>(data.constData() + 84);
         qint32 namelen = qFromBigEndian<quint32>(data.constData() + 88);
         if ((nameoffset + namelen) <= data.size()) {
-#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
             metadata[Document::Title] = toUtf16(data.mid(nameoffset, namelen));
-#else
-            metadata[Document::Title] = codec->toUnicode(data.mid(nameoffset, namelen));
-#endif
         }
     }
 
@@ -263,12 +237,9 @@ Document::~Document()
     delete d;
 }
 
-namespace {
-#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+namespace
+{
 constexpr qsizetype preTrailingDataLength(QByteArrayView data, quint32 flags)
-#else
-qsizetype preTrailingDataLength(QByteArray data, quint32 flags)
-#endif
 {
     if (flags == 0) {
         return data.size();
@@ -298,7 +269,6 @@ qsizetype preTrailingDataLength(QByteArray data, quint32 flags)
     }
     return data.size();
 }
-#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
 static_assert(preTrailingDataLength({"0\x00", 2}, 0x0) == 2);
 static_assert(preTrailingDataLength({"0\x00", 2}, 0x1) == 1);
 static_assert(preTrailingDataLength({"0\x01", 2}, 0x1) == 0);
@@ -313,7 +283,6 @@ static_assert(preTrailingDataLength({"abc\x01\x80\x02", 6}, 0x2) == 4);
 static_assert(preTrailingDataLength({"abc\x01\x7f\x82", 6}, 0x3) == 2);
 static_assert(preTrailingDataLength({"abc\x81\x80\x02", 6}, 0x6) == 3);
 static_assert(preTrailingDataLength({"abc\x00\x81\x81", 6}, 0x7) == 3);
-#endif
 } // namespace
 
 QString Document::text(int size) const
@@ -331,11 +300,7 @@ QString Document::text(int size) const
         if (size != -1 && whole.size() > size)
             break;
     }
-#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
     return d->toUtf16(whole);
-#else
-    return d->codec ? d->codec->toUnicode(whole) : QString();
-#endif
 }
 
 int Document::imageCount() const

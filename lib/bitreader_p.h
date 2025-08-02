@@ -10,11 +10,7 @@ namespace Mobipocket
 class BitReader
 {
 public:
-#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
     BitReader(QByteArrayView d)
-#else
-    BitReader(const QByteArray &d)
-#endif
         : len(d.size() * 8)
         , data(d)
     {
@@ -62,10 +58,6 @@ private:
     int pos = 0;
     int len = 0;
     int rEndPos = 0; //< position past the LSB of r
-#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
     QByteArrayView data;
-#else
-    QByteArray data;
-#endif
 };
 } // namespace Mobipocket
