@@ -42,9 +42,8 @@ struct DocumentPrivate
 
     void init();
     void findFirstImage();
-    void parseEXTH(const QByteArray &data);
+    void parseEXTH(QByteArrayView data);
     void parseHtmlHead(const QString &data);
-    QString readStringRecord(const QByteArray &data);
 };
 
 void DocumentPrivate::parseHtmlHead(const QString &data)
@@ -165,12 +164,7 @@ void DocumentPrivate::findFirstImage()
     }
 }
 
-QString DocumentPrivate::readStringRecord(const QByteArray &data)
-{
-    return toUtf16(data);
-}
-
-void DocumentPrivate::parseEXTH(const QByteArray &data)
+void DocumentPrivate::parseEXTH(QByteArrayView data)
 {
     // try to get name
     if (data.size() >= 92) {
@@ -199,16 +193,16 @@ void DocumentPrivate::parseEXTH(const QByteArray &data)
             break;
         switch (type) {
         case 100:
-            metadata[Document::Author] = readStringRecord(data.mid(offset + 8, len - 8));
+            metadata[Document::Author] = toUtf16(data.mid(offset + 8, len - 8));
             break;
         case 103:
-            metadata[Document::Description] = readStringRecord(data.mid(offset + 8, len - 8));
+            metadata[Document::Description] = toUtf16(data.mid(offset + 8, len - 8));
             break;
         case 105:
-            metadata[Document::Subject] = readStringRecord(data.mid(offset + 8, len - 8));
+            metadata[Document::Subject] = toUtf16(data.mid(offset + 8, len - 8));
             break;
         case 109:
-            metadata[Document::Copyright] = readStringRecord(data.mid(offset + 8, len - 8));
+            metadata[Document::Copyright] = toUtf16(data.mid(offset + 8, len - 8));
             break;
         case 201:
             coverIndex = qFromBigEndian<quint32>(data.constData() + offset + 8);
