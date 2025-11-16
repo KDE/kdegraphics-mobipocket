@@ -1,7 +1,7 @@
 #include <QCommandLineParser>
 #include <QCoreApplication>
-#include <QDebug>
 #include <QFileInfo>
+#include <QTextStream>
 
 #include "mobipocket.h"
 
@@ -15,7 +15,7 @@ int main(int argc, char **argv)
     parser.process(app);
 
     if (parser.positionalArguments().size() != 1) {
-        qDebug() << "Exactly one argument is accepted";
+        QTextStream(stderr) << "Exactly one argument is accepted" << Qt::endl;
         parser.showHelp(1);
     }
     bool showFulltext = parser.isSet(QStringLiteral("fulltext"));
@@ -24,12 +24,12 @@ int main(int argc, char **argv)
     QString url = fi.absoluteFilePath();
 
     if (!fi.exists()) {
-        qDebug() << "File" << url << "not found";
+        QTextStream(stderr) << "File " << url << " not found" << Qt::endl;
         return 1;
     }
 
     if (!fi.isFile() || !fi.isReadable()) {
-        qDebug() << "File" << url << "is not a readable file";
+        QTextStream(stderr) << "File " << url << " is not a readable file" << Qt::endl;
         return 1;
     }
 
@@ -38,18 +38,19 @@ int main(int argc, char **argv)
     Mobipocket::Document doc(&file);
 
     if (!doc.isValid()) {
-        qDebug() << "File" << url << "is not a valid MobiPocket file";
+        QTextStream(stderr) << "File " << url << " is not a valid MobiPocket file" << Qt::endl;
         return 1;
     }
 
-    qDebug() << "===\nFile metadata:";
+    QTextStream out(stdout);
+    out << "===\nFile metadata:" << Qt::endl;
     for (const auto &meta : doc.metadata().asKeyValueRange()) {
-        qDebug() << meta.first << meta.second;
+        out << meta.first << " \"" << meta.second << "\"" << Qt::endl;
     }
-    qDebug() << "DRM protected:" << (doc.hasDRM() ? "yes" : "no");
+    out << "DRM protected:" << (doc.hasDRM() ? " yes" : " no") << Qt::endl;
     if (showFulltext && !doc.hasDRM()) {
-        qDebug() << "===\nRaw text:";
-        qDebug() << doc.text();
+        out << "===\nRaw text:" << Qt::endl;
+        out << "\"" << doc.text() << "\"" << Qt::endl;
     }
-    qDebug() << "===\n";
+    out << "===" << Qt::endl << Qt::endl;
 }
