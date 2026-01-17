@@ -53,4 +53,5 @@ int main(int argc, char **argv)
         out << "\"" << doc.text() << "\"" << Qt::endl;
     }
     out << "===" << Qt::endl << Qt::endl;
+    return 0;
 }
