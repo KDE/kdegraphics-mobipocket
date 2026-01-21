@@ -34,7 +34,9 @@ int main(int argc, char **argv)
     }
 
     QFile file(url);
-    file.open(QFile::ReadOnly);
+    if (!file.open(QFile::ReadOnly)) {
+        QTextStream(stderr) << "Failed to open " << url << Qt::endl;
+    }
     Mobipocket::Document doc(&file);
 
     if (!doc.isValid()) {
