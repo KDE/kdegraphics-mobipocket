@@ -165,17 +165,20 @@ void DocumentPrivate::findFirstImage()
 
 void DocumentPrivate::parseEXTH(QByteArrayView data)
 {
+    if (data.size() < 92)
+        return;
+
     // try to get name
-    if (data.size() >= 92) {
-        qint32 nameoffset = qFromBigEndian<quint32>(data.constData() + 84);
-        qint32 namelen = qFromBigEndian<quint32>(data.constData() + 88);
-        if ((nameoffset + namelen) <= data.size()) {
-            metadata[Document::Title] = toUtf16(data.mid(nameoffset, namelen));
-        }
+    qint32 nameoffset = qFromBigEndian<quint32>(data.constData() + 84);
+    qint32 namelen = qFromBigEndian<quint32>(data.constData() + 88);
+    const qint32 ssize = qint32(data.size());
+    if (nameoffset >= 0 && namelen >= 0 && nameoffset <= ssize && namelen <= ssize - nameoffset) {
+        metadata[Document::Title] = toUtf16(data.mid(nameoffset, namelen));
     }
 
+    const quint32 size = quint32(data.size());
     quint32 exthoffs = qFromBigEndian<quint32>(data.constData() + 20);
-    if (exthoffs + 28 > quint32(data.size())) {
+    if (exthoffs > size - 28) {
         return;
     }
 
@@ -184,11 +187,11 @@ void DocumentPrivate::parseEXTH(QByteArrayView data)
     quint32 records = qFromBigEndian<quint32>(data.constData() + exthoffs + 24);
     quint32 offset = exthoffs + 28;
     for (unsigned int i = 0; i < records; i++) {
-        if (offset + 8 > quint32(data.size()))
+        if (offset > size - 8)
             break;
         quint32 type = qFromBigEndian<quint32>(data.constData() + offset);
         quint32 len = qFromBigEndian<quint32>(data.constData() + offset + 4);
-        if (len < 8 || offset + len > quint32(data.size()))
+        if (len < 8 || len > size - offset)
             break;
         switch (type) {
         case 100:
@@ -204,10 +207,12 @@ void DocumentPrivate::parseEXTH(QByteArrayView data)
             metadata[Document::Copyright] = toUtf16(data.mid(offset + 8, len - 8));
             break;
         case 201:
-            coverIndex = qFromBigEndian<quint32>(data.constData() + offset + 8);
+            if (len >= 12)
+                coverIndex = qFromBigEndian<quint32>(data.constData() + offset + 8);
             break;
         case 202:
-            thumbnailIndex = qFromBigEndian<quint32>(data.constData() + offset + 8);
+            if (len >= 12)
+                thumbnailIndex = qFromBigEndian<quint32>(data.constData() + offset + 8);
             break;
         default:
             // ignore
