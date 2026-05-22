@@ -16,8 +16,7 @@
 namespace Mobipocket
 {
 
-struct DocumentPrivate 
-{
+struct DocumentPrivate {
     DocumentPrivate(QIODevice *d)
         : pdb(d)
     {
@@ -189,7 +188,7 @@ void DocumentPrivate::parseEXTH(QByteArrayView data)
             break;
         quint32 type = qFromBigEndian<quint32>(data.constData() + offset);
         quint32 len = qFromBigEndian<quint32>(data.constData() + offset + 4);
-        if (offset + len > quint32(data.size()))
+        if (len < 8 || offset + len > quint32(data.size()))
             break;
         switch (type) {
         case 100:

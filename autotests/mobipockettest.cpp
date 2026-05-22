@@ -28,6 +28,7 @@ private Q_SLOTS:
     void testText();
     void testThumbnail();
     void testTruncation();
+    void testInvalidExthRecordLength();
 };
 
 void MobipocketTest::testMetadata()
@@ -108,6 +109,18 @@ void MobipocketTest::testTruncation()
         const auto metadata = doc.metadata();
         const auto text = doc.text();
     }
+}
+
+void MobipocketTest::testInvalidExthRecordLength()
+{
+    QFile file(testFilePath(QStringLiteral("invalid-exth-record-length.mobi")));
+    QVERIFY(file.open(QFile::ReadOnly));
+
+    // Should not hang, timeout, or crash on malformed EXTH records
+    Mobipocket::Document doc(&file);
+
+    const auto text = doc.text();
+    const auto thumb = doc.thumbnail();
 }
 
 QTEST_GUILESS_MAIN(MobipocketTest)
