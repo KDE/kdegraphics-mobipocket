@@ -131,8 +131,8 @@ void DocumentPrivate::init()
             toUtf16 = QStringDecoder(QStringConverter::Latin1);
         }
     }
-    if (mhead.size() >= 92)
-        parseEXTH(mhead);
+
+    parseEXTH(mhead);
 
     if (mhead.size() >= 244) {
         quint32 exthoffs = qFromBigEndian<quint32>(mhead.constData() + 20);
