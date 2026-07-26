@@ -82,8 +82,8 @@ namespace
             return {};
         }
 
-        quint32 huff_ofs = qFromBigEndian<quint32>(header.constData() + 0x70);
-        quint32 huff_num = qFromBigEndian<quint32>(header.constData() + 0x74);
+        const quint32 huff_ofs = qFromBigEndian<quint32>(header.constData() + 0x70);
+        const quint32 huff_num = qFromBigEndian<quint32>(header.constData() + 0x74);
 
         // Check for overflow and out-of-bounds access
         if (((huff_ofs + huff_num) < huff_num) || ((huff_ofs + huff_num) > pdb.recordCount())) {
@@ -108,7 +108,7 @@ void DocumentPrivate::init()
 
     if (!pdb.isValid())
         return;
-    QByteArray mhead = pdb.getRecord(0);
+    const QByteArray mhead = pdb.getRecord(0);
     if (mhead.isNull() || mhead.size() < 14)
         return;
 
@@ -169,15 +169,15 @@ void DocumentPrivate::parseEXTH(QByteArrayView data)
         return;
 
     // try to get name
-    qint32 nameoffset = qFromBigEndian<quint32>(data.constData() + 84);
-    qint32 namelen = qFromBigEndian<quint32>(data.constData() + 88);
+    const qint32 nameoffset = qFromBigEndian<quint32>(data.constData() + 84);
+    const qint32 namelen = qFromBigEndian<quint32>(data.constData() + 88);
     const qint32 ssize = qint32(data.size());
     if (nameoffset >= 0 && namelen >= 0 && nameoffset <= ssize && namelen <= ssize - nameoffset) {
         metadata[Document::Title] = toUtf16(data.mid(nameoffset, namelen));
     }
 
     const quint32 size = quint32(data.size());
-    quint32 exthoffs = qFromBigEndian<quint32>(data.constData() + 20);
+    const quint32 exthoffs = qFromBigEndian<quint32>(data.constData() + 20);
     if (exthoffs > size - 28) {
         return;
     }
