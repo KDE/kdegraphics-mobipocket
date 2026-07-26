@@ -78,7 +78,7 @@ namespace
     const QVector<QByteArray> getHuffRecords(const PDB &pdb)
     {
         const QByteArray header = pdb.getRecord(0);
-        if (header[1] != 'H') {
+        if (header.size() < 0x78 || header[1] != 'H') {
             return {};
         }
 
