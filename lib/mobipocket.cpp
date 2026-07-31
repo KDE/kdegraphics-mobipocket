@@ -115,7 +115,7 @@ void DocumentPrivate::init()
     dec = Decompressor::create(mhead[1], getHuffRecords(pdb));
     if ((int)mhead[12] != 0 || (int)mhead[13] != 0)
         drm = true;
-    if (!dec)
+    if (!dec || !dec->isValid())
         return;
 
     ntextrecords = qFromBigEndian<quint16>(mhead.constData() + 8);
